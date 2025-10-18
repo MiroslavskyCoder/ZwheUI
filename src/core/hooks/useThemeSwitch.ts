@@ -1,4 +1,5 @@
 
+
 import { useCallback, useEffect, useState } from 'react'
 import { Theme } from '../css/types'
 
@@ -45,7 +46,69 @@ export const defaultTheme: Theme = {
             normal: 1.5,
             relaxed: 1.75
         }
-    }
+    },
+    radii: {
+        sm: '0.125rem',
+        md: '0.25rem',
+        lg: '0.5rem',
+        xl: '1rem',
+        '2xl': '1.5rem',
+        full: '9999px',
+    },
+    blur: {
+        sm: '4px',
+        md: '8px',
+        lg: '16px',
+        xl: '24px',
+    },
+    brightness: { 
+        sm: '0.5',
+        md: '0.75',
+        lg: '1',
+        xl: '1.25',
+    },
+    contrast: { 
+        sm: '0.5',
+        md: '0.75',
+        lg: '1',
+        xl: '1.25',
+    },
+    grayscale: { 
+        sm: '0.5',
+        md: '0.75',
+        lg: '1',
+        xl: '1.25',
+    },
+    hueRotate: {
+        sm: '0deg',
+        md: '90deg',
+        lg: '180deg',
+        xl: '270deg',
+    },
+    invert: { 
+        sm: '0.5',
+        md: '0.75',
+        lg: '1',
+        xl: '1.25',
+    },
+    opacity: { 
+        sm: '0.5',
+        md: '0.75',
+        lg: '1',
+        xl: '1.25',
+    },
+    saturate: { 
+        sm: '0.5',
+        md: '0.75',
+        lg: '1',
+        xl: '1.25',
+    },
+    sepia: { 
+        sm: '0.5',
+        md: '0.75',
+        lg: '1',
+        xl: '1.25',
+    },
 }
 
 

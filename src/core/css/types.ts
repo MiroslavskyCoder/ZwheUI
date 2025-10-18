@@ -58,5 +58,36 @@ export interface Theme {
     lineHeights: {
       [key: string]: string | number
     }
-  }
+  },
+  radii: {
+    [key: string]: string;
+  };
+  blur: {
+    [key: string]: string;
+  },
+  brightness: { 
+    [key: string]: string; 
+  },
+  contrast: {
+    [key: string]: string;
+  },
+  grayscale: {
+    [key: string]: string;
+  },
+  hueRotate: {
+    [key: string]: string;
+  },
+  invert: {
+    [key: string]: string;
+  },
+  opacity: {
+    [key: string]: string;
+  },
+  saturate: {
+    [key: string]: string;
+  },
+  sepia: {
+    [key: string]: string;
+  },
 }
+ 

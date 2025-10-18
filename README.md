@@ -123,11 +123,15 @@ const MyComponent = () => {
 }
 ```
 
-**Example with Media Queries:**
-The styling system can use breakpoint keys defined in the theme (`sm`, `md`, `lg`, etc.) for creating responsive styles.
+**Example with Responsive and Themed Styles:**
+The styling system can use breakpoint keys for media queries and theme keys for property values.
 ```tsx
 const responsiveClass = createStyle({
     fontSize: '1rem',
+    borderRadius: 'lg', // uses theme.radii.lg
+    '@supports (backdrop-filter: none)': {
+        backdropFilter: 'blur(md)', // uses theme.blur.md
+    },
     '@media': {
         "(minWidth: 'md')": {
             fontSize: '1.25rem', // Becomes @media (min-width: 768px)
