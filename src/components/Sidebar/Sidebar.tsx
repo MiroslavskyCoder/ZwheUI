@@ -2,6 +2,7 @@
 import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
+import { Icon } from '../Icon/Icon';
 
 interface SidebarProps {
     children: React.ReactNode;
@@ -67,7 +68,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ children, title }) => {
 
 interface SidebarNavItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
     children: React.ReactNode;
-    icon?: React.ReactNode;
+    icon?: React.ElementType;
     isActive?: boolean;
 }
 
@@ -93,7 +94,7 @@ export const SidebarNavItem: React.FC<SidebarNavItemProps> = ({ children, icon, 
 
     return (
         <a className={`${itemClass} ${className}`} {...props}>
-            {icon}
+            {icon && <Icon as={icon} size={16} />}
             <span>{children}</span>
         </a>
     );

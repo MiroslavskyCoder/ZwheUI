@@ -1,3 +1,4 @@
+
 // Core systems
 export * from '../core'
 
@@ -29,6 +30,7 @@ export * from './Error/Error';
 export * from './FileUpload/FileUpload';
 export * from './Grid/Grid';
 export * from './HoverCard/HoverCard';
+export * from './Icon/Icon';
 export * from './Input/Input';
 export * from './Kbd/Kbd';
 export * from './Layer/Layer';
@@ -87,3 +89,6 @@ export * from './Charts/ChartRadar';
 export * from './Charts/ChartRadial';
 export * from './Charts/ChartSparkline';
 export * from './Charts/ChartTooltip';
+
+// Icons
+export * from '../icons';
