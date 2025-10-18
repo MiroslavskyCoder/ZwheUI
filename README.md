@@ -104,8 +104,9 @@ The library is built upon a small, robust core system.
 
 ### Styling with `useStyles`
 
-A custom hook, `useStyles`, is used for all component styling. It takes a style object (similar to CSS-in-JS libraries) and injects the required CSS into a `<style>` tag in the document head, returning a unique class name. This approach provides scoped styling with zero external dependencies.
+A custom hook, `useStyles`, is used for all component styling. It takes a style object (similar to CSS-in-JS libraries) and injects the required CSS into a `<style>` tag in the document head, returning a unique class name. This approach provides scoped styling with zero external dependencies. It also supports pseudo-selectors, keyframes, and theme-aware media queries.
 
+**Example:**
 ```tsx
 import { useStyles } from './src/core';
 
@@ -120,6 +121,19 @@ const MyComponent = () => {
 
     return <div className={containerClass}>Hello, World!</div>
 }
+```
+
+**Example with Media Queries:**
+The styling system can use breakpoint keys defined in the theme (`sm`, `md`, `lg`, etc.) for creating responsive styles.
+```tsx
+const responsiveClass = createStyle({
+    fontSize: '1rem',
+    '@media': {
+        "(minWidth: 'md')": {
+            fontSize: '1.25rem', // Becomes @media (min-width: 768px)
+        }
+    }
+});
 ```
 
 ### Theming with `ThemeProvider`

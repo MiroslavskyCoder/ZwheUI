@@ -1,4 +1,5 @@
-import { CSSProperties, StyleDefinition, StyleOptions } from './types'
+
+import { CSSProperties, StyleDefinition, StyleOptions, Theme } from './types'
 
 let styleSheet: HTMLStyleElement | null = null
 const cache = new Map<string, string>()
@@ -28,7 +29,7 @@ const objectToCssString = (styleObject: CSSProperties): string => {
     return Object.entries(styleObject)
         .map(([key, value]) => {
             if (typeof value === 'object' && value !== null) {
-                return ''; // This function is simple and should not handle nested rules.
+                return ''; // This function should not handle nested rules; they are parsed by the main function.
             }
             if (value === undefined) return '';
             const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
@@ -38,10 +39,31 @@ const objectToCssString = (styleObject: CSSProperties): string => {
         .join(' ');
 };
 
+const toKebabCase = (str: string) => str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+
+const parseMediaQuery = (query: string, theme?: Theme): string => {
+    if (!theme?.breakpoints) {
+        return query;
+    }
+
+    // Regex to find things like (property: 'breakpointKey') or (property: breakpointKey)
+    const sassLikeQueryRegex = /\(\s*([a-zA-Z-]+)\s*:\s*['"]?(\w+)['"]?\s*\)/g;
+
+    return query.replace(sassLikeQueryRegex, (match, property, key) => {
+        const breakpointValue = theme.breakpoints[key];
+        if (breakpointValue) {
+            const cssProperty = toKebabCase(property);
+            return `(${cssProperty}: ${breakpointValue})`;
+        }
+        return match; // Return original if breakpoint key not found
+    });
+};
+
 
 export const createClassFlow = (
     styles: StyleDefinition,
-    options: StyleOptions = {}
+    options: StyleOptions = {},
+    theme?: Theme
 ): string => {
     const { prefix = 'zw', cache: useCache = true } = options;
     const styleStr = JSON.stringify(styles);
@@ -60,10 +82,10 @@ export const createClassFlow = (
     const nestedRules: string[] = [];
     const keyframesRules: string[] = [];
 
-    // Separate base properties from nested rules (like pseudo-selectors or keyframes)
+    // Separate base properties from nested/at-rules
     for (const [key, value] of Object.entries(styles)) {
         if (key === '@media' || value === undefined) {
-            continue; // Handle @media separately below, ignore undefined
+            continue; // Handle the special '@media' object separately for backward compatibility
         }
 
         if (typeof value === 'object' && value !== null) {
@@ -77,6 +99,9 @@ export const createClassFlow = (
                     .map(([frame, frameStyles]) => `${frame} { ${objectToCssString(frameStyles as CSSProperties)} }`)
                     .join(' ');
                 keyframesRules.push(`${key} { ${keyframeContent} }`);
+            } else if (key.startsWith('@')) {
+                // Handle other at-rules like @supports or direct @media queries
+                nestedRules.push(`${key} { .${className} { ${objectToCssString(value as CSSProperties)} } }`);
             }
         } else {
             baseStyles[key] = value as string | number;
@@ -85,17 +110,20 @@ export const createClassFlow = (
 
     let cssRules = `.${className} { ${objectToCssString(baseStyles)} }`;
     
+    // Process nested pseudo-selectors and at-rules
     if (nestedRules.length > 0) {
         cssRules += `\n${nestedRules.join('\n')}`;
     }
 
-    // Handle the top-level @media property specifically, as defined in the types
+    // Handle the special top-level @media property for backward compatibility
     if (styles['@media']) {
         Object.entries(styles['@media']).forEach(([query, props]) => {
-            cssRules += `\n@media ${query} { .${className} { ${objectToCssString(props)} } }`
+            const parsedQuery = parseMediaQuery(query, theme);
+            cssRules += `\n@media ${parsedQuery} { .${className} { ${objectToCssString(props as CSSProperties)} } }`
         })
     }
     
+    // Keyframes are always top-level rules
     if (keyframesRules.length > 0) {
         cssRules += `\n${keyframesRules.join('\n')}`;
     }
