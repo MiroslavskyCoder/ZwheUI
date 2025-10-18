@@ -1,4 +1,5 @@
 
+
 // Core systems
 export * from '../core'
 
@@ -22,13 +23,16 @@ export * from './Card/Card';
 export * from './Checkbox/Checkbox';
 export * from './ColorPicker/ColorPicker';
 export * from './Combobox/Combobox';
+export * from './Container/Container';
 export * from './DatePicker/DatePicker';
 export * from './Dialog/Dialog';
 export * from './Drawer/Drawer';
 export * from './Dropdown/Dropdown';
 export * from './Error/Error';
 export * from './FileUpload/FileUpload';
+export * from './Footer/Footer';
 export * from './Grid/Grid';
+export * from './Header/Header';
 export * from './HoverCard/HoverCard';
 export * from './Icon/Icon';
 export * from './Input/Input';

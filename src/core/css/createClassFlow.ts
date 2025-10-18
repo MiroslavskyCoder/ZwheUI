@@ -171,7 +171,7 @@ export const createClassFlow = (
 
     // Handle the special top-level @media property for backward compatibility
     if (styles['@media']) {
-         Object.entries(styles['@media']).forEach(([query, props]) => {
+        Object.entries(styles['@media']).forEach(([query, props]) => {
             const parsedQuery = parseMediaQuery(query, theme);
             cssRules += `\n@media ${parsedQuery} { .${className} { ${objectToCssString(props as CSSProperties, theme)} } }`
         })

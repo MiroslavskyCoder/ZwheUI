@@ -5,7 +5,8 @@ import { useTheme } from '../../core/theme/ThemeProvider';
 
 export interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-export const TextInput: React.FC<TextInputProps> = ({ className = '', ...props }) => {
+// FIX: Wrapped component in React.forwardRef to allow refs to be passed to the underlying input element.
+export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(({ className = '', ...props }, ref) => {
     const { theme } = useTheme();
     const createStyle = useStyles('text-input');
     const isDark = theme.colors.background.startsWith('#1');
@@ -31,5 +32,7 @@ export const TextInput: React.FC<TextInputProps> = ({ className = '', ...props }
         }
     });
 
-    return <input type="text" className={`${baseClasses} ${className}`} {...props} />;
-};
+    return <input type="text" ref={ref} className={`${baseClasses} ${className}`} {...props} />;
+});
+
+TextInput.displayName = 'TextInput';

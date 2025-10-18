@@ -89,5 +89,7 @@ export interface Theme {
   sepia: {
     [key: string]: string;
   },
+  maxWidths: {
+    [key: string]: string;
+  }
 }
- 

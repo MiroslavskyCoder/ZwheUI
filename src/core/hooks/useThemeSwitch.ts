@@ -109,6 +109,9 @@ export const defaultTheme: Theme = {
         lg: '1',
         xl: '1.25',
     },
+    maxWidths: {
+        container: '1280px',
+    }
 }
 
 
