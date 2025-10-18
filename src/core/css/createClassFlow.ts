@@ -23,50 +23,93 @@ const createStyleSheet = () => {
     return styleSheet
 }
 
-const toCSSString = (props: CSSProperties): string => {
-    return Object.entries(props)
+// A robust function to convert a style object to a CSS string, ignoring nested objects.
+const objectToCssString = (styleObject: CSSProperties): string => {
+    return Object.entries(styleObject)
         .map(([key, value]) => {
-        if (value === undefined) return ''
-            const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
-            return `${cssKey}: ${value};`
+            if (typeof value === 'object' && value !== null) {
+                return ''; // This function is simple and should not handle nested rules.
+            }
+            if (value === undefined) return '';
+            const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+            return `${cssKey}: ${value};`;
         })
         .filter(Boolean)
-        .join(' ')
-}
+        .join(' ');
+};
+
 
 export const createClassFlow = (
     styles: StyleDefinition,
     options: StyleOptions = {}
 ): string => {
-    const { prefix = 'zw', cache: useCache = true } = options
-    const styleStr = JSON.stringify(styles)
+    const { prefix = 'zw', cache: useCache = true } = options;
+    const styleStr = JSON.stringify(styles);
     
     if (useCache && cache.has(styleStr)) {
-        return cache.get(styleStr)!
+        return cache.get(styleStr)!;
     }
 
-    const sheet = createStyleSheet()
-    if (!sheet) return ''
+    const sheet = createStyleSheet();
+    if (!sheet) return '';
 
-    counter++
-    const className = `${prefix}-${hashCode(styleStr)}-${counter}`
-    let cssRules = `.${className} { ${toCSSString(styles)} }`
+    counter++;
+    const className = `${prefix}-${hashCode(styleStr)}-${counter}`;
+    
+    const baseStyles: CSSProperties = {};
+    const nestedRules: string[] = [];
+    const keyframesRules: string[] = [];
 
-    // Handle media queries
+    // Separate base properties from nested rules (like pseudo-selectors or keyframes)
+    for (const [key, value] of Object.entries(styles)) {
+        if (key === '@media' || value === undefined) {
+            continue; // Handle @media separately below, ignore undefined
+        }
+
+        if (typeof value === 'object' && value !== null) {
+            if (key.startsWith('&')) {
+                // Handle pseudo-selectors and nested selectors
+                const selector = key.replace(/&/g, `.${className}`);
+                nestedRules.push(`${selector} { ${objectToCssString(value as CSSProperties)} }`);
+            } else if (key.startsWith('@keyframes')) {
+                // Handle keyframes
+                const keyframeContent = Object.entries(value)
+                    .map(([frame, frameStyles]) => `${frame} { ${objectToCssString(frameStyles as CSSProperties)} }`)
+                    .join(' ');
+                keyframesRules.push(`${key} { ${keyframeContent} }`);
+            }
+        } else {
+            baseStyles[key] = value as string | number;
+        }
+    }
+
+    let cssRules = `.${className} { ${objectToCssString(baseStyles)} }`;
+    
+    if (nestedRules.length > 0) {
+        cssRules += `\n${nestedRules.join('\n')}`;
+    }
+
+    // Handle the top-level @media property specifically, as defined in the types
     if (styles['@media']) {
         Object.entries(styles['@media']).forEach(([query, props]) => {
-            cssRules += `\n@media ${query} { .${className} { ${toCSSString(props)} } }`
+            cssRules += `\n@media ${query} { .${className} { ${objectToCssString(props)} } }`
         })
     }
-
-    sheet.textContent += `\n${cssRules}`
     
-    if (useCache) {
-        cache.set(styleStr, className)
+    if (keyframesRules.length > 0) {
+        cssRules += `\n${keyframesRules.join('\n')}`;
     }
 
-    return className
-}
+
+    sheet.textContent += `\n${cssRules}`;
+    
+    if (useCache) {
+        cache.set(styleStr, className);
+    }
+
+    return className;
+};
+
 
 export const clearStyles = () => {
     if (styleSheet) {

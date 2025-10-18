@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { Component, ElementType, HTMLElementType } from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 
@@ -18,7 +18,7 @@ export const Link: React.FC<LinkProps> = ({ children, className, ...props }) => 
             textDecoration: 'underline',
         },
     });
-
+ 
     return (
         <a className={`${linkClass} ${className}`} {...props}>
             {children}
