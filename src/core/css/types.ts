@@ -64,31 +64,7 @@ export interface Theme {
   };
   blur: {
     [key: string]: string;
-  },
-  brightness: { 
-    [key: string]: string; 
-  },
-  contrast: {
-    [key: string]: string;
-  },
-  grayscale: {
-    [key: string]: string;
-  },
-  hueRotate: {
-    [key: string]: string;
-  },
-  invert: {
-    [key: string]: string;
-  },
-  opacity: {
-    [key: string]: string;
-  },
-  saturate: {
-    [key: string]: string;
-  },
-  sepia: {
-    [key: string]: string;
-  },
+  };
   maxWidths: {
     [key: string]: string;
   }

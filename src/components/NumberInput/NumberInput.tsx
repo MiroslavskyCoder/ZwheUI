@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { TextInput } from '../TextInput/TextInput';
 import { Button } from '../Button';
-import { Layout } from '../Layout/Layout';
+import { Stack } from '../Stack/Stack';
 import { useStyles } from '../../core/hooks/useStyles';
 
 interface NumberInputProps {
@@ -47,10 +46,10 @@ export const NumberInput: React.FC<NumberInputProps> = ({ value, onChange, min, 
                 step={step}
                 style={{ borderRadius: '0.375rem 0 0 0.375rem', borderRight: 0 }}
             />
-            <Layout direction="column" gap="2px" style={{height: '100%'}}>
+            <Stack direction="column" gap="2px" style={{height: '100%'}}>
                 <Button variant="secondary" onClick={() => handleStep('up')} className={stepperButtonClass} style={{borderRadius: '0 0.375rem 0 0', height: '50%'}}>+</Button>
                 <Button variant="secondary" onClick={() => handleStep('down')} className={stepperButtonClass} style={{borderRadius: '0 0 0.375rem 0', height: '50%'}}>-</Button>
-            </Layout>
+            </Stack>
         </div>
     );
 };

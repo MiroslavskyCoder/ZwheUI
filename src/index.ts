@@ -2,4 +2,7 @@
 export * from './core'
 
 // Components
-export * from './components'  
+export * from './components' 
+
+// Styles
+import './styles.css'

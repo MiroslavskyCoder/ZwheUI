@@ -8,6 +8,8 @@ export const Video: React.FC<{ children: React.ReactNode, className?: string }> 
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [volume, setVolume] = useState(1);
+    const [isMuted, setIsMuted] = useState(false);
     const { theme } = useTheme();
     const createStyle = useStyles('video-container');
 
@@ -27,6 +29,27 @@ export const Video: React.FC<{ children: React.ReactNode, className?: string }> 
         }
     };
 
+    const seek = (time: number) => {
+        if (videoRef.current) {
+            videoRef.current.currentTime = time;
+        }
+    };
+
+    const handleSetVolume = (newVolume: number) => {
+        if (videoRef.current) {
+            const clampedVolume = Math.max(0, Math.min(1, newVolume));
+            videoRef.current.muted = clampedVolume === 0;
+            videoRef.current.volume = clampedVolume;
+        }
+    };
+
+    const toggleMute = () => {
+        if (videoRef.current) {
+            videoRef.current.muted = !videoRef.current.muted;
+        }
+    };
+
+
     useEffect(() => {
         const video = videoRef.current;
         if (!video) return;
@@ -34,18 +57,28 @@ export const Video: React.FC<{ children: React.ReactNode, className?: string }> 
         const handlePlay = () => setIsPlaying(true);
         const handlePause = () => setIsPlaying(false);
         const handleTimeUpdate = () => setCurrentTime(video.currentTime);
-        const handleLoadedMetadata = () => setDuration(video.duration);
+        const handleLoadedMetadata = () => {
+            setDuration(video.duration);
+            setVolume(video.volume);
+            setIsMuted(video.muted);
+        };
+        const handleVolumeChange = () => {
+            setVolume(video.volume);
+            setIsMuted(video.muted);
+        };
 
         video.addEventListener('play', handlePlay);
         video.addEventListener('pause', handlePause);
         video.addEventListener('timeupdate', handleTimeUpdate);
         video.addEventListener('loadedmetadata', handleLoadedMetadata);
+        video.addEventListener('volumechange', handleVolumeChange);
 
         return () => {
             video.removeEventListener('play', handlePlay);
             video.removeEventListener('pause', handlePause);
             video.removeEventListener('timeupdate', handleTimeUpdate);
             video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            video.removeEventListener('volumechange', handleVolumeChange);
         };
     }, []);
 
@@ -55,6 +88,11 @@ export const Video: React.FC<{ children: React.ReactNode, className?: string }> 
         currentTime,
         duration,
         togglePlay,
+        volume,
+        isMuted,
+        seek,
+        setVolume: handleSetVolume,
+        toggleMute,
     };
 
     return (

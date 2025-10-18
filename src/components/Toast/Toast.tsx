@@ -32,7 +32,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
         
         const removeTimer = setTimeout(() => {
              onDismiss(toast.id);
-        }, toast.duration + 300); // Wait for fade out animation
+        }, toast.duration! + 300); // Wait for fade out animation
 
         return () => {
             clearTimeout(timer);
@@ -51,7 +51,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
         backgroundColor: theme.colors.backgroundSecondary,
         borderRadius: '8px',
         border: `1px solid ${theme.colors.border}`,
-        borderLeft: `5px solid ${variantColors[toast.variant]}`,
+        borderLeft: `5px solid ${variantColors[toast.variant!]}`,
         boxShadow: `0 8px 24px rgba(0,0,0,0.5)`,
         padding: '12px 16px',
         display: 'flex',
@@ -65,7 +65,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
     });
 
     const iconContainerClass = createStyle({
-        color: variantColors[toast.variant],
+        color: variantColors[toast.variant!],
         flexShrink: 0,
         width: '24px',
         height: '24px',
@@ -76,7 +76,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
 
     if (!isRendered) return null;
 
-    const IconComponent = icons[toast.variant];
+    const IconComponent = icons[toast.variant!];
 
     return (
         <div 

@@ -10,6 +10,8 @@ export interface CardProps {
     className?: string
     variant?: 'default' | 'glass'
     onClick?: (event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>) => void
+    // FIX: Add style prop to allow for inline styles.
+    style?: React.CSSProperties
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -17,7 +19,8 @@ export const Card: React.FC<CardProps> = ({
     children,
     className = '',
     variant = 'default',
-    onClick
+    onClick,
+    style
 }) => {
     const { theme } = useTheme()
     const createStyle = useStyles('card')
@@ -70,6 +73,7 @@ export const Card: React.FC<CardProps> = ({
     return (
         <div 
             className={`${cardClass} ${className}`} 
+            style={style}
             onClick={onClick ? (e) => onClick(e) : undefined}
             {...interactiveProps}
         >

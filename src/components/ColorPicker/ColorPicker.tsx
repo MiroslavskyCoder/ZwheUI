@@ -2,7 +2,7 @@ import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { Slider } from '../Slider/Slider';
-import { Layout } from '../Layout/Layout';
+import { Stack } from '../Stack/Stack';
 import { Text } from '../Text/Text';
 import { parseColor } from '../../core/color/utils';
 
@@ -61,26 +61,26 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange, class
     return (
         <div className={`${containerClass} ${className}`}>
             <div className={swatchClass} />
-            <Layout direction="column" gap={theme.spacing.sm}>
-                <Layout direction="row" align="center" gap={theme.spacing.sm} style={{ gridTemplateColumns: 'auto 1fr' }}>
+            <Stack direction="column" gap={theme.spacing.sm}>
+                <Stack direction="row" align="center" gap={theme.spacing.sm} style={{ gridTemplateColumns: 'auto 1fr' }}>
                     <Text as="span" size="14px" color="#ef4444" style={{width: '15px'}}>R</Text>
                     <Slider value={r} onChange={(newR) => handleColorChange('r', newR)} min={0} max={255} color="#ef4444" />
-                </Layout>
-                <Layout direction="row" align="center" gap={theme.spacing.sm} style={{ gridTemplateColumns: 'auto 1fr' }}>
+                </Stack>
+                <Stack direction="row" align="center" gap={theme.spacing.sm} style={{ gridTemplateColumns: 'auto 1fr' }}>
                     <Text as="span" size="14px" color="#10b981" style={{width: '15px'}}>G</Text>
                     <Slider value={g} onChange={(newG) => handleColorChange('g', newG)} min={0} max={255} color="#10b981" />
-                </Layout>
-                <Layout direction="row" align="center" gap={theme.spacing.sm} style={{ gridTemplateColumns: 'auto 1fr' }}>
+                </Stack>
+                <Stack direction="row" align="center" gap={theme.spacing.sm} style={{ gridTemplateColumns: 'auto 1fr' }}>
                     <Text as="span" size="14px" color="#3b82f6" style={{width: '15px'}}>B</Text>
                     <Slider value={b} onChange={(newB) => handleColorChange('b', newB)} min={0} max={255} color="#3b82f6" />
-                </Layout>
+                </Stack>
                 <input 
                     className={hexInputClass} 
                     type="text" 
                     value={value} 
                     onChange={(e) => onChange(e.target.value)}
                 />
-            </Layout>
+            </Stack>
         </div>
     );
 };

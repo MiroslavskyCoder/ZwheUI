@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Layout, SegmentedControl, Stack, Text, defaultTheme, Theme } from '..';
+import { Card, Input, Stack, SegmentedControl, Text, defaultTheme, Theme } from '..';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { useDebounce } from '../../core/hooks/useInteractions';
 
@@ -54,11 +53,11 @@ export const ThemeSwitcher: React.FC = () => {
                     onChange={(newMode) => switchTheme(newMode as any)}
                 />
                 {mode === 'custom' && (
-                    <Layout direction="row" gap="1rem" align="end" style={{ transition: 'opacity 0.3s', opacity: 1 }}>
+                    <Stack direction="row" gap="1rem" align="end" style={{ transition: 'opacity 0.3s', opacity: 1 }}>
                         <Input label="Primary" value={primary} onChange={(e) => setPrimary(e.target.value)} />
                         <Input label="Background" value={background} onChange={(e) => setBackground(e.target.value)} />
                         <Input label="Text" value={text} onChange={(e) => setText(e.target.value)} />
-                    </Layout>
+                    </Stack>
                 )}
             </Stack>
         </Card>

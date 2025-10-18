@@ -1,20 +1,26 @@
 import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
-import { useTheme } from '../../core/theme/ThemeProvider';
+import { useTheme, Theme } from '../../core/theme/ThemeProvider';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
     maxWidth?: string;
+    size?: keyof Theme['maxWidths'];
 }
 
-export const Container: React.FC<ContainerProps> = ({ children, className = '', maxWidth, ...props }) => {
+export const Container: React.FC<ContainerProps> = ({ children, className = '', maxWidth, size, ...props }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('container');
 
     const containerClass = createStyle({
         width: '100%',
-        maxWidth: maxWidth || theme.maxWidths.container,
+        maxWidth: (size ? theme.maxWidths[size] : undefined) || maxWidth || theme.maxWidths.container,
         margin: '0 auto',
         padding: `0 ${theme.spacing.lg}`,
+        '@media': {
+            "(maxWidth: 'sm')": {
+                padding: `0 ${theme.spacing.md}`,
+            }
+        }
     });
 
     return (

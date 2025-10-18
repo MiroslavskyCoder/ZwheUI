@@ -6,6 +6,11 @@ interface VideoContextType {
     currentTime: number;
     duration: number;
     togglePlay: () => void;
+    volume: number;
+    isMuted: boolean;
+    seek: (time: number) => void;
+    setVolume: (volume: number) => void;
+    toggleMute: () => void;
 }
 
 export const VideoContext = createContext<VideoContextType | null>(null);

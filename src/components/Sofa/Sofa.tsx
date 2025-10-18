@@ -1,13 +1,16 @@
-
 import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
+import { Stack } from '../Stack/Stack';
+import { Text } from '../Text/Text';
 
 interface SofaProps extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
+    title?: string;
+    description?: string;
 }
 
-export const Sofa: React.FC<SofaProps> = ({ children, className = '', ...props }) => {
+export const Sofa: React.FC<SofaProps> = ({ children, className = '', title, description, ...props }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('sofa');
     
@@ -23,5 +26,17 @@ export const Sofa: React.FC<SofaProps> = ({ children, className = '', ...props }
         },
     });
     
-    return <div className={`${sofaClass} ${className}`} {...props}>{children}</div>;
+    return (
+        <div className={`${sofaClass} ${className}`} {...props}>
+            {(title || description) ? (
+                <Stack gap="1rem">
+                    {title && <Text as="h2" size="1.5rem" weight="600">{title}</Text>}
+                    {description && <Text>{description}</Text>}
+                    <div>{children}</div>
+                </Stack>
+            ) : (
+                children
+            )}
+        </div>
+    );
 };

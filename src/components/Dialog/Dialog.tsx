@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from '../Modal/Modal';
 import { Text } from '../Text/Text';
-import { Layout } from '../Layout/Layout';
+import { Stack } from '../Stack/Stack';
 import { Button, ButtonProps } from '../Button';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
@@ -39,11 +39,11 @@ export const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, title, children
             <div className={contentClass}>
                 <div>{children}</div>
                 {actions && actions.length > 0 && (
-                     <Layout direction="row" className={footerClass} justify="end" gap={theme.spacing.sm}>
+                     <Stack direction="row" className={footerClass} justify="end" gap={theme.spacing.sm}>
                         {actions.map(({ label, ...props }, index) => (
                             <Button key={index} {...props}>{label}</Button>
                         ))}
-                    </Layout>
+                    </Stack>
                 )}
             </div>
         </Modal>

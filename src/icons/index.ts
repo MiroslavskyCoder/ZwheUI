@@ -1,3 +1,4 @@
+
 export * from './HomeIcon';
 export * from './SettingsIcon';
 export * from './UserIcon';
@@ -37,3 +38,16 @@ export * from './StopIcon';
 export * from './TimesIcon';
 export * from './TrophyIcon';
 export * from './UploadIcon';
+export * from './CoinsIcon';
+export * from './HeartIcon';
+export * from './ExternalLinkIcon';
+export * from './PencilIcon';
+export * from './CopyIcon';
+export * from './ArchiveIcon';
+export * from './TrashIcon';
+export * from './PauseIcon';
+export * from './VolumeUpIcon';
+export * from './VolumeMuteIcon';
+export * from './ChevronRightIcon';
+export * from './ShareIcon';
+export * from './PrintIcon';

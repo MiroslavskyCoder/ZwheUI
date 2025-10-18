@@ -4,8 +4,8 @@ import { useClickOutside } from '../../core/hooks/useInteractions'
 interface MenuContextType {
     isOpen: boolean
     setIsOpen: (open: boolean) => void
-    activeItemIndex: number
-    setActiveItemIndex: (index: number) => void
+    buttonRef: React.RefObject<HTMLButtonElement | null>
+    itemsRef: React.RefObject<HTMLDivElement | null>
 }
 
 const MenuContext = createContext<MenuContextType | null>(null)
@@ -17,15 +17,15 @@ export interface MenuProps {
 
 export const Menu: React.FC<MenuProps> = ({ children, className = '' }) => {
     const [isOpen, setIsOpen] = useState(false)
-    const [activeItemIndex, setActiveItemIndex] = useState(-1)
-    
     const menuRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false))
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const itemsRef = useRef<HTMLDivElement>(null);
 
     const contextValue = {
         isOpen,
         setIsOpen,
-        activeItemIndex,
-        setActiveItemIndex
+        buttonRef,
+        itemsRef,
     }
 
     return (
@@ -45,13 +45,22 @@ export const MenuButton: React.FC<MenuButtonProps> = ({ children, className = ''
     const context = useContext(MenuContext)
     if (!context) throw new Error('MenuButton must be used within a Menu')
 
-    const { isOpen, setIsOpen } = context
+    const { isOpen, setIsOpen } = context;
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+        if (e.key === 'ArrowDown' || e.key === 'Enter') {
+            e.preventDefault();
+            setIsOpen(true);
+        }
+    };
 
     return (
         <button
             {...props}
+            ref={context.buttonRef}
             className={className}
             onClick={() => setIsOpen(!isOpen)}
+            onKeyDown={handleKeyDown}
             data-active={isOpen}
             aria-expanded={isOpen}
             aria-haspopup="true"
@@ -70,14 +79,63 @@ export const MenuItems: React.FC<MenuItemsProps> = ({ children, className = '' }
     const context = useContext(MenuContext)
     if (!context) throw new Error('MenuItems must be used within a Menu')
 
-    const { isOpen } = context
+    const { isOpen, setIsOpen, buttonRef, itemsRef } = context
+
+    // Set focus on the first item when the menu opens
+    useEffect(() => {
+        if (isOpen && itemsRef.current) {
+            const items = Array.from(itemsRef.current.children) as HTMLElement[];
+            const firstFocusableItem = items.find(
+                item => item.getAttribute('role') === 'menuitem' && item.getAttribute('disabled') === null
+            );
+            // Use timeout to ensure focus is set after render and state updates.
+            setTimeout(() => firstFocusableItem?.focus(), 0);
+        }
+    }, [isOpen]);
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (!itemsRef.current) return;
+
+        const items = Array.from(itemsRef.current.children) as HTMLElement[];
+        const focusableItems = items.filter(
+            item => item.getAttribute('role') === 'menuitem' && item.getAttribute('disabled') === null
+        );
+
+        if (focusableItems.length === 0) return;
+
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            
+            const currentFocusIndex = focusableItems.findIndex(item => item === document.activeElement);
+            
+            let nextIndex;
+            if (e.key === 'ArrowDown') {
+                nextIndex = currentFocusIndex >= 0 ? (currentFocusIndex + 1) % focusableItems.length : 0;
+            } else { // ArrowUp
+                nextIndex = currentFocusIndex > 0 ? (currentFocusIndex - 1) : focusableItems.length - 1;
+            }
+            focusableItems[nextIndex]?.focus();
+
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (document.activeElement && focusableItems.includes(document.activeElement as HTMLElement)) {
+                (document.activeElement as HTMLElement).click();
+            }
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            setIsOpen(false);
+            buttonRef.current?.focus();
+        }
+    }
 
     if (!isOpen) return null
 
     return (
         <div
+            ref={itemsRef}
             className={className}
             role="menu"
+            onKeyDown={handleKeyDown}
             data-active={isOpen}
         >
             {children}
@@ -93,50 +151,19 @@ export const MenuItem: React.FC<MenuItemProps> = ({ children, className = '', on
     const context = useContext(MenuContext)
     if (!context) throw new Error('MenuItem must be used within a Menu')
 
-    const { setIsOpen, activeItemIndex, setActiveItemIndex } = context
-    const itemRef = useRef<HTMLButtonElement>(null)
-    const [isFocused, setIsFocused] = useState(false)
+    const { setIsOpen } = context
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(e)
         setIsOpen(false)
     }
 
-    const handleMouseEnter = () => {
-        if (itemRef.current) {
-            const index = Array.from(itemRef.current.parentElement?.children || []).indexOf(itemRef.current)
-            setActiveItemIndex(index)
-            setIsFocused(true)
-        }
-    }
-
-    const handleMouseLeave = () => {
-        setIsFocused(false)
-    }
-
-    useEffect(() => {
-        if (itemRef.current) {
-        const index = Array.from(itemRef.current.parentElement?.children || [])
-            .indexOf(itemRef.current)
-        if (index === activeItemIndex) {
-            setIsFocused(true)
-            itemRef.current.focus()
-        } else {
-            setIsFocused(false)
-        }
-        }
-    }, [activeItemIndex])
-
     return (
         <button
             {...props}
-            ref={itemRef}
             className={className}
             role="menuitem"
             onClick={handleClick}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            data-focused={isFocused}
             tabIndex={-1}
         >
             {children}

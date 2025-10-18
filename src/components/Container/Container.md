@@ -5,7 +5,8 @@ A layout component that centers its content and constrains it to a maximum width
 ## Props
 
 *   `children` (React.ReactNode): The content to be rendered inside the container.
-*   `maxWidth` (string, optional): A specific max-width for the container (e.g., '800px'). If not provided, it defaults to the value from the theme (`theme.maxWidths.container`).
+*   `size` (enum: 'xs' | 'sm' | 'md' | 'lg' | 'xl', optional): A predefined size from the theme's `maxWidths` scale.
+*   `maxWidth` (string, optional): A specific max-width for the container (e.g., '800px'). Overrides `size` if both are provided. Defaults to `theme.maxWidths.container`.
 *   `className` (string, optional): Additional CSS classes for custom styling.
 *   All other standard `<div>` attributes are supported.
 
@@ -14,12 +15,13 @@ A layout component that centers its content and constrains it to a maximum width
 ```tsx
 import { Container, Card, Text } from './src/components';
 
+// Default container
 <Container>
-  <Card>
-    <Text>
-      This content is inside a container. It will be centered and have a
-      maximum width, ensuring it doesn't stretch too wide on large displays.
-    </Text>
-  </Card>
+  <Text>This content is centered with the default max-width.</Text>
+</Container>
+
+// Sized container
+<Container size="sm">
+  <Text>This content is in a small container.</Text>
 </Container>
 ```

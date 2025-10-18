@@ -1,9 +1,7 @@
-
-
 import React, { useState } from 'react';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { useStyles } from '../../core/hooks/useStyles';
-import { Layout } from '../Layout/Layout';
+import { Stack } from '../Stack/Stack';
 import { Button } from '../Button';
 import { Text } from '../Text/Text';
 

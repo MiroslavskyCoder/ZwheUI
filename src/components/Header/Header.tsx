@@ -55,6 +55,11 @@ export const Header: React.FC<HeaderProps> & {
             // Use a more transparent background for the glass effect
             backgroundColor: theme.colors.backgroundSecondary.replace(/, ?\d+\.?\d*\)$/, ', 0.5)'),
         },
+        '@media': {
+            "(maxWidth: 'sm')": {
+                padding: `${theme.spacing.sm} 0`,
+            }
+        },
     });
     
     const containerClass = createStyle({

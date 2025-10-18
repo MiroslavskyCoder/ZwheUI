@@ -1,7 +1,6 @@
-
 import React from 'react'
 import { Layer } from '../Layer/Layer'
-import { Layout } from '../Layout/Layout'
+import { Stack } from '../Stack/Stack'
 
 export type ComponentMap = {
     [tag: string]: React.ElementType
@@ -14,7 +13,7 @@ export interface XmlRendererProps {
 
 const defaultMap: ComponentMap = {
     layer: Layer,
-    layout: Layout,
+    layout: Stack,
     div: 'div',
     span: 'span',
     p: 'p'

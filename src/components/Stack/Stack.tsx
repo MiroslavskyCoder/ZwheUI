@@ -1,12 +1,12 @@
-
 import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 
 interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
     direction?: 'row' | 'column';
     gap?: string;
-    align?: string;
-    justify?: string;
+    align?: 'start' | 'center' | 'end' | 'stretch' | 'baseline';
+    justify?: 'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly';
+    wrap?: boolean;
 }
 
 export const Stack: React.FC<StackProps> = ({ 
@@ -14,6 +14,7 @@ export const Stack: React.FC<StackProps> = ({
     gap = '1rem', 
     align, 
     justify, 
+    wrap = false,
     className = '', 
     children, 
     ...props 
@@ -21,11 +22,12 @@ export const Stack: React.FC<StackProps> = ({
     const createStyle = useStyles('stack');
     
     const stackClass = createStyle({
-        display: 'grid',
-        gridAutoFlow: direction === 'row' ? 'column' : 'row',
+        display: 'flex',
+        flexDirection: direction,
         gap: gap,
         alignItems: align,
-        justifyItems: justify,
+        justifyContent: justify,
+        flexWrap: wrap ? 'wrap' : 'nowrap',
     });
 
     return (
