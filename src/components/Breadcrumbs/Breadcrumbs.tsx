@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Link } from '../Link/Link';
 import { Text } from '../Text/Text';
@@ -8,6 +9,7 @@ import { useStyles } from '../../core/hooks/useStyles';
 interface BreadcrumbItem {
     label: string;
     href?: string;
+    to?: string;
 }
 
 interface BreadcrumbsProps {
@@ -34,8 +36,8 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, separator = '/'
         <nav aria-label="breadcrumb" className={`${navClass} ${className}`}>
             {items.map((item, index) => (
                 <React.Fragment key={index}>
-                    {item.href ? (
-                        <Link href={item.href}>{item.label}</Link>
+                    {item.href || item.to ? (
+                        <Link href={item.href} to={item.to}>{item.label}</Link>
                     ) : (
                         <Text as="span" color={theme.colors.textSecondary}>{item.label}</Text>
                     )}
