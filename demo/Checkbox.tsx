@@ -113,7 +113,7 @@ export const CheckboxDemo = () => {
     const [isChecked, setIsChecked] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
     
-    const code = `<Checkbox label="${label}" checked={${isChecked}} disabled={${isDisabled}} />`;
+    const code = `<Checkbox label="${label}" checked="${isChecked}" disabled="${isDisabled}" />`;
 
     return (
         <DemoSection

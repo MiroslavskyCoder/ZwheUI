@@ -20,7 +20,21 @@ interface DemoSectionProps {
 }
 
 // Create a map of all available components and icons for the XmlRenderer
-const renderableComponents: ComponentMap = {};
+const renderableComponents: ComponentMap = {
+    Input: components.Input,
+    Button: components.Button,
+    Text: components.Text,
+    Stack: components.Stack,
+    Center: components.Center,
+    Accordion: components.Accordion,
+    AccordionItem: components.AccordionItem,
+    AccordionTrigger: components.AccordionTrigger,
+    AccordionContent: components.AccordionContent,
+    Grid: components.Grid,
+    "Grid.Item": components.Grid.Item,
+    SegmentedControl: components.SegmentedControl,
+    
+};
 // Manually iterate over the imported components object to build the map.
 // This is a safer way to exclude hooks than destructuring with a rest pattern.
 for (const key in components) {
@@ -102,9 +116,9 @@ export const DemoSection: React.FC<DemoSectionProps> = ({
                                 </Sofa>
                             )}
 
-                             <Sofa title="Full Component Source">
+                            <Sofa title="Full Component Source">
                                 <div style={{ height: '300px', overflow: 'auto' }}>
-                                     <CodeEditor value={fullSourceCode} onChange={() => {}} />
+                                    <CodeEditor value={fullSourceCode} onChange={() => {}} />
                                 </div>
                             </Sofa>
 

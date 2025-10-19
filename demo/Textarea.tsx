@@ -73,7 +73,7 @@ export const TextareaDemo = () => {
     const [placeholder, setPlaceholder] = useState('Enter your comments here...');
     const [isDisabled, setIsDisabled] = useState(false);
 
-    const code = `<Textarea placeholder="${placeholder}" disabled={${isDisabled}} rows="4" />`;
+    const code = `<Textarea placeholder="${placeholder}" disabled="${isDisabled}" rows="4" />`;
 
     return (
         <DemoSection

@@ -90,7 +90,7 @@ export const InputDemo = () => {
     label="${label}" 
     placeholder="${placeholder}" 
     error="${error}" 
-    disabled={${isDisabled}} 
+    disabled="${isDisabled}" 
 />`;
 
     return (

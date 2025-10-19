@@ -112,7 +112,7 @@ export const StackDemo = () => {
     const [justify, setJustify] = useState<'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly'>('start');
     const [wrap, setWrap] = useState(true);
 
-    const code = `<Stack direction="${direction}" gap="${gap}" align="${align}" justify="${justify}" wrap={${wrap}}>
+    const code = `<Stack direction="${direction}" gap="${gap}" align="${align}" justify="${justify}" wrap="${wrap}">
     <Card><Text>Item 1</Text></Card>
     <Card><Text>Item 2</Text></Card>
     <Card><Text>Item 3</Text></Card>

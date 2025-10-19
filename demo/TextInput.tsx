@@ -72,7 +72,7 @@ export const TextInputDemo = () => {
     const [placeholder, setPlaceholder] = useState('Enter your name...');
     const [isDisabled, setIsDisabled] = useState(false);
 
-    const code = `<TextInput placeholder="${placeholder}" disabled={${isDisabled}} />`;
+    const code = `<TextInput placeholder="${placeholder}" disabled="${isDisabled}" />`;
 
     return (
         <DemoSection
