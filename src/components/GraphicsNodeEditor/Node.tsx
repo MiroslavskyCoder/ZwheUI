@@ -59,6 +59,7 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
         minWidth: '180px',
         userSelect: 'none',
         cursor: 'grab',
+        pointerEvents: 'auto', // Capture mouse events on the node
         '@supports (backdrop-filter: none) or (-webkit-backdrop-filter: none)': {
             backdropFilter: 'blur(16px)',
         },
@@ -69,6 +70,7 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
         borderBottom: `1px solid ${theme.colors.border}`,
         fontWeight: 600,
         fontSize: '14px',
+        color: theme.colors.text,
     });
     
     const bodyClass = createStyle({
@@ -127,7 +129,7 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
                                 onMouseDown={(e) => { e.stopPropagation(); startConnecting(id, socket.id, 'input', e); }}
                                 onMouseUp={() => stopConnecting(id, socket.id, 'input')}
                             />
-                            <span style={{ fontSize: '12px' }}>{socket.label}</span>
+                            <span style={{ fontSize: '12px', color: theme.colors.textSecondary }}>{socket.label}</span>
                         </div>
                     ))}
                 </div>
@@ -139,7 +141,7 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
                                 onMouseDown={(e) => { e.stopPropagation(); startConnecting(id, socket.id, 'output', e); }}
                                 onMouseUp={() => stopConnecting(id, socket.id, 'output')}
                             />
-                            <span style={{ fontSize: '12px' }}>{socket.label}</span>
+                            <span style={{ fontSize: '12px', color: theme.colors.textSecondary }}>{socket.label}</span>
                         </div>
                     ))}
                 </div>

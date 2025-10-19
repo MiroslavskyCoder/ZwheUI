@@ -1,25 +1,19 @@
 import React, { useState, useCallback, useRef, useMemo } from 'react';
-import { GraphicsContext, NodeData, ConnectionData, Position } from './GraphicsContext';
+import { GraphicsContext, NodeData, ConnectionData, Position, useGraphicsContext } from './GraphicsContext';
 import { Node } from './Node';
 import { Connection } from './Connection';
 import { useStyles, useTheme } from '../../core';
-import { Button } from '../Button';
-import { Stack } from '../Stack/Stack';
 import { DraftConnection } from './DraftConnection';
 import { processGraph } from './graphProcessor';
+import { ContextMenu, ContextMenuItem } from '../ContextMenu/ContextMenu';
 
-interface GraphicsNodeEditorProps {
-    initialNodes: NodeData[];
-    initialConnections: ConnectionData[];
-    style?: React.CSSProperties;
-    plugins?: React.FC[];
-}
-
-const GraphicsProvider: React.FC<{
+interface GraphicsProviderProps {
     children: React.ReactNode;
     initialNodes: NodeData[];
     initialConnections: ConnectionData[];
-}> = ({ children, initialNodes, initialConnections }) => {
+}
+
+export const GraphicsProvider: React.FC<GraphicsProviderProps> = ({ children, initialNodes, initialConnections }) => {
     const [nodes, setNodes] = useState<NodeData[]>(initialNodes);
     const [connections, setConnections] = useState<ConnectionData[]>(initialConnections);
     const [pan, setPan] = useState<Position>({ x: 0, y: 0 });
@@ -27,6 +21,7 @@ const GraphicsProvider: React.FC<{
     const editorRef = useRef<HTMLDivElement>(null);
     const connectingRef = useRef<{ nodeId: string; socketId: string; type: 'input' | 'output' } | null>(null);
     const [draftConnection, setDraftConnection] = useState<{ start: Position, end: Position } | null>(null);
+    const [nodeOutputs, setNodeOutputs] = useState<Record<string, Record<string, any>>>({});
 
     const startConnecting = useCallback((nodeId: string, socketId: string, type: 'input' | 'output', e: React.MouseEvent) => {
         connectingRef.current = { nodeId, socketId, type };
@@ -52,15 +47,15 @@ const GraphicsProvider: React.FC<{
                 const isTargetConnected = connections.some(c => c.targetNodeId === target.nodeId && c.targetSocketId === target.socketId);
 
                 if (!isTargetConnected) {
-                     setConnections(prev => [
-                        ...prev,
-                        {
-                            sourceNodeId: source.nodeId,
-                            sourceSocketId: source.socketId,
-                            targetNodeId: target.nodeId,
-                            targetSocketId: target.socketId,
-                        }
-                    ]);
+                     const newConnection: ConnectionData = {
+                        id: `conn_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+                        sourceNodeId: source.nodeId,
+                        sourceSocketId: source.socketId,
+                        targetNodeId: target.nodeId,
+                        targetSocketId: target.socketId,
+                        type: 'curved',
+                     };
+                     setConnections(prev => [...prev, newConnection]);
                 }
             }
         }
@@ -82,6 +77,11 @@ const GraphicsProvider: React.FC<{
         }
     }, []);
 
+    const handleProcessGraph = useCallback(() => {
+        const outputs = processGraph(nodes, connections);
+        setNodeOutputs(outputs);
+    }, [nodes, connections]);
+
     React.useEffect(() => {
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
@@ -90,7 +90,6 @@ const GraphicsProvider: React.FC<{
             window.removeEventListener('mouseup', handleMouseUp);
         };
     }, [handleMouseMove, handleMouseUp]);
-
 
     const contextValue = {
         nodes,
@@ -106,26 +105,25 @@ const GraphicsProvider: React.FC<{
         stopConnecting,
         isConnecting: !!connectingRef.current,
         draftConnection,
+        processGraph: handleProcessGraph,
+        nodeOutputs,
     };
 
     return <GraphicsContext.Provider value={contextValue}>{children}</GraphicsContext.Provider>;
 };
 
-export const GraphicsNodeEditor: React.FC<GraphicsNodeEditorProps> = ({ initialNodes, initialConnections, style, plugins }) => {
-    return (
-        <GraphicsProvider initialNodes={initialNodes} initialConnections={initialConnections}>
-            <EditorContent style={style} plugins={plugins} />
-        </GraphicsProvider>
-    );
-};
-
-const EditorContent: React.FC<{ style?: React.CSSProperties; plugins?: React.FC[] }> = ({ style, plugins }) => {
-    const { nodes, setNodes, connections, pan, setPan, zoom, editorRef } = React.useContext(GraphicsContext)!;
+export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plugins?: React.FC[] }> = ({ style, plugins }) => {
+    const { nodes, setNodes, connections, setConnections, pan, setPan, zoom, editorRef, nodeOutputs } = useGraphicsContext()!;
     const { theme } = useTheme();
     const createStyle = useStyles('graphics-editor');
     const panState = useRef({ isPanning: false, startPan: { x: 0, y: 0 }, startMouse: { x: 0, y: 0 } });
 
-    const [nodeOutputs, setNodeOutputs] = useState<Record<string, Record<string, any>>>({});
+    const [contextMenu, setContextMenu] = useState<{
+        isOpen: boolean;
+        position: { x: number; y: number };
+        connection: ConnectionData | null;
+    }>({ isOpen: false, position: { x: 0, y: 0 }, connection: null });
+
 
     const editorClass = createStyle({
         width: '100%',
@@ -138,11 +136,21 @@ const EditorContent: React.FC<{ style?: React.CSSProperties; plugins?: React.FC[
         cursor: panState.current.isPanning ? 'grabbing' : 'grab',
     });
     
-    const canvasClass = createStyle({
+    const nodeCanvasClass = createStyle({
         position: 'absolute',
         width: '100%',
         height: '100%',
         transformOrigin: 'top left',
+        pointerEvents: 'none', // Pass clicks through to the background
+    });
+    
+    const svgOverlayClass = createStyle({
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'auto', // Capture events for connections
     });
 
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -170,11 +178,6 @@ const EditorContent: React.FC<{ style?: React.CSSProperties; plugins?: React.FC[
         panState.current.isPanning = false;
     };
 
-    const handleProcessGraph = useCallback(() => {
-        const outputs = processGraph(nodes, connections);
-        setNodeOutputs(outputs);
-    }, [nodes, connections]);
-
     const handleUpdateNodeData = (nodeId: string, newData: Record<string, any>) => {
         setNodes(currentNodes =>
             currentNodes.map(n =>
@@ -182,6 +185,54 @@ const EditorContent: React.FC<{ style?: React.CSSProperties; plugins?: React.FC[
             )
         );
     };
+    
+    const handleConnectionContextMenu = (e: React.MouseEvent, connection: ConnectionData) => {
+        e.preventDefault();
+        setContextMenu({
+            isOpen: true,
+            position: { x: e.clientX, y: e.clientY },
+            connection,
+        });
+    };
+
+    const closeContextMenu = () => {
+        setContextMenu(prev => ({ ...prev, isOpen: false, connection: null }));
+    };
+
+    const updateConnectionProp = (connectionId: string, props: Partial<ConnectionData>) => {
+        setConnections(prev => prev.map(c => 
+            c.id === connectionId ? { ...c, ...props } : c
+        ));
+        closeContextMenu();
+    };
+
+    const deleteConnection = (connectionId: string) => {
+        setConnections(prev => prev.filter(c => c.id !== connectionId));
+        closeContextMenu();
+    };
+
+    const toggleConnectionType = (connectionId: string) => {
+        const conn = connections.find(c => c.id === connectionId);
+        if (conn) {
+            const newType = (conn.type === 'straight') ? 'curved' : 'straight';
+            updateConnectionProp(connectionId, { type: newType });
+        }
+    };
+
+    const contextMenuItems: ContextMenuItem[] = useMemo(() => {
+        if (!contextMenu.connection) return [];
+        const conn = contextMenu.connection;
+        return [
+            { label: 'Delete Connection', onClick: () => deleteConnection(conn.id) },
+            { isSeparator: true },
+            { label: 'Set Color to Accent', onClick: () => updateConnectionProp(conn.id, { color: theme.colors.accent }) },
+            { label: 'Set Color to Secondary', onClick: () => updateConnectionProp(conn.id, { color: theme.colors.secondary }) },
+            { label: 'Reset Color', onClick: () => updateConnectionProp(conn.id, { color: undefined }) },
+            { isSeparator: true },
+            { label: `Set Type to ${conn.type === 'straight' ? 'Curved' : 'Straight'}`, onClick: () => toggleConnectionType(conn.id) },
+        ];
+    }, [contextMenu.connection, theme.colors]);
+
 
     return (
         <div 
@@ -193,7 +244,15 @@ const EditorContent: React.FC<{ style?: React.CSSProperties; plugins?: React.FC[
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
         >
-            <div className={canvasClass} style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
+             <svg className={svgOverlayClass}>
+                <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+                    {connections.map((conn) => (
+                        <Connection key={conn.id} connection={conn} onContextMenu={handleConnectionContextMenu} />
+                    ))}
+                </g>
+                <DraftConnection />
+            </svg>
+            <div className={nodeCanvasClass} style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
                 {nodes.map(node => {
                      const nodeInputs = useMemo(() => {
                         const inputs: Record<string, any> = {};
@@ -221,21 +280,17 @@ const EditorContent: React.FC<{ style?: React.CSSProperties; plugins?: React.FC[
                     );
                 })}
             </div>
-
-            <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
-                <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
-                    {connections.map((conn, i) => (
-                        <Connection key={i} {...conn} />
-                    ))}
-                </g>
-                <DraftConnection />
-            </svg>
-            
-            <Stack direction="row" justify="space-between" align="center" style={{ position: 'absolute', top: '1rem', left: '1rem', zIndex: 10 }}>
-                <Button onClick={handleProcessGraph}>Process Graph</Button>
-            </Stack>
             
             {plugins && plugins.map((Plugin, i) => <Plugin key={i} />)}
+            
+            {contextMenu.isOpen && (
+                <ContextMenu
+                    isOpen={contextMenu.isOpen}
+                    onClose={closeContextMenu}
+                    position={contextMenu.position}
+                    items={contextMenuItems}
+                />
+            )}
         </div>
     );
 };

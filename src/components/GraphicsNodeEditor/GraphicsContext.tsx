@@ -28,10 +28,13 @@ export interface NodeData {
 }
 
 export interface ConnectionData {
+    id: string;
     sourceNodeId: string;
     sourceSocketId: string;
     targetNodeId: string;
     targetSocketId: string;
+    color?: string;
+    type?: 'curved' | 'straight';
 }
 
 export interface GraphicsContextType {
@@ -51,6 +54,9 @@ export interface GraphicsContextType {
     stopConnecting: (nodeId: string, socketId: string, type: 'input' | 'output') => void;
     isConnecting: boolean;
     draftConnection: { start: Position, end: Position } | null;
+
+    processGraph: () => void;
+    nodeOutputs: Record<string, Record<string, any>>;
 }
 
 export const GraphicsContext = createContext<GraphicsContextType | null>(null);
