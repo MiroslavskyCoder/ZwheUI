@@ -11,13 +11,21 @@ A floating menu that appears at the cursor's position, typically triggered by a 
 
 ## `ContextMenuItem` Structure
 
+An item can either be a clickable action or a visual separator, defined using a discriminated union type.
+
 ```ts
-interface ContextMenuItem {
-    label: string;
-    onClick?: () => void;
-    disabled?: boolean;
-    isSeparator?: boolean;
-}
+type ContextMenuItem =
+    // An action item
+    | {
+          isSeparator?: false; // or omitted
+          label: string;
+          onClick?: () => void;
+          disabled?: boolean;
+      }
+    // A separator
+    | {
+          isSeparator: true;
+      };
 ```
 
 ## Usage

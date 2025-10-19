@@ -9,7 +9,7 @@ A component that parses an XML-like string and renders it into corresponding Rea
 
 ## Default Mapped Components
 *   `layer` -> `Layer`
-*   `layout` -> `Layout`
+*   `layout` -> `Stack`
 *   `div`, `span`, `p` -> standard HTML tags
 
 ## Usage

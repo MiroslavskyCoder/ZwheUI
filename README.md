@@ -4,7 +4,7 @@ A showcase of a modern, reusable, and aesthetically pleasing React component lib
 
 ## ✨ Features
 
-*   **Comprehensive Component Set**: Over 50+ components, ranging from basic form elements to complex data visualization charts.
+*   **Comprehensive Component Set**: Over 70+ components, ranging from basic form elements to a complex, interactive node editor and data visualization charts.
 *   **Built with React & TypeScript**: Type-safe and modern component architecture.
 *   **Zero-Dependency Styling**: A custom CSS-in-JS solution (`useStyles` hook) provides scoped styles without external libraries.
 *   **Dynamic Theming**: Easily switch between dark, light, and a fully customizable theme in real-time.
@@ -69,6 +69,7 @@ The library is organized into several logical categories:
 
 ### Navigation
 *   [Breadcrumbs](./src/components/Breadcrumbs/Breadcrumbs.md)
+*   [ContextMenu](./src/components/ContextMenu/ContextMenu.md)
 *   [Dropdown](./src/components/Dropdown/Dropdown.md)
 *   [FloatingActionButton](./src/components/FloatingActionButton/FloatingActionButton.md)
 *   [Link](./src/components/Link/Link.md)
@@ -81,6 +82,7 @@ The library is organized into several logical categories:
 ### Data Display
 *   [Avatar](./src/components/Avatar/Avatar.md) / [AvatarGroup](./src/components/Avatar/Avatar.md)
 *   [Badge](./src/components/Badge/Badge.md)
+*   [DataTable](./src/components/DataTable/DataTable.md)
 *   [Icon](./src/components/Icon/Icon.md)
 *   [Kbd](./src/components/Kbd/Kbd.md) (Keyboard shortcut)
 *   [List](./src/components/List/List.md)
@@ -88,6 +90,7 @@ The library is organized into several logical categories:
 *   [Text](./src/components/Text/Text.md)
 *   [Timeline](./src/components/Timeline/Timeline.md)
 *   [TreeView](./src/components/TreeView/TreeView.md)
+*   [XNodeTree](./src/components/XNodeTree/XNodeTree.md)
 
 ### Media
 *   [Audio](./src/components/Audio/Audio.md) (Composable Player)

@@ -4,7 +4,7 @@ A layout component for arranging items in a vertical or horizontal stack with a 
 
 ## Props
 
-*   `direction` (enum: 'row' | 'column', optional, default: 'column'): The direction to stack the items (`flex-direction`).
+*   `direction` (enum: 'row' | 'column' | 'row-reverse' | 'column-reverse', optional, default: 'column'): The direction to stack the items (`flex-direction`).
 *   `gap` (string, optional, default: '1rem'): The space between items.
 *   `align` (string, optional): The alignment of items along the cross axis (`align-items`).
 *   `justify` (string, optional): The alignment of items along the main axis (`justify-content`).

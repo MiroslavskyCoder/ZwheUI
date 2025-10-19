@@ -63,6 +63,7 @@ const columns: ColumnDef<User>[] = [
 const tableActions = (selectedItems: User[], clearSelection: () => void) => (
     <Button variant="accent" onClick={() => {
         alert(`Deleting ${selectedItems.length} users...`);
+        // Clear the selection after the action is performed
         clearSelection();
     }}>
       <Icon as={TrashIcon} size={16} /> Delete
