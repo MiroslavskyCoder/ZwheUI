@@ -37,7 +37,7 @@ const HeaderRight: React.FC<{ children: React.ReactNode; className?: string }> =
             "(maxWidth: 'md')": {
                 justifySelf: 'center',
             },
-            "(maxWidth: 'sm')": {
+             "(maxWidth: 'sm')": {
                 // Hide navigation on mobile for a cleaner look
                 display: 'none',
             },

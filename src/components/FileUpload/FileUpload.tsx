@@ -48,7 +48,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect, className 
         handleDrag(e);
         setIsDragging(false);
         const file = e.dataTransfer.files?.[0];
-        if (file) {
+         if (file) {
             setFileName(file.name);
             onFileSelect(file);
         }
@@ -58,7 +58,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect, className 
         fileInputRef.current?.click();
     };
     
-    const containerClass = createStyle({ 
+    const containerClass = createStyle({
+        width: '100%',
         padding: theme.spacing.lg,
         border: `2px dashed ${isDragging ? theme.colors.primary : theme.colors.border}`,
         borderRadius: '8px',

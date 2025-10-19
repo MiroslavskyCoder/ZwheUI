@@ -23,7 +23,7 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
     formatX = (val) => val.toString(),
     formatY = (val) => val.toLocaleString(),
 }) => {
-    const { data, xScale, yScale, dimensions, xAccessor } = useCharts();
+    const { dataset, xScale, yScale, dimensions, xAccessor } = useCharts();
     const { theme } = useTheme();
     const [hoveredData, setHoveredData] = useState<{
         point: any;
@@ -32,7 +32,7 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
     } | null>(null);
 
     const handleMouseMove = (event: React.MouseEvent<SVGRectElement>) => {
-        if (!data || data.length === 0) return;
+        if (!dataset || dataset.length === 0) return;
 
         const { left } = event.currentTarget.getBoundingClientRect();
         const mouseX = event.clientX - left - dimensions.marginLeft;
@@ -40,14 +40,14 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
         const hoveredXValue = xScale.invert(mouseX);
         
         // Find the closest data point by iterating through the data
-        let closestPoint = data[0];
-        let minDiff = Math.abs(xAccessor(data[0], 0) - hoveredXValue);
+        let closestPoint = dataset[0];
+        let minDiff = Math.abs(xAccessor(dataset[0], 0) - hoveredXValue);
 
-        for (let i = 1; i < data.length; i++) {
-            const diff = Math.abs(xAccessor(data[i], i) - hoveredXValue);
+        for (let i = 1; i < dataset.length; i++) {
+            const diff = Math.abs(xAccessor(dataset[i], i) - hoveredXValue);
             if (diff < minDiff) {
                 minDiff = diff;
-                closestPoint = data[i];
+                closestPoint = dataset[i];
             }
         }
         

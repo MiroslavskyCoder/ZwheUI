@@ -2,6 +2,7 @@
 export type Scale = {
     (value: number): number;
     invert: (value: number) => number;
+    domain: () => [number, number];
 };
 
 // Basic linear scale implementation
@@ -17,6 +18,8 @@ export const createLinearScale = (domain: [number, number], range: [number, numb
         const ratio = (pixel - range[0]) / (range[1] - range[0]);
         return domain[0] + ratio * (domain[1] - domain[0]);
     };
+
+    scale.domain = () => domain;
 
     return scale;
 };

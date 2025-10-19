@@ -3,8 +3,6 @@ import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { Link } from '../Link/Link';
 import { Container } from '../Container/Container';
-import { Icon } from '../Icon/Icon';
-import { Text } from '../Text/Text';
 
 interface NavProps extends React.HTMLAttributes<HTMLElement> {
     container?: boolean;
@@ -25,10 +23,9 @@ NavList.displayName = 'Nav.List';
 interface NavItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
     to?: string;
     isActive?: boolean;
-    icon?: React.ElementType;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ children, className, isActive, icon, ...props }) => {
+const NavItem: React.FC<NavItemProps> = ({ children, className, isActive, ...props }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('nav-item');
     const itemClass = createStyle({
@@ -39,9 +36,6 @@ const NavItem: React.FC<NavItemProps> = ({ children, className, isActive, icon, 
         position: 'relative',
         textDecoration: 'none',
         transition: 'color 0.2s, background-color 0.2s',
-        display: 'flex',
-        alignItems: 'center',
-        gap: theme.spacing.sm,
 
         '&:hover:not([data-active="true"])': {
             color: theme.colors.text,
@@ -54,20 +48,13 @@ const NavItem: React.FC<NavItemProps> = ({ children, className, isActive, icon, 
         },
     });
 
-    return (
-        <Link className={`${itemClass} ${className}`} data-active={isActive} {...props}>
-            {icon && <Icon as={icon} size={16} />}
-            {children}
-        </Link>
-    );
+    return <Link className={`${itemClass} ${className}`} data-active={isActive} {...props}>{children}</Link>;
 };
 NavItem.displayName = 'Nav.Item';
 
 export const Nav: React.FC<NavProps> & {
     List: typeof NavList;
     Item: typeof NavItem;
-    Icon: typeof Icon;
-    Text: typeof Text;
 } = ({ children, className, container = false, height, ...props }) => {
     const createStyle = useStyles('nav');
     const navClass = createStyle({
@@ -88,5 +75,3 @@ export const Nav: React.FC<NavProps> & {
 
 Nav.List = NavList;
 Nav.Item = NavItem;
-Nav.Icon = Icon;
-Nav.Text = Text;

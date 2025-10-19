@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useCharts } from './ChartsHook';
 import { useTheme } from '../../core/theme/ThemeProvider';
@@ -21,14 +22,11 @@ const generateTicks = (domain: [number, number], count: number): number[] => {
 
 
 export const ChartAxis: React.FC<ChartAxisProps> = ({ dimension, label, numberOfTicks = 5 }) => {
-    const { xScale, yScale, dimensions, data, xAccessor, yAccessor } = useCharts();
+    const { xScale, yScale, dimensions } = useCharts();
     const { theme } = useTheme();
 
-    if (!data || data.length === 0) return null;
-
     if (dimension === 'x') {
-        const domain: [number, number] = [Math.min(...data.map(xAccessor)), Math.max(...data.map(xAccessor))];
-        const ticks = generateTicks(domain, numberOfTicks);
+        const ticks = generateTicks(xScale.domain(), numberOfTicks);
         
         return (
             <g transform={`translate(0, ${dimensions.boundedHeight})`}>
@@ -60,8 +58,7 @@ export const ChartAxis: React.FC<ChartAxisProps> = ({ dimension, label, numberOf
             </g>
         );
     } else { // dimension === 'y'
-        const domain: [number, number] = [Math.min(...data.map(yAccessor)), Math.max(...data.map(yAccessor))];
-        const ticks = generateTicks(domain, numberOfTicks);
+        const ticks = generateTicks(yScale.domain(), numberOfTicks);
         
         return (
             <g>

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import {
-    Charts, ChartArea, ChartAxis, ChartBar, ChartHeatmap, ChartLine, ChartRadar, RadarSeries,
+    Charts, ChartAxis, ChartHeatmap, ChartRadar, RadarSeries,
     ChartRadial, ChartTooltip, Sofa, Stack, Text
 } from '../src/components';
 import { useTheme } from '../src/core/theme/ThemeProvider';
@@ -64,13 +64,20 @@ export const ChartsDemo = () => {
         <Sofa>
             <Stack gap="2rem">
                 <Text as="h2" size="1.5rem" weight="600">Line & Area Chart</Text>
-                <Charts data={timeSeriesData} xAccessor={d => d.x} yAccessor={d => d.y1} className="h-[300px]" style={{height: '300px'}}>
+                <Charts
+                    dataset={timeSeriesData}
+                    xAxis={[{ dataKey: 'x' }]}
+                    series={[
+                        { type: 'area', dataKey: 'y2', color: theme.colors.accent },
+                        { type: 'line', dataKey: 'y2', color: theme.colors.accent },
+                        { type: 'area', dataKey: 'y1' },
+                        { type: 'line', dataKey: 'y1' },
+                    ]}
+                    className="h-[300px]"
+                    style={{ height: '300px' }}
+                >
                     <ChartAxis dimension="x" />
                     <ChartAxis dimension="y" />
-                    <ChartArea yAccessor={d => d.y2} color={theme.colors.accent} />
-                    <ChartLine yAccessor={d => d.y2} color={theme.colors.accent} />
-                    <ChartArea yAccessor={d => d.y1} />
-                    <ChartLine yAccessor={d => d.y1} />
                     <ChartTooltip series={[
                         { key: 'y1', label: 'Series 1', color: theme.colors.primary, accessor: d => d.y1 },
                         { key: 'y2', label: 'Series 2', color: theme.colors.accent, accessor: d => d.y2 },
@@ -78,10 +85,15 @@ export const ChartsDemo = () => {
                 </Charts>
 
                 <Text as="h2" size="1.5rem" weight="600">Bar Chart</Text>
-                <Charts data={barData} xAccessor={d => d.x} yAccessor={d => d.y} className="h-[300px]" style={{height: '300px'}}>
-                    <ChartAxis dimension="x" />
+                <Charts
+                    dataset={barData}
+                    xAxis={[{ dataKey: 'x' }]}
+                    series={[{ type: 'bar', dataKey: 'y' }]}
+                    className="h-[300px]"
+                    style={{ height: '300px' }}
+                >
+                    <ChartAxis dimension="x" numberOfTicks={barData.length} />
                     <ChartAxis dimension="y" />
-                    <ChartBar />
                 </Charts>
 
                 <Text as="h2" size="1.5rem" weight="600">Specialty Charts</Text>

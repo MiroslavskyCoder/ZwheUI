@@ -1,171 +1,166 @@
+
+
 import React from 'react';
-// FIX: `useBreakpoint` is not exported from `../src/components`. It should be imported from `../src/core`.
-import { Grid, Stack, Text, Tabs, TabList, Tab, TabPanels, TabPanel, Header, Footer } from '../src/components';
+import { Grid, Stack, Text, Tabs, TabList, Tab, TabPanels, TabPanel, Header, Footer, Nav } from '../src/components';
 import { useTheme } from '../src/core/theme/ThemeProvider';
 import { useBreakpoint } from '../src/core/hooks/useMedia';
 
-import { AccordionDemo } from './Accordion';
-import { AlertDemo } from './Alert';
-import { AnimatedBlockDemo } from './AnimatedBlock';
-import { AudioDemo } from './Audio';
-import { AvatarDemo } from './Avatar';
-import { BackdropDemo } from './Backdrop';
-import { BadgeDemo } from './Badge';
-import { BreadcrumbsDemo } from './Breadcrumbs';
+// General
 import { ButtonDemo } from './Button';
-import { CardDemo } from './Card';
-import { ChartsDemo } from './Charts';
-import { CheckboxDemo } from './Checkbox';
-import { ColorPickerDemo } from './ColorPicker';
-import { ComboboxDemo } from './Combobox';
+import { IconDemo } from './Icon';
+import { TextDemo } from './Text';
+import { LinkDemo } from './Link';
+import { KbdDemo } from './Kbd';
+import { BadgeDemo } from './Badge';
+import { TagDemo } from './Tag';
+import { CodeDemo } from './Code';
+
+// Layout
+import { StackDemo } from './Stack';
+import { GridDemo } from './Grid';
 import { ContainerDemo } from './Container';
-import { DataTableDemo } from './DataTable';
+import { SofaDemo } from './Sofa';
+import { HeaderDemo } from './Header';
+import { FooterDemo } from './Footer';
+import { SidebarDemo } from './Sidebar';
+import { BoxDemo } from './Box';
+import { FlexDemo } from './Flex';
+import { CenterDemo } from './Center';
+import { AspectRatioDemo } from './AspectRatio';
+import { DividerDemo } from './Divider';
+
+// Forms & Input
+import { InputDemo } from './Input';
+import { TextInputDemo } from './TextInput';
+import { TextareaDemo } from './Textarea';
+import { CheckboxDemo } from './Checkbox';
+import { RadioGroupDemo } from './RadioGroup';
+import { SwitchDemo } from './Switch';
+import { SelectDemo } from './Select';
+import { ComboboxDemo } from './Combobox';
+import { SliderDemo } from './Slider';
+import { NumberInputDemo } from './NumberInput';
+import { FileUploadDemo } from './FileUpload';
+import { ColorPickerDemo } from './ColorPicker';
 import { DatePickerDemo } from './DatePicker';
+import { SearchDemo } from './Search';
+import { RatingDemo } from './Rating';
+import { ToggleButtonDemo } from './ToggleButton';
+import { IconButtonDemo } from './IconButton';
+import { ButtonGroupDemo } from './ButtonGroup';
+import { FormControlDemo } from './FormControl';
+import { PinInputDemo } from './PinInput';
+import { EditableDemo } from './Editable';
+
+// Data Display
+import { ListDemo } from './List';
+import { TableDemo } from './Table';
+import { DataTableDemo } from './DataTable';
+import { AvatarDemo } from './Avatar';
+import { CardDemo } from './Card';
+import { AccordionDemo } from './Accordion';
+import { TreeViewDemo } from './TreeView';
+import { XNodeTreeDemo } from './XNodeTree';
+import { TimelineDemo } from './Timeline';
+import { ImageDemo } from './Image';
+
+// Feedback & Overlays
+import { AlertDemo } from './Alert';
+import { ToastDemo } from './Toast';
+import { SpinnerDemo } from './Spinner';
+import { ProgressDemo } from './Progress';
+import { SkeletonDemo } from './Skeleton';
+import { ModalDemo } from './Modal';
 import { DialogDemo } from './Dialog';
 import { DrawerDemo } from './Drawer';
-import { DropdownDemo } from './Dropdown';
-import { FileUploadDemo } from './FileUpload';
-import { FloatingActionButtonDemo } from './FloatingActionButton';
-import { FooterDemo } from './Footer';
-import { GraphicsNodeEditorDemo } from './GraphicsNodeEditor';
-import { GridDemo } from './Grid';
-import { HeaderDemo } from './Header';
-import { HoverCardDemo } from './HoverCard';
-import { IconDemo } from './Icon';
-import { InputDemo } from './Input';
-import { KbdDemo } from './Kbd';
-import { LinkDemo } from './Link';
-import { ListDemo } from './List';
-import { MenuDemo } from './Menu';
-import { ModalDemo } from './Modal';
-import { NavDemo } from './Nav';
-import { NumberInputDemo } from './NumberInput';
-import { PaginationDemo } from './Pagination';
 import { PopoverDemo } from './Popover';
-import { ProgressDemo } from './Progress';
-import { RadioGroupDemo } from './RadioGroup';
-import { RatingDemo } from './Rating';
-import { SearchDemo } from './Search';
-import { SegmentedControlDemo } from './SegmentedControl';
-import { SelectDemo } from './Select';
-import { SidebarDemo } from './Sidebar';
-import { SkeletonDemo } from './Skeleton';
-import { SliderDemo } from './Slider';
-import { SofaDemo } from './Sofa';
-import { SparklineDemo } from './Sparkline';
-import { SpeedDialDemo } from './SpeedDial';
-import { SpinnerDemo } from './Spinner';
-import { StackDemo } from './Stack';
-import { StepperDemo } from './Stepper';
-import { SwitchDemo } from './Switch';
-import { TableDemo } from './Table';
-import { TabsDemo } from './Tabs';
-import { TextDemo } from './Text';
-import { TextareaDemo } from './Textarea';
-import { TextInputDemo } from './TextInput';
-import { ThemeSwitcher } from '../src/components/ThemeSwitcher/ThemeSwitcher';
-import { TimelineDemo } from './Timeline';
-import { ToastDemo } from './Toast';
-import { ToggleButtonDemo } from './ToggleButton';
-import { TransferListDemo } from './TransferList';
-import { TreeViewDemo } from './TreeView';
-import { VideoDemo } from './Video';
-import { XmlRendererDemo } from './XmlRenderer';
-import { XNodeTreeDemo } from './XNodeTree';
+import { HoverCardDemo } from './HoverCard';
+import { BackdropDemo } from './Backdrop';
+import { SnackbarDemo } from './Snackbar';
+// import { ContextMenuDemo } from './ContextMenu';
+// import { TooltipDemo } from './Tooltip';
 
-import { ExampleAudio, ExampleFileBrowser, ExampleVideo } from '../examples';
+// Navigation
+import { NavDemo } from './Nav';
+import { BreadcrumbsDemo } from './Breadcrumbs';
+import { PaginationDemo } from './Pagination';
+import { TabsDemo } from './Tabs';
+import { StepperDemo } from './Stepper';
+import { MenuDemo } from './Menu';
+import { DropdownDemo } from './Dropdown';
+import { FloatingActionButtonDemo } from './FloatingActionButton';
+import { SpeedDialDemo } from './SpeedDial';
+import { TransferListDemo } from './TransferList';
+
+// Advanced
+import { AnimatedBlockDemo } from './AnimatedBlock';
+import { AudioDemo } from './Audio';
+import { VideoDemo } from './Video';
+import { ChartsDemo } from './Charts';
+import { SparklineDemo } from './Sparkline';
+import { XmlRendererDemo } from './XmlRenderer';
+import { GraphicsNodeEditorDemo } from './GraphicsNodeEditor';
+import { PhotoEditorDemo } from './PhotoEditor';
+
+// Examples
+import { ExampleFileBrowser, ExampleVideo, ExampleAudio, ExamplePhotoEditor, ExampleSignInPage } from '../examples';
+
 
 export const DemoApp = () => {
     const { theme } = useTheme();
     const isMobile = !useBreakpoint('sm');
 
-    const demos = [
-        <AlertDemo key="alert" />,
-        <AnimatedBlockDemo key="animated-block" />,
-        <BackdropDemo key="backdrop" />,
-        <ButtonDemo key="button" />,
-        <CardDemo key="card" />,
-        <CheckboxDemo key="checkbox" />,
-        <ColorPickerDemo key="color-picker" />,
-        <ComboboxDemo key="combobox" />,
-        <DialogDemo key="dialog" />,
-        <GridDemo key="grid" />,
-        <InputDemo key="input" />,
-        <ListDemo key="list" />,
-        <MenuDemo key="menu" />,
-        <ModalDemo key="modal" />,
-        <PaginationDemo key="pagination" />,
-        <PopoverDemo key="popover" />,
-        <ProgressDemo key="progress" />,
-        <RatingDemo key="rating" />,
-        <SearchDemo key="search" />,
-        <SelectDemo key="select" />,
-        <SkeletonDemo key="skeleton" />,
-        <SliderDemo key="slider" />,
-        <SofaDemo key="sofa" />,
-        <StackDemo key="stack" />,
-        <TabsDemo key="tabs" />,
-        <TextDemo key="text" />,
-        <TextareaDemo key="textarea" />,
-        <TextInputDemo key="text-input" />,
-        <XmlRendererDemo key="xml-renderer" />,
-    ];
-    
-    const newDemos = [
-        <AccordionDemo key="accordion" />,
-        <AudioDemo key="audio" />,
-        <AvatarDemo key="avatar" />,
-        <BadgeDemo key="badge" />,
-        <BreadcrumbsDemo key="breadcrumbs" />,
-        <ContainerDemo key="container" />,
-        <DataTableDemo key="datatable" />,
-        <DatePickerDemo key="datepicker" />,
-        <DrawerDemo key="drawer" />,
-        <DropdownDemo key="dropdown" />,
-        <FileUploadDemo key="fileupload" />,
-        <FloatingActionButtonDemo key="fab" />,
-        <FooterDemo key="footer" />,
-        <HeaderDemo key="header" />,
-        <HoverCardDemo key="hovercard" />,
-        <IconDemo key="icon" />,
-        <KbdDemo key="kbd" />,
-        <LinkDemo key="link" />,
-        <NavDemo key="nav" />,
-        <NumberInputDemo key="numberinput" />,
-        <RadioGroupDemo key="radiogroup" />,
-        <SegmentedControlDemo key="segmentedcontrol" />,
-        <SpeedDialDemo key="speeddial" />,
-        <SpinnerDemo key="spinner" />,
-        <SwitchDemo key="switch" />,
-        <StepperDemo key="stepper" />,
-        <TableDemo key="table" />,
-        <TimelineDemo key="timeline" />,
-        <ToastDemo key="toast" />,
-        <ToggleButtonDemo key="togglebutton" />,
-        <TransferListDemo key="transferlist" />,
-        <TreeViewDemo key="treeview" />,
-        <XNodeTreeDemo key="xnodetree" />,
-        <VideoDemo key="video" />,
-    ];
-
-    const chartDemos = [
-        <ChartsDemo key="charts" />,
-        <SparklineDemo key="sparkline" />,
-    ];
-    
-    const layoutDemos = [
-        <SidebarDemo key="sidebar" />,
-    ];
-
-    const exampleDemos = [
-        <ExampleFileBrowser key="file-browser" />,
-        <ExampleVideo key="video-player" />,
-        <ExampleAudio key="audio-player" />,
-        <GraphicsNodeEditorDemo key="node-editor" />,
-    ];
+    const demos = {
+        general: [
+            <ButtonDemo key="button" />, <IconDemo key="icon" />, <TextDemo key="text" />,
+            <LinkDemo key="link" />, <KbdDemo key="kbd" />, <BadgeDemo key="badge" />,
+            <TagDemo key="tag" />, <CodeDemo key="code" />,
+        ],
+        layout: [
+            <BoxDemo key="box" />, <FlexDemo key="flex" />, <CenterDemo key="center" />,
+            <StackDemo key="stack" />, <GridDemo key="grid" />, <ContainerDemo key="container" />,
+            <AspectRatioDemo key="aspect-ratio" />, <DividerDemo key="divider" />, <SofaDemo key="sofa" />,
+            <HeaderDemo key="header" />, <FooterDemo key="footer" />, <SidebarDemo key="sidebar" />,
+        ],
+        forms: [
+            <FormControlDemo key="form-control" />, <InputDemo key="input" />, <TextInputDemo key="text-input" />,
+            <TextareaDemo key="textarea" />, <CheckboxDemo key="checkbox" />, <RadioGroupDemo key="radio-group" />,
+            <SwitchDemo key="switch" />, <SelectDemo key="select" />, <ComboboxDemo key="combobox" />,
+            <SliderDemo key="slider" />, <NumberInputDemo key="number-input" />, <PinInputDemo key="pin-input" />,
+            <EditableDemo key="editable" />, <FileUploadDemo key="file-upload" />, <ColorPickerDemo key="color-picker" />,
+            <DatePickerDemo key="date-picker" />, <SearchDemo key="search" />, <RatingDemo key="rating" />,
+            <ToggleButtonDemo key="toggle-button" />, <IconButtonDemo key="icon-button" />, <ButtonGroupDemo key="button-group" />,
+        ],
+        dataDisplay: [
+            <ListDemo key="list" />, <TableDemo key="table" />, <DataTableDemo key="data-table" />,
+            <AvatarDemo key="avatar" />, <CardDemo key="card" />, <AccordionDemo key="accordion" />,
+            <TreeViewDemo key="tree-view" />, <XNodeTreeDemo key="x-node-tree" />, <TimelineDemo key="timeline" />,
+            <ImageDemo key="image" />,
+        ],
+        feedback: [
+            <AlertDemo key="alert" />, <ToastDemo key="toast" />, <SnackbarDemo key="snackbar" />, <SpinnerDemo key="spinner" />,
+            <ProgressDemo key="progress" />, <SkeletonDemo key="skeleton" />, <ModalDemo key="modal" />,
+            <DialogDemo key="dialog" />, <DrawerDemo key="drawer" />, <PopoverDemo key="popover" />,
+            <HoverCardDemo key="hover-card" />, <BackdropDemo key="backdrop" />,
+        ],
+        navigation: [
+            <NavDemo key="nav" />, <BreadcrumbsDemo key="breadcrumbs" />, <PaginationDemo key="pagination" />,
+            <TabsDemo key="tabs" />, <StepperDemo key="stepper" />, <MenuDemo key="menu" />,
+            <DropdownDemo key="dropdown" />, <FloatingActionButtonDemo key="fab" />, <SpeedDialDemo key="speed-dial" />,
+            <TransferListDemo key="transfer-list" />,
+        ],
+        advanced: [
+            <AnimatedBlockDemo key="animated-block" />, <AudioDemo key="audio" />, <VideoDemo key="video" />,
+            <ChartsDemo key="charts" />, <SparklineDemo key="sparkline" />, <XmlRendererDemo key="xml-renderer" />,
+            <GraphicsNodeEditorDemo key="graphics-node-editor" />, <PhotoEditorDemo key="photo-editor" />,
+        ],
+        examples: [
+            <ExampleSignInPage key="signin-page" />, <ExampleFileBrowser key="file-browser" />, <ExampleVideo key="video-player" />, <ExampleAudio key="audio-player" />, <ExamplePhotoEditor key="photo-editor" />
+        ]
+    };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: theme.colors.background, transition: 'background-color 0.3s' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', background: theme.colors.background, transition: 'background-color 0.3s', minWidth: '320px' }}>
             <Header>
                 <Header.Left>
                     <Stack direction="row" gap={theme.spacing.sm} align="center">
@@ -174,42 +169,39 @@ export const DemoApp = () => {
                     </Stack>
                 </Header.Left>
                 <Header.Right>
-                    <ThemeSwitcher />
+                    <Nav container>
+                        <Nav.List>
+                            <Nav.Item href="#" isActive>Home</Nav.Item>
+                            <Nav.Item href="#">About</Nav.Item>
+                            <Nav.Item href="#">Contact</Nav.Item>
+                        </Nav.List>
+                    </Nav>
                 </Header.Right>
             </Header>
 
             <main style={{ flex: 1, padding: isMobile ? theme.spacing.md : theme.spacing.lg }}>
-                <Tabs defaultValue="new">
-                    <Stack align="center" gap={theme.spacing.lg}>
+                <Tabs defaultValue="examples">
+                    <Stack align="center" justify="center" gap={theme.spacing.lg}>
                         <TabList>
-                            <Tab value="new">Newly Added</Tab>
-                            <Tab value="original">Original Components</Tab>
-                            <Tab value="layout">Layout & Charting</Tab>
+                            <Tab value="general">General</Tab>
+                            <Tab value="layout">Layout</Tab>
+                            <Tab value="forms">Forms & Input</Tab>
+                            <Tab value="data">Data Display</Tab>
+                            <Tab value="feedback">Feedback</Tab>
+                            <Tab value="navigation">Navigation</Tab>
+                            <Tab value="advanced">Advanced</Tab>
                             <Tab value="examples">Examples</Tab>
                         </TabList>
                     </Stack>
                     <TabPanels>
-                        <TabPanel value="new">
-                            <Grid minItemWidth="350px" gap="1.5rem">
-                                {newDemos}
-                            </Grid>
-                        </TabPanel>
-                         <TabPanel value="original">
-                            <Grid minItemWidth="350px" gap="1.5rem">
-                                {demos}
-                            </Grid>
-                        </TabPanel>
-                         <TabPanel value="layout">
-                            <Grid minItemWidth="450px" gap="1.5rem">
-                                {layoutDemos}
-                                {chartDemos}
-                            </Grid>
-                        </TabPanel>
-                         <TabPanel value="examples">
-                            <Grid minItemWidth="400px" gap="1.5rem">
-                                {exampleDemos}
-                            </Grid>
-                        </TabPanel>
+                        <TabPanel value="general"><Grid>{demos.general}</Grid></TabPanel>
+                        <TabPanel value="layout"><Grid>{demos.layout}</Grid></TabPanel>
+                        <TabPanel value="forms"><Grid>{demos.forms}</Grid></TabPanel>
+                        <TabPanel value="data"><Grid>{demos.dataDisplay}</Grid></TabPanel>
+                        <TabPanel value="feedback"><Grid>{demos.feedback}</Grid></TabPanel>
+                        <TabPanel value="navigation"><Grid>{demos.navigation}</Grid></TabPanel>
+                        <TabPanel value="advanced"><Grid>{demos.advanced}</Grid></TabPanel>
+                        <TabPanel value="examples"><Grid>{demos.examples}</Grid></TabPanel>
                     </TabPanels>
                 </Tabs>
             </main>

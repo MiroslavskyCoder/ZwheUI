@@ -15,9 +15,8 @@ export interface ChartDimensions {
 }
 
 export interface ChartsContextType {
-    data: any[];
+    dataset: any[];
     xAccessor: (d: any, i: number) => any;
-    yAccessor: (d: any, i: number) => any;
     xScale: Scale;
     yScale: Scale;
     dimensions: ChartDimensions;

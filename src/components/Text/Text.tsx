@@ -1,5 +1,6 @@
 
 
+
 import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
@@ -14,7 +15,8 @@ type TextProps<C extends React.ElementType> = {
     color?: string;
 } & Omit<React.ComponentPropsWithoutRef<C>, 'as' | 'size' | 'weight' | 'color'>;
 
-type AllowedTags = 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'pre';
+// FIX: Add 'label' to AllowedTags to permit its use in form components.
+type AllowedTags = 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'pre' | 'label';
 
 export const Text = <C extends AllowedTags = 'p'>({
     // FIX: Cast default value to 'C' to resolve type mismatch with generic.

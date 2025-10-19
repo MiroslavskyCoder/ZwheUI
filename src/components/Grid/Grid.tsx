@@ -1,6 +1,32 @@
 import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 
+interface GridItemProps extends React.HTMLAttributes<HTMLDivElement> {
+    colSpan?: number;
+    rowSpan?: number;
+}
+
+const GridItem: React.FC<GridItemProps> = ({
+    colSpan,
+    rowSpan,
+    className = '',
+    children,
+    ...props
+}) => {
+    const createStyle = useStyles('grid-item');
+    const itemClass = createStyle({
+        gridColumn: colSpan ? `span ${colSpan}` : undefined,
+        gridRow: rowSpan ? `span ${rowSpan}` : undefined,
+    });
+    return (
+        <div className={`${itemClass} ${className}`} {...props}>
+            {children}
+        </div>
+    );
+};
+GridItem.displayName = 'Grid.Item';
+
+
 interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
     minItemWidth?: string;
     gap?: string;
@@ -9,7 +35,7 @@ interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
     justifyContent?: string;
 }
 
-export const Grid: React.FC<GridProps> = ({ 
+export const Grid: React.FC<GridProps> & { Item: typeof GridItem } = ({ 
     minItemWidth = '350px', 
     gap = '1.5rem', 
     columns,
@@ -28,9 +54,9 @@ export const Grid: React.FC<GridProps> = ({
         alignItems: alignItems,
         justifyContent: justifyContent,
         '@media': {
-            // On small screens, force a single column layout for better readability
+            // On small screens, force a single column layout for better readability on auto-fit grids
             "(maxWidth: 'sm')": {
-                gridTemplateColumns: '1fr',
+                gridTemplateColumns: columns ? undefined : '1fr',
             },
         },
     });
@@ -41,3 +67,5 @@ export const Grid: React.FC<GridProps> = ({
         </div>
     );
 };
+
+Grid.Item = GridItem;

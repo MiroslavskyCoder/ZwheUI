@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sofa, Text, Stack, Button, GraphicsProvider, GraphicsNodeEditorView, useGraphicsContext } from '../src/components';
 import { NodeData, ConnectionData } from '../src/components/GraphicsNodeEditor/GraphicsContext';
-import { numberNodeType, addNodeType, displayNodeType, sliderNodeType, subtractNodeType } from '../src/components/GraphicsNodeEditor/nodeTypes';
+import { numberNodeType, addNodeType, displayNodeType, sliderNodeType, subtractNodeType, creatableNodeTypes } from '../src/components/GraphicsNodeEditor/nodeTypes';
 import { GZoom } from '../src/components/GraphicsNodeEditor/plugins/GZoom';
 import { GMenu } from '../src/components/GraphicsNodeEditor/plugins/GMenu';
 
@@ -71,6 +71,7 @@ export const GraphicsNodeEditorDemo = () => (
       <GraphicsProvider
         initialNodes={initialNodes}
         initialConnections={initialConnections}
+        creatableNodeTypes={creatableNodeTypes}
       >
         <EditorWithControls />
       </GraphicsProvider>

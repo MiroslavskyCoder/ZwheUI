@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useCharts } from './ChartsHook';
 import { useTheme } from '../../core/theme/ThemeProvider';
@@ -5,24 +6,26 @@ import { useTheme } from '../../core/theme/ThemeProvider';
 interface ChartBarProps {
     color?: string;
     barWidthRatio?: number;
+    yAccessor: (d: any, i: number) => any;
 }
 
-export const ChartBar: React.FC<ChartBarProps> = ({ color, barWidthRatio = 0.6 }) => {
-    const { data, xAccessor, yAccessor, xScale, yScale, dimensions } = useCharts();
+export const ChartBar: React.FC<ChartBarProps> = ({ color, barWidthRatio = 0.6, yAccessor }) => {
+    const { dataset, xAccessor, xScale, yScale, dimensions } = useCharts();
     const { theme } = useTheme();
     
-    if (!data || data.length === 0) return null;
+    if (!dataset || dataset.length === 0) return null;
 
     const barColor = color || theme.colors.primary;
-    const bandWidth = dimensions.boundedWidth / data.length;
+    // Calculate bandwidth based on the domain extent and number of data points
+    const xDomain = xScale.domain();
+    const bandWidth = (xScale(xDomain[1]) - xScale(xDomain[0])) / (dataset.length > 1 ? (dataset.length -1) : 1);
     const barWidth = bandWidth * barWidthRatio;
 
 
     return (
         <g>
-            {data.map((d, i) => {
+            {dataset.map((d, i) => {
                 const xValue = xAccessor(d, i);
-                // FIX: Pass index to yAccessor to align with updated type signature.
                 const yValue = yAccessor(d, i);
 
                 if (yValue === null || yValue === undefined) return null;

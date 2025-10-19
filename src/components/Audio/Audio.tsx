@@ -137,5 +137,3 @@ export const Audio: React.FC<{ children: React.ReactNode, className?: string }> 
         </AudioContext.Provider>
     );
 };
-
-export default Audio;

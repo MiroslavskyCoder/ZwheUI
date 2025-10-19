@@ -71,15 +71,3 @@ export const ListItemText: React.FC<ListItemTextProps> = ({ primary, secondary }
         </div>
     );
 };
-
-export const Divider: React.FC<React.HTMLAttributes<HTMLHRElement>> = ({ className, ...props }) => {
-    const { theme } = useTheme();
-    const createStyle = useStyles('divider');
-    const dividerClass = createStyle({
-        border: 'none',
-        height: '1px',
-        backgroundColor: theme.colors.border,
-        margin: 0,
-    });
-    return <hr className={`${dividerClass} ${className}`} {...props} />;
-}

@@ -1,22 +1,19 @@
 
-
-
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from './src/core/theme/ThemeProvider'
 import { DemoApp } from './demo/DemoApp'
-import { ToastProvider } from './src/components'
+import { ToastProvider, SnackbarProvider } from './src/components'
 
 
 const App = () => {
     return (
-        <BrowserRouter>
-            <ThemeProvider>
-                <ToastProvider>
+        <ThemeProvider>
+            <ToastProvider>
+                <SnackbarProvider>
                     <DemoApp />
-                </ToastProvider>
-            </ThemeProvider>
-        </BrowserRouter>
+                </SnackbarProvider>
+            </ToastProvider>
+        </ThemeProvider>
     )
 }
 

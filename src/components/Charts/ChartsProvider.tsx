@@ -2,71 +2,56 @@
 import React, { useMemo } from 'react';
 import { ChartsContext, ChartDimensions } from './ChartsContext';
 import { createLinearScale } from '../../core/utils/scale';
+import { SeriesDef } from './Charts';
 
 interface ChartsProviderProps {
-    data: any[];
-    xAccessor: (d: any, i: number) => any;
-    yAccessor: (d: any, i: number) => any;
+    dataset: any[];
+    xAxis: { dataKey: string }[];
+    series: SeriesDef[];
     dimensions: ChartDimensions;
     children: React.ReactNode;
-    xDomain?: [number, number];
 }
 
 export const ChartsProvider: React.FC<ChartsProviderProps> = ({
-    data,
-    xAccessor,
-    yAccessor,
+    dataset,
+    xAxis,
+    series,
     dimensions,
     children,
-    xDomain: xDomainProp,
 }) => {
+    const xAccessor = useMemo(() => (d: any) => d[xAxis[0].dataKey], [xAxis]);
 
-    const fullXDomain: [number, number] = useMemo(() => {
-        if (!data || data.length === 0) return [0, 1];
-        const values = data.map(xAccessor);
+    const xDomain: [number, number] = useMemo(() => {
+        if (!dataset || dataset.length === 0) return [0, 1];
+        const values = dataset.map(xAccessor);
         return [Math.min(...values), Math.max(...values)];
-    }, [data, xAccessor]);
-
-    const xDomain = xDomainProp || fullXDomain;
+    }, [dataset, xAccessor]);
 
     const yDomain: [number, number] = useMemo(() => {
-        if (!data || data.length === 0) return [0, 1];
-        
-        const visibleData = data.filter(d => {
-            const xVal = xAccessor(d, 0); // index doesn't matter for this check
-            return xVal >= xDomain[0] && xVal <= xDomain[1];
-        });
+        if (!dataset || dataset.length === 0 || series.length === 0) return [0, 1];
 
-        // Use a small subset of data for performance if the visible range is large
-        const sampleData = visibleData.length > 1000 
-            ? visibleData.filter((_, i) => i % Math.floor(visibleData.length / 1000) === 0)
-            : visibleData;
-            
-        if (sampleData.length === 0) {
-            return [0, 1]; // Fallback if no data is in view
-        }
+        const allYValues = series.flatMap(s => dataset.map(d => d[s.dataKey]));
+        if (allYValues.length === 0) return [0, 1];
 
-        const values = sampleData.map(yAccessor);
-        const min = Math.min(...values);
-        const max = Math.max(...values);
-        
+        const min = Math.min(...allYValues);
+        const max = Math.max(...allYValues);
+
         return [min, max === min ? min + 1 : max];
-    }, [data, yAccessor, xAccessor, xDomain]);
+    }, [dataset, series]);
 
-    const xScale = useMemo(() => 
+    const xScale = useMemo(() =>
         createLinearScale(xDomain, [0, dimensions.boundedWidth]),
         [xDomain, dimensions.boundedWidth]
     );
 
-    const yScale = useMemo(() => 
+    const yScale = useMemo(() =>
         createLinearScale(yDomain, [dimensions.boundedHeight, 0]), // Inverted for SVG coordinates
         [yDomain, dimensions.boundedHeight]
     );
 
     const contextValue = {
-        data,
+        dataset,
         xAccessor,
-        yAccessor,
         xScale,
         yScale,
         dimensions,

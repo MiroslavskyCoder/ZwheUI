@@ -1,3 +1,4 @@
+
 import React, { useRef, useLayoutEffect } from 'react';
 import { useGraphicsContext, Position } from './GraphicsContext';
 import { useStyles, useTheme } from '../../core';
@@ -278,7 +279,7 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, size, inputs, o
                     {inputs.map(socket => (
                         <div key={socket.id} data-socket-id={socket.id} data-socket-type="input" className={socketClass(false)}>
                             <div 
-                                // FIX: The ref callback function was implicitly returning the element, which is not a valid return type for a ref. By wrapping the assignment in curly braces, the arrow function now returns `void`, resolving the TypeScript error.
+                                // FIX: Wrap ref callback in curly braces to prevent it from returning a value.
                                 ref={el => { socketRefs.current[socket.id] = el; }}
                                 className={socketHandleClass}
                                 onMouseDown={(e) => { e.stopPropagation(); startConnecting(id, socket.id, 'input', e); }}
@@ -292,7 +293,7 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, size, inputs, o
                     {outputs.map(socket => (
                         <div key={socket.id} data-socket-id={socket.id} data-socket-type="output" className={socketClass(true)}>
                             <div 
-                                // FIX: The ref callback function was implicitly returning the element, which is not a valid return type for a ref. By wrapping the assignment in curly braces, the arrow function now returns `void`, resolving the TypeScript error.
+                                // FIX: Wrap ref callback in curly braces to prevent it from returning a value.
                                 ref={el => { socketRefs.current[socket.id] = el; }}
                                 className={socketHandleClass} 
                                 onMouseDown={(e) => { e.stopPropagation(); startConnecting(id, socket.id, 'output', e); }}

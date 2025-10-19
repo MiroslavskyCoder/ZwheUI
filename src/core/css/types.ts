@@ -1,3 +1,4 @@
+
 export type NestedCSSProperties = {
   [key: string]: string | number | CSSProperties | undefined
 }
@@ -51,8 +52,14 @@ export interface Theme {
     [key: string]: string;
   };
   typography: {
+    // FIX: Add specific keys to fontSizes for better type-safety and to resolve errors.
     fontSizes: {
-      [key: string]: string
+      xs: string;
+      sm: string;
+      base: string;
+      lg: string;
+      xl: string;
+      [key: string]: string;
     }
     fontWeights: {
       [key: string]: number
