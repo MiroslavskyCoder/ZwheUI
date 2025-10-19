@@ -58,8 +58,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect, className 
         fileInputRef.current?.click();
     };
     
-    const containerClass = createStyle({
-        width: '100%',
+    const containerClass = createStyle({ 
         padding: theme.spacing.lg,
         border: `2px dashed ${isDragging ? theme.colors.primary : theme.colors.border}`,
         borderRadius: '8px',
