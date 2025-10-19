@@ -20,83 +20,97 @@ This application itself serves as a live interactive showcase. You can see all t
 
 The library is organized into several logical categories:
 
-### Layout
-- `Layout`
-- `Grid`
-- `Stack`
-- `Layer`
-- `Sidebar`
-- `Sofa` (Styled container)
+### Layout & Structure
+*   [Accordion](./src/components/Accordion/Accordion.md)
+*   [Card](./src/components/Card/Card.md)
+*   [Container](./src/components/Container/Container.md)
+*   [Footer](./src/components/Footer/Footer.md)
+*   [Grid](./src/components/Grid/Grid.md)
+*   [Header](./src/components/Header/Header.md)
+*   [Layer](./src/components/Layer/Layer.md)
+*   [Sidebar](./src/components/Sidebar/Sidebar.md)
+*   [Sofa](./src/components/Sofa/Sofa.md) (Styled container)
+*   [Stack](./src/components/Stack/Stack.md)
+*   [Tabs](./src/components/Tabs/Tabs.md)
 
-### Forms
-- `Button`
-- `Input` / `TextInput`
-- `Textarea`
-- `Checkbox`
-- `RadioGroup`
-- `Switch`
-- `Select`
-- `Combobox`
-- `NumberInput`
-- `Slider`
-- `Rating`
-- `FileUpload`
-- `DatePicker` / `Calendar`
-- `ColorPicker`
+### Forms & Inputs
+*   [Button](./src/components/Button.md)
+*   [Calendar](./src/components/Calendar/Calendar.md)
+*   [Checkbox](./src/components/Checkbox/Checkbox.md)
+*   [ColorPicker](./src/components/ColorPicker/ColorPicker.md)
+*   [Combobox](./src/components/Combobox/Combobox.md)
+*   [DatePicker](./src/components/DatePicker/DatePicker.md)
+*   [FileUpload](./src/components/FileUpload/FileUpload.md)
+*   [Input](./src/components/Input/Input.md) / [TextInput](./src/components/TextInput/TextInput.md)
+*   [NumberInput](./src/components/NumberInput/NumberInput.md)
+*   [RadioGroup](./src/components/RadioGroup/RadioGroup.md)
+*   [Rating](./src/components/Rating/Rating.md)
+*   [Search](./src/components/Search/Search.md)
+*   [Select](./src/components/Select/Select.md)
+*   [Slider](./src/components/Slider/Slider.md)
+*   [Switch](./src/components/Switch/Switch.md)
+*   [Textarea](./src/components/Textarea/Textarea.md)
+*   [ToggleButton](./src/components/ToggleButton/ToggleButton.md)
+*   [TransferList](./src/components/TransferList/TransferList.md)
 
 ### Feedback & Overlays
-- `Alert`
-- `Modal` / `Dialog`
-- `Drawer`
-- `Popover` / `Popper`
-- `HoverCard`
-- `Tooltip`
-- `Toast` (via `useToast` hook)
-- `Backdrop`
-- `CircularProgress` / `LinearProgress`
-- `Spinner`
-- `Skeleton`
+*   [Alert](./src/components/Alert/Alert.md)
+*   [Backdrop](./src/components/Backdrop/Backdrop.md)
+*   [Dialog](./src/components/Dialog/Dialog.md)
+*   [Drawer](./src/components/Drawer/Drawer.md)
+*   [HoverCard](./src/components/HoverCard/HoverCard.md)
+*   [Modal](./src/components/Modal/Modal.md)
+*   [Popover](./src/components/Popover/Popover.md) / [Popper](./src/components/Popper/Popper.md)
+*   [Progress](./src/components/Progress/Progress.md) (Circular & Linear)
+*   [Skeleton](./src/components/Skeleton/Skeleton.md)
+*   [Spinner](./src/components/Spinner/Spinner.md)
+*   [Toast](./src/components/Toast/Toast.md) (via `useToast` hook)
+*   [Tooltip](./src/components/Tooltip/Tooltip.md)
 
 ### Navigation
-- `Menu` / `StyledMenu`
-- `Dropdown`
-- `Tabs`
-- `Breadcrumbs`
-- `Pagination`
-- `Stepper`
-- `Link`
+*   [Breadcrumbs](./src/components/Breadcrumbs/Breadcrumbs.md)
+*   [Dropdown](./src/components/Dropdown/Dropdown.md)
+*   [FloatingActionButton](./src/components/FloatingActionButton/FloatingActionButton.md)
+*   [Link](./src/components/Link/Link.md)
+*   [Menu](./src/components/Menu/Menu.md) / [StyledMenu](./src/components/Menu/Menu.md)
+*   [Nav](./src/components/Nav/Nav.md)
+*   [Pagination](./src/components/Pagination/Pagination.md)
+*   [SpeedDial](./src/components/SpeedDial/SpeedDial.md)
+*   [Stepper](./src/components/Stepper/Stepper.md)
 
 ### Data Display
-- `Card`
-- `List` / `ListItem`
-- `Avatar` / `AvatarGroup`
-- `Badge`
-- `Table`
-- `Timeline`
-- `Kbd` (Keyboard shortcut)
-- `Text`
-- `XmlRenderer`
-- `Accordion`
+*   [Avatar](./src/components/Avatar/Avatar.md) / [AvatarGroup](./src/components/Avatar/Avatar.md)
+*   [Badge](./src/components/Badge/Badge.md)
+*   [Icon](./src/components/Icon/Icon.md)
+*   [Kbd](./src/components/Kbd/Kbd.md) (Keyboard shortcut)
+*   [List](./src/components/List/List.md)
+*   [Table](./src/components/Table/Table.md)
+*   [Text](./src/components/Text/Text.md)
+*   [Timeline](./src/components/Timeline/Timeline.md)
+*   [TreeView](./src/components/TreeView/TreeView.md)
 
 ### Media
-- `Audio` (Composable Player)
-- `Video` (Composable Player)
+*   [Audio](./src/components/Audio/Audio.md) (Composable Player)
+*   [Video](./src/components/Video/Video.md) (Composable Player)
 
 ### Data Visualization (Charts)
-- `Charts` (Main context)
-- `ChartLine`
-- `ChartArea`
-- `ChartBar`
-- `ChartAxis`
-- `ChartTooltip`
-- `ChartSparkline`
-- `ChartRadial`
-- `ChartRadar`
-- `ChartHeatmap`
+*   [Charts](./src/components/Charts/Charts.md) (Main context)
+*   [ChartArea](./src/components/Charts/ChartArea.md)
+*   [ChartAxis](./src/components/Charts/ChartAxis.md)
+*   [ChartBar](./src/components/Charts/ChartBar.md)
+*   [ChartHeatmap](./src/components/Charts/ChartHeatmap.md)
+*   [ChartLine](./src/components/Charts/ChartLine.md)
+*   [ChartRadar](./src/components/Charts/ChartRadar.md)
+*   [ChartRadial](./src/components/Charts/ChartRadial.md)
+*   [ChartSparkline](./src/components/Charts/ChartSparkline.md)
+*   [ChartTooltip](./src/components/Charts/ChartTooltip.md)
 
-### Utilities
-- `AnimatedBlock`
-- `ThemeSwitcher`
+### Advanced & Utilities
+*   [AnimatedBlock](./src/components/AnimatedBlock/AnimatedBlock.md)
+*   [GraphicsNodeEditor](./src/components/GraphicsNodeEditor/GraphicsNodeEditor.md)
+*   [ThemeSwitcher](./src/components/ThemeSwitcher/ThemeSwitcher.md)
+*   [XmlRenderer](./src/components/XmlRenderer/XmlRenderer.md)
+
 
 ## Core System
 
@@ -158,6 +172,8 @@ const ThemedComponent = () => {
 
 Using a component is straightforward. Import it from the `src/components` directory and use it in your JSX.
 
+### User Profile Card
+
 ```tsx
 import React from 'react';
 import { Card, Text, Button, Stack } from './src/components';
@@ -170,6 +186,49 @@ function UserProfile() {
         <Button variant="primary">View Details</Button>
       </Stack>
     </Card>
+  );
+}
+```
+
+### Simple Form
+
+```tsx
+import React, { useState } from 'react';
+import { Input, Checkbox, Button, Stack } from './src/components';
+
+function LoginForm() {
+  const [remember, setRemember] = useState(false);
+  return (
+    <Stack as="form" gap="1.5rem">
+      <Input label="Email" type="email" placeholder="you@example.com" />
+      <Input label="Password" type="password" />
+      <Checkbox label="Remember me" checked={remember} onChange={e => setRemember(e.target.checked)} />
+      <Button variant="primary" type="submit">Sign In</Button>
+    </Stack>
+  );
+}
+```
+
+### Modal Dialog
+
+```tsx
+import React, { useState } from 'react';
+import { Modal, Button, Text } from './src/components';
+
+function ConfirmationModal() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button variant="accent" onClick={() => setIsOpen(true)}>Delete Account</Button>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Confirm Deletion"
+      >
+        <Text>Are you sure you want to delete your account? This action cannot be undone.</Text>
+      </Modal>
+    </>
   );
 }
 ```
