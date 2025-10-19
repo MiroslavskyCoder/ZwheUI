@@ -286,7 +286,7 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, size, inputs, o
                         </div>
                     ))}
                 </div>
-                <div className={socketsContainerClass(true)}>
+                 <div className={socketsContainerClass(true)}>
                     {outputs.map(socket => (
                         <div key={socket.id} data-socket-id={socket.id} data-socket-type="output" className={socketClass(true)}>
                             <div 

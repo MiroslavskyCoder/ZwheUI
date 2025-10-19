@@ -11,9 +11,10 @@ interface GraphicsProviderProps {
     children: React.ReactNode;
     initialNodes: NodeData[];
     initialConnections: ConnectionData[];
+    creatableNodeTypes?: Record<string, Omit<NodeData, 'id' | 'position'>>;
 }
 
-export const GraphicsProvider = ({ children, initialNodes, initialConnections }: GraphicsProviderProps) => {
+export const GraphicsProvider = ({ children, initialNodes, initialConnections, creatableNodeTypes: initialCreatableNodeTypes = {} }: GraphicsProviderProps) => {
     const [nodes, setNodes] = useState<NodeData[]>(initialNodes);
     const [connections, setConnections] = useState<ConnectionData[]>(initialConnections);
     const [pan, setPan] = useState<Position>({ x: 0, y: 0 });
@@ -24,6 +25,11 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
     const [nodeOutputs, setNodeOutputs] = useState<Record<string, Record<string, any>>>({});
     const [socketRelativePositions, setSocketRelativePositions] = useState<Record<string, Record<string, Position>>>({});
     const { addToast } = useToast();
+    const [creatableNodeTypes, setCreatableNodeTypes] = useState(initialCreatableNodeTypes);
+
+    const newCreateNode = useCallback((label: string, nodeTemplate: Omit<NodeData, 'id' | 'position'>) => {
+        setCreatableNodeTypes(prev => ({ ...prev, [label]: nodeTemplate }));
+    }, []);
 
     const nodesRef = useRef(nodes);
     useEffect(() => {
@@ -245,6 +251,8 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
         autoConnect,
         socketRelativePositions,
         registerSocketPositions,
+        creatableNodeTypes,
+        newCreateNode,
     };
 
     return <GraphicsContext.Provider value={contextValue}>{children}</GraphicsContext.Provider>;
@@ -548,7 +556,7 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
             className={editorClass} 
             style={style} 
         >
-             <svg 
+            <svg 
                 className={svgOverlayClass}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
@@ -594,7 +602,7 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
                 />
             )}
             {renameDialog.isOpen && (
-                 <Dialog
+                <Dialog
                     isOpen={renameDialog.isOpen}
                     onClose={handleCloseRenameDialog}
                     title={`Rename Node: "${renameDialog.currentName}"`}

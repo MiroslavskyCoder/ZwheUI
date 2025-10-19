@@ -68,6 +68,9 @@ export interface GraphicsContextType {
 
     socketRelativePositions: Record<string, Record<string, Position>>;
     registerSocketPositions: (nodeId: string, positions: Record<string, Position>) => void;
+    
+    creatableNodeTypes: Record<string, Omit<NodeData, 'id' | 'position'>>;
+    newCreateNode: (label: string, nodeTemplate: Omit<NodeData, 'id' | 'position'>) => void;
 }
 
 export const GraphicsContext = createContext<GraphicsContextType | null>(null);

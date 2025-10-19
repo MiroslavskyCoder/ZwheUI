@@ -1,23 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useGraphicsContext, NodeData } from '../GraphicsContext';
 import { ContextMenu, ContextMenuItem } from '../../ContextMenu/ContextMenu';
-import { creatableNodeTypes as defaultCreatableNodeTypes } from '../nodeTypes';
 
-interface GMenuProps {
-    creatableNodeTypes?: Record<string, Omit<NodeData, 'id' | 'position'>>;
-}
-
-export const GMenu: React.FC<GMenuProps> = ({ creatableNodeTypes = defaultCreatableNodeTypes }) => {
-    const { editorRef, createNode, pan, zoom } = useGraphicsContext();
+export const GMenu: React.FC = () => {
+    const { editorRef, createNode, pan, zoom, creatableNodeTypes } = useGraphicsContext();
     const [menu, setMenu] = useState<{ isOpen: boolean; position: { x: number; y: number } }>({ isOpen: false, position: { x: 0, y: 0 } });
 
     const handleContextMenu = useCallback((e: MouseEvent) => {
+        const hasCreatableNodes = creatableNodeTypes && Object.keys(creatableNodeTypes).length > 0;
         const editor = editorRef.current;
-        if (editor && e.target === editor.querySelector('svg')) {
+        if (editor && e.target === editor.querySelector('svg') && hasCreatableNodes) {
             e.preventDefault();
             setMenu({ isOpen: true, position: { x: e.clientX, y: e.clientY } });
         }
-    }, [editorRef]);
+    }, [editorRef, creatableNodeTypes]);
 
     useEffect(() => {
         const editor = editorRef.current;
@@ -45,10 +41,14 @@ export const GMenu: React.FC<GMenuProps> = ({ creatableNodeTypes = defaultCreata
         setMenu({ isOpen: false, position: { x: 0, y: 0 } });
     };
 
-    const menuItems: ContextMenuItem[] = Object.entries(creatableNodeTypes).map(([label, template]) => ({
+    const menuItems: ContextMenuItem[] = creatableNodeTypes ? Object.entries(creatableNodeTypes).map(([label, template]) => ({
         label: `Add ${label}`,
         onClick: () => addNode(template),
-    }));
+    })) : [];
+
+    if (menuItems.length === 0) {
+        return null;
+    }
 
     return (
         <ContextMenu
