@@ -20,9 +20,17 @@ interface DemoSectionProps {
 }
 
 // Create a map of all available components and icons for the XmlRenderer
-// FIX: Destructure all hooks from the components import to prevent type errors when creating the component map.
-// FIX: Also destructure XmlRenderer to prevent a circular dependency.
-const { useTreeItem, useToast, useSnackbar, useAudio, useVideo, usePopperContext, XmlRenderer: _, ...renderableComponents } = components;
+const renderableComponents: ComponentMap = {};
+// Manually iterate over the imported components object to build the map.
+// This is a safer way to exclude hooks than destructuring with a rest pattern.
+for (const key in components) {
+    if (Object.prototype.hasOwnProperty.call(components, key)) {
+        // Exclude hooks which are not components
+        if (!key.startsWith('use')) {
+            (renderableComponents as any)[key] = (components as any)[key];
+        }
+    }
+}
 const componentMap: ComponentMap = { ...renderableComponents, ...icons };
 
 

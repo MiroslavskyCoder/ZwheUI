@@ -1,8 +1,7 @@
 
 import React from 'react'
 import { Layer } from '../Layer/Layer'
-import { Stack } from '../Stack/Stack'
-import * as components from '..';
+import { Stack } from '../Stack/Stack' 
 import * as icons from '../../icons';
 
 export type ComponentMap = {
@@ -19,7 +18,59 @@ const defaultMap: ComponentMap = {
     layout: Stack,
     div: 'div',
     span: 'span',
-    p: 'p'
+    p: 'p',
+    h1: 'h1',
+    h2: 'h2',
+    h3: 'h3',
+    h4: 'h4',
+    h5: 'h5',
+    h6: 'h6',
+    a: 'a',
+    img: 'img',
+    ul: 'ul',
+    ol: 'ol',
+    li: 'li',
+    button: 'button',
+    input: 'input',
+    textarea: 'textarea',
+    select: 'select',
+    option: 'option',
+    form: 'form',
+    label: 'label',
+    fieldset: 'fieldset',
+    legend: 'legend',
+    table: 'table',
+    thead: 'thead',
+    tbody: 'tbody',
+    tfoot: 'tfoot',
+    tr: 'tr',
+    th: 'th',
+    td: 'td',
+    iframe: 'iframe',
+    video: 'video',
+    audio: 'audio',
+    canvas: 'canvas',
+    svg: 'svg',
+    path: 'path',
+    circle: 'circle',
+    rect: 'rect',
+    polyline: 'polyline',
+    polygon: 'polygon',
+    line: 'line',
+    text: 'text',
+    tspan: 'tspan',
+    g: 'g',
+    defs: 'defs',
+    use: 'use',
+    symbol: 'symbol',
+    marker: 'marker',
+    pattern: 'pattern',
+    clipPath: 'clipPath',
+    mask: 'mask',
+    linearGradient: 'linearGradient',
+    radialGradient: 'radialGradient',
+    stop: 'stop',
+    foreignObject: 'foreignObject' 
 }
 
 function parseAttributes(node: Element) {
@@ -72,15 +123,10 @@ function nodeToElement(node: Node, map: ComponentMap): React.ReactNode {
         return React.createElement(Comp as any, props, ...children);
     }
     return React.createElement(Comp as any, props);
-}
+}  
 
-// FIX: Destructure all hooks from the components import to prevent type errors when creating the component map.
-// FIX: Also destructure XmlRenderer to prevent a circular dependency.
-const { useTreeItem, useToast, useSnackbar, useAudio, useVideo, usePopperContext, XmlRenderer: _, ...renderableComponents } = components;
-const allComponentsMap = { ...renderableComponents, ...icons };
-
-export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components = {} }) => {
-    const map = { ...defaultMap, ...allComponentsMap, ...components }
+export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components: customComponents = {} }) => {
+    const map = { ...defaultMap, ...icons, ...customComponents }
 
     if (typeof window === 'undefined' || typeof window.DOMParser === 'undefined') {
         // server-side or no DOMParser: very simple fallback
