@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
     FormControl, 
@@ -139,7 +140,7 @@ export const FormControlDemo = () => {
             }
             propControls={<FormControlConfigurator isInvalid={isInvalid} setIsInvalid={setIsInvalid} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

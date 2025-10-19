@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Code, Text, Stack, Input } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -63,7 +64,7 @@ export const CodeDemo = () => {
             }
             propControls={<CodeConfigurator childrenText={childrenText} setChildrenText={setChildrenText} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

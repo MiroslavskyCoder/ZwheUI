@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { AspectRatio, Sofa, Text, Stack, Center, SegmentedControl } from '../src/components';
 import { useTheme } from '../src/core';
@@ -106,7 +107,7 @@ export const AspectRatioDemo = () => {
                 <AspectRatioConfigurator ratio={ratio} setRatio={setRatio} />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

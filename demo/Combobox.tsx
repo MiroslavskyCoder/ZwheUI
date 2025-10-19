@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Combobox, Text, Stack, Input } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -186,13 +187,28 @@ export const ComboboxDemo = () => {
     
     // Note: Because this component is stateful, we can't generate the XML easily.
     // The live preview will be a fully interactive instance.
-    const code = `<Combobox placeholder="${placeholder}" /> 
-{/* items, value, and onChange are managed in the preview */}`;
+    const code = `<Combobox 
+    items={[
+        { value: 'react', label: 'React' },
+        { value: 'vue', label: 'Vue.js' },
+        // ... more items
+    ]}
+    placeholder="${placeholder}" 
+/> 
+// The 'value' and 'onChange' props are managed in the live preview.`;
 
     return (
         <DemoSection
             title="Combobox"
             description="An input field that combines a text input with a dropdown list for filtering and selecting options."
+            livePreview={
+                <Combobox
+                    items={frameworks}
+                    value={value}
+                    onChange={setValue}
+                    placeholder={placeholder}
+                />
+            }
             initialCode={code}
             propControls={
                 <ComboboxConfigurator placeholder={placeholder} setPlaceholder={setPlaceholder} value={value} />

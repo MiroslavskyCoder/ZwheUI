@@ -29,7 +29,8 @@ export const Card: React.FC<CardProps> = ({
         padding: theme.spacing.md,
         borderRadius: '6px',
         backgroundColor: theme.colors.backgroundSecondary,
-        border: `1px solid ${theme.colors.border}`, 
+        border: `1px solid ${theme.colors.border}`,
+        height: '100%',
         transition: 'all 0.3s ease',
         cursor: onClick ? 'pointer' : 'default',
         '@supports (backdrop-filter: none) or (-webkit-backdrop-filter: none)': {

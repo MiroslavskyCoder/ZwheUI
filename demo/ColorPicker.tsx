@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { ColorPicker, Text, Stack, Input } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -129,7 +130,7 @@ export const ColorPickerDemo = () => {
         <DemoSection
             title="Color Picker"
             description="An interactive component for selecting a color using RGB sliders."
-            initialCode={code}
+            livePreview={<ColorPicker value={color} onChange={setColor} />}
             propControls={<ColorPickerConfigurator color={color} setColor={setColor} />}
             documentation={documentation}
             fullSourceCode={fullSourceCode}

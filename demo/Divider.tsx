@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Divider, Text, Stack, SegmentedControl } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -87,7 +88,7 @@ export const DividerDemo = () => {
             }
             propControls={<DividerConfigurator orientation={orientation} setOrientation={setOrientation} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

@@ -1,19 +1,17 @@
 
 import React from 'react'
-import { ThemeProvider } from './src/core/theme/ThemeProvider'
 import { DemoApp } from './demo/DemoApp'
-import { ToastProvider, SnackbarProvider } from './src/components'
+import { ToastProvider } from './src/components/Toast/ToastProvider'
+import { SnackbarProvider } from './src/components/Snackbar/SnackbarProvider'
 
 
 const App = () => {
     return (
-        <ThemeProvider>
-            <ToastProvider>
-                <SnackbarProvider>
-                    <DemoApp />
-                </SnackbarProvider>
-            </ToastProvider>
-        </ThemeProvider>
+        <ToastProvider>
+            <SnackbarProvider>
+                <DemoApp />
+            </SnackbarProvider>
+        </ToastProvider>
     )
 }
 

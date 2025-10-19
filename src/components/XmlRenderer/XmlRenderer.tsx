@@ -1,8 +1,9 @@
 
-
 import React from 'react'
 import { Layer } from '../Layer/Layer'
 import { Stack } from '../Stack/Stack'
+import * as components from '..';
+import * as icons from '../../icons';
 
 export type ComponentMap = {
     [tag: string]: React.ElementType
@@ -55,8 +56,8 @@ function nodeToElement(node: Node, map: ComponentMap): React.ReactNode {
     if (node.nodeType !== Node.ELEMENT_NODE) return null
 
     const el = node as Element
-    const tag = el.tagName.toLowerCase()
-    const Comp = map[tag] || map['div'] || 'div'
+    const tag = el.tagName
+    const Comp = map[tag] || map[tag.toLowerCase()] || 'div';
     const props = parseAttributes(el)
 
     const children = Array.from(el.childNodes).map((childNode, index) => {
@@ -73,8 +74,13 @@ function nodeToElement(node: Node, map: ComponentMap): React.ReactNode {
     return React.createElement(Comp as any, props);
 }
 
+// FIX: Destructure all hooks from the components import to prevent type errors when creating the component map.
+// FIX: Also destructure XmlRenderer to prevent a circular dependency.
+const { useTreeItem, useToast, useSnackbar, useAudio, useVideo, usePopperContext, XmlRenderer: _, ...renderableComponents } = components;
+const allComponentsMap = { ...renderableComponents, ...icons };
+
 export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components = {} }) => {
-    const map = { ...defaultMap, ...components }
+    const map = { ...defaultMap, ...allComponentsMap, ...components }
 
     if (typeof window === 'undefined' || typeof window.DOMParser === 'undefined') {
         // server-side or no DOMParser: very simple fallback

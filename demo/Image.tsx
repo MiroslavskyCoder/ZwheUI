@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Image, Text, Stack, Grid, Icon, Input, SegmentedControl } from '../src/components';
 import { ImageIcon } from '../src/icons';
@@ -129,7 +130,7 @@ export const ImageDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

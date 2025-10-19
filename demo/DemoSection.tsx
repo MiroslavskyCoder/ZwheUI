@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
     Sofa, Stack, Text, Accordion, AccordionItem, AccordionTrigger, AccordionContent, 
@@ -19,9 +20,9 @@ interface DemoSectionProps {
 }
 
 // Create a map of all available components and icons for the XmlRenderer
-// FIX: The component map was causing a type error with `useTreeItem`.
-// `useTreeItem` is a hook, not a component, and should be excluded.
-const { useTreeItem, ...renderableComponents } = components;
+// FIX: Destructure all hooks from the components import to prevent type errors when creating the component map.
+// FIX: Also destructure XmlRenderer to prevent a circular dependency.
+const { useTreeItem, useToast, useSnackbar, useAudio, useVideo, usePopperContext, XmlRenderer: _, ...renderableComponents } = components;
 const componentMap: ComponentMap = { ...renderableComponents, ...icons };
 
 
@@ -87,7 +88,7 @@ export const DemoSection: React.FC<DemoSectionProps> = ({
                                     <div style={{ height: '250px' }}>
                                         <CodeEditor value={code} onChange={setCode} />
                                     </div>
-                                    <Text size="xs" color="textSecondary" style={{marginTop: '0.5rem'}}>
+                                    <Text size="xs" color={theme.colors.textSecondary} style={{marginTop: '0.5rem'}}>
                                         Note: Editing the code here directly may be overwritten if you change a value in the "Props" panel.
                                     </Text>
                                 </Sofa>

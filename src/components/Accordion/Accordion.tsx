@@ -94,8 +94,8 @@ export const AccordionContent: React.FC<{ children: React.ReactNode; value?: str
     });
 
     const innerClass = createStyle({
-         paddingBottom: isOpen ? theme.spacing.md : '0',
-         color: theme.colors.textSecondary,
+        paddingBottom: isOpen ? theme.spacing.md : '0',
+        color: theme.colors.textSecondary,
     });
 
     return (

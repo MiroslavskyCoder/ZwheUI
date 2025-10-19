@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { StyledMenu, Text, Stack, Icon, Kbd } from '../src/components';
 import { PencilIcon, CopyIcon, ArchiveIcon, TrashIcon } from '../src/icons';
@@ -40,8 +41,7 @@ interface MenuGroupData {
     items: MenuItemData[];
     divider?: 'after'; // Adds a divider after this group
 }
-\`\`\`
-`;
+\`\`\``;
 
 const fullSourceCode = `/* This file contains the implementation for the high-level StyledMenu. */
 import React from 'react'
@@ -99,8 +99,25 @@ export const StyledMenu: React.FC<StyledMenuProps> = ({ label, items, className 
     )
 }`;
 
-const initialCode = `<StyledMenu label="Actions" />
-{/* The 'items' prop is complex and configured in the live preview */}`;
+const initialCode = `<StyledMenu 
+    label="Actions" 
+    items={[
+        {
+            items: [
+                { label: 'Edit', icon: '<PencilIcon/>', shortcut: '⌘E' },
+                { type: 'divider' },
+                { label: 'Archive', icon: '<ArchiveIcon/>', disabled: true },
+            ],
+            divider: 'after'
+        },
+        {
+            title: 'Destructive',
+            items: [
+                { label: 'Delete', icon: '<TrashIcon/>', shortcut: '⌘⌫' },
+            ]
+        }
+    ]}
+/>`;
 
 export const MenuDemo = () => {
     const menuItems = [
@@ -125,6 +142,7 @@ export const MenuDemo = () => {
         <DemoSection
             title="Menu"
             description={<span>A styled dropdown menu. Dividers can be added within a group using <Kbd>{`{ type: 'divider' }`}</Kbd> or between groups using the `divider: 'after'` prop.</span>}
+            livePreview={<StyledMenu label="Actions" items={menuItems} />}
             initialCode={initialCode}
             propControls={
                 <Text color="textSecondary">This is a standard implementation of the StyledMenu component. The `items` prop is a complex object not suitable for simple controls.</Text>

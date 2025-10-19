@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tag, Text, Stack, Input, SegmentedControl, Checkbox } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -116,7 +117,7 @@ export const TagDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

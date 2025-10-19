@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Editable, Text, Stack, useToast, Input } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -113,7 +114,7 @@ export const EditableDemo = () => {
                 <EditableConfigurator defaultValue={defaultValue} setDefaultValue={setDefaultValue} />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

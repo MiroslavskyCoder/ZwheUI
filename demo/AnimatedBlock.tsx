@@ -117,8 +117,9 @@ export const AnimatedBlockDemo = () => (
     <DemoSection
         title="Animated Block"
         description="An interactive demonstration of the `useCurveAnimation` hook. The buttons in the preview control the animation. The 'Props' tab is empty as this is a self-contained demo component."
+        livePreview={<AnimatedBlock />}
         initialCode={`<AnimatedBlock />`}
-        propControls={<Text color="textSecondary">This is a self-contained demo. Use the controls in the 'Preview' tab to test different animation curves.</Text>}
+        propControls={<Text color="textSecondary">This is a self-contained demo. Use the controls in the 'Live Preview' panel to test different animation curves.</Text>}
         documentation={documentation}
         fullSourceCode={fullSourceCode}
     />

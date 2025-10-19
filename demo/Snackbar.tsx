@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Text, Stack, Button } from '../src/components';
 import { useSnackbar } from '../src/components/Snackbar/useSnackbar';
@@ -112,6 +113,6 @@ export const SnackbarDemo = () => (
         }
         propControls={<SnackbarConfigurator />}
         documentation={documentation}
-        sourceCode={sourceCode}
+        fullSourceCode={sourceCode}
     />
 );

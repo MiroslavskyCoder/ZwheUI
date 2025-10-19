@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { IconButton, Text, Stack, Checkbox, SegmentedControl } from '../src/components';
 import { SettingsIcon } from '../src/icons';
@@ -94,7 +95,7 @@ export const IconButtonDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

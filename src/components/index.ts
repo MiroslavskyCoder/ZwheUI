@@ -1,7 +1,4 @@
 
-
-
-
 export * from './Accordion/Accordion';
 export * from './Alert/Alert';
 export * from './AnimatedBlock/AnimatedBlock';
@@ -85,6 +82,7 @@ export * from './RadioGroup/RadioGroup';
 export * from './Rating/Rating';
 export * from './Search/Search';
 export * from './SegmentedControl/SegmentedControl';
+// FIX: Export `Select` component.
 export * from './Select/Select';
 export * from './Sidebar/Sidebar';
 // FIX: Removed legacy export for `SignInPage`. Authentication components are now exclusively exported from the `core` module.

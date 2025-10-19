@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { PinInput, Text, Stack, Slider } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -90,7 +91,7 @@ export const PinInputDemo = () => {
             }
             propControls={<PinInputConfigurator length={length} setLength={setLength} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

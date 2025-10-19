@@ -7,6 +7,7 @@ import { Icon } from '../Icon/Icon';
 interface SidebarProps {
     children: React.ReactNode;
     width?: string;
+    // FIX: Add height prop to allow for flexible height adjustments.
     height?: string;
     className?: string;
 }

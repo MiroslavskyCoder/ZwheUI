@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ButtonGroup, Button, Text, Stack, Checkbox } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -85,7 +86,7 @@ export const ButtonGroupDemo = () => {
                 <ButtonGroupConfigurator isAttached={isAttached} setIsAttached={setIsAttached} />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

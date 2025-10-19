@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Center, Text, Stack, Card, Input } from '../src/components';
 import { useTheme } from '../src/core';
@@ -59,7 +60,7 @@ export const CenterDemo = () => {
             }
             propControls={<CenterConfigurator as={as} setAs={setAs} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

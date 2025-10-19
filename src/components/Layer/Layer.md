@@ -1,17 +1,17 @@
 # Layer
 
-A layout utility component for controlling the stacking order of elements using `z-index`.
+A layout utility component for controlling the stacking order of elements using \`z-index\`.
 
 ## Props
 
-*   `children` (React.ReactNode): The content to be rendered inside the layer.
-*   `z` (number, optional, default: 0): The `z-index` value to apply to the layer.
-*   `className` (string, optional): Additional CSS classes for custom styling.
-*   `style` (React.CSSProperties, optional): Inline styles for the layer.
+*   \`children\` (React.ReactNode): The content to be rendered inside the layer.
+*   \`z\` (number, optional, default: 0): The \`z-index\` value to apply to the layer.
+*   \`className\` (string, optional): Additional CSS classes for custom styling.
+*   \`style\` (React.CSSProperties, optional): Inline styles for the layer.
 
 ## Usage
 
-```tsx
+\`\`\`tsx
 import { Layer, Card, Text } from './src/components';
 
 <div style={{ position: 'relative', height: '100px' }}>
@@ -22,4 +22,7 @@ import { Layer, Card, Text } from './src/components';
         <Card>Top Layer</Card>
     </Layer>
 </div>
+\`\`\``]></content>
+  </change>
+</changes>
 ```
