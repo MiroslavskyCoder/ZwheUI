@@ -8,6 +8,7 @@ export interface Position {
 export interface SocketData {
     id: string;
     label: string;
+    type: string; // e.g., 'number', 'image', 'any'
     value?: any; // Static value for an input socket if not connected
     color?: string; // Color for connections originating from this output socket
 }
@@ -18,6 +19,7 @@ export interface NodeData {
     position: Position;
     inputs: SocketData[];
     outputs: SocketData[];
+    size?: { width: number; height: number };
     component?: React.FC<{ 
         data: NodeData; 
         inputs: Record<string, any>; 

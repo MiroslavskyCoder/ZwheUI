@@ -51,7 +51,7 @@ const DisplayComponent: React.FC<{ inputs: Record<string, any> }> = ({ inputs })
 export const numberNodeType: Omit<NodeData, 'id' | 'position'> = {
     label: 'Number Input',
     inputs: [],
-    outputs: [{ id: 'value', label: 'Value', color: '#60a5fa' }],
+    outputs: [{ id: 'value', label: 'Value', type: 'number', color: '#60a5fa' }],
     component: NumberComponent,
     process: (inputs, data) => ({ value: data?.value ?? 0 }),
     data: { value: 10 },
@@ -60,7 +60,7 @@ export const numberNodeType: Omit<NodeData, 'id' | 'position'> = {
 export const sliderNodeType: Omit<NodeData, 'id' | 'position'> = {
     label: 'Slider Input',
     inputs: [],
-    outputs: [{ id: 'value', label: 'Value', color: '#f59e0b' }],
+    outputs: [{ id: 'value', label: 'Value', type: 'number', color: '#f59e0b' }],
     component: SliderComponent,
     process: (inputs, data) => ({ value: data?.value ?? 50 }),
     data: { value: 50 },
@@ -69,26 +69,26 @@ export const sliderNodeType: Omit<NodeData, 'id' | 'position'> = {
 export const addNodeType: Omit<NodeData, 'id' | 'position'> = {
     label: 'Add',
     inputs: [
-        { id: 'a', label: 'A', value: 0 },
-        { id: 'b', label: 'B', value: 0 },
+        { id: 'a', label: 'A', type: 'number', value: 0 },
+        { id: 'b', label: 'B', type: 'number', value: 0 },
     ],
-    outputs: [{ id: 'result', label: 'Result', color: '#10b981' }],
+    outputs: [{ id: 'result', label: 'Result', type: 'number', color: '#10b981' }],
     process: (inputs) => ({ result: (inputs.a ?? 0) + (inputs.b ?? 0) }),
 };
 
 export const subtractNodeType: Omit<NodeData, 'id' | 'position'> = {
     label: 'Subtract',
     inputs: [
-        { id: 'a', label: 'A', value: 0 },
-        { id: 'b', label: 'B', value: 0 },
+        { id: 'a', label: 'A', type: 'number', value: 0 },
+        { id: 'b', label: 'B', type: 'number', value: 0 },
     ],
-    outputs: [{ id: 'result', label: 'Result', color: '#ef4444' }],
+    outputs: [{ id: 'result', label: 'Result', type: 'number', color: '#ef4444' }],
     process: (inputs) => ({ result: (inputs.a ?? 0) - (inputs.b ?? 0) }),
 };
 
 export const displayNodeType: Omit<NodeData, 'id' | 'position'> = {
     label: 'Display',
-    inputs: [{ id: 'value', label: 'Value' }],
+    inputs: [{ id: 'value', label: 'Value', type: 'any' }],
     outputs: [],
     component: DisplayComponent,
 };
@@ -96,10 +96,10 @@ export const displayNodeType: Omit<NodeData, 'id' | 'position'> = {
 export const openGLNodeType: Omit<NodeData, 'id' | 'position'> = {
     label: 'GPU Shader (Concept)',
     inputs: [
-        { id: 'color', label: 'Color' },
-        { id: 'position', label: 'Position' },
+        { id: 'color', label: 'Color', type: 'any' },
+        { id: 'position', label: 'Position', type: 'any' },
     ],
-    outputs: [{ id: 'fragColor', label: 'Frag Color' }],
+    outputs: [{ id: 'fragColor', label: 'Frag Color', type: 'any' }],
     process: (inputs) => ({ fragColor: inputs.color ?? { r: 0, g: 0, b: 0, a: 1 } }),
     component: () => <Text size="12px" color="textSecondary">This node simulates a shader.</Text>
 };

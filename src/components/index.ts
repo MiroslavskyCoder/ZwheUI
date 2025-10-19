@@ -50,6 +50,7 @@ export * from './GraphicsNodeEditor/GraphicsNodeEditor';
 export * from './GraphicsNodeEditor/graphProcessor';
 export * from './GraphicsNodeEditor/Node';
 export * from './GraphicsNodeEditor/nodeTypes';
+export * from './GraphicsNodeEditor/imageNodeTypes';
 export * from './Grid/Grid';
 export * from './Header/Header';
 export * from './HoverCard/HoverCard';

@@ -5,7 +5,7 @@ import { Connection } from './Connection';
 import { useStyles, useTheme } from '../../core';
 import { DraftConnection } from './DraftConnection';
 import { processGraph } from './graphProcessor';
-import { ContextMenu, ContextMenuItem, Dialog, Input } from '..';
+import { ContextMenu, ContextMenuItem, Dialog, Input, useToast } from '..';
 
 interface GraphicsProviderProps {
     children: React.ReactNode;
@@ -23,6 +23,7 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
     const [draftConnection, setDraftConnection] = useState<{ start: Position, end: Position } | null>(null);
     const [nodeOutputs, setNodeOutputs] = useState<Record<string, Record<string, any>>>({});
     const [socketRelativePositions, setSocketRelativePositions] = useState<Record<string, Record<string, Position>>>({});
+    const { addToast } = useToast();
 
     const nodesRef = useRef(nodes);
     useEffect(() => {
@@ -144,27 +145,54 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
             const end = { nodeId, socketId, type };
             
             if (start.type !== end.type && start.nodeId !== end.nodeId) {
-                const source = start.type === 'output' ? start : end;
-                const target = start.type === 'input' ? start : end;
-                
-                const isTargetConnected = connections.some(c => c.targetNodeId === target.nodeId && c.targetSocketId === target.socketId);
+                const sourceInfo = start.type === 'output' ? start : end;
+                const targetInfo = start.type === 'input' ? start : end;
 
-                if (!isTargetConnected) {
-                     const newConnection: ConnectionData = {
-                        id: `conn_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-                        sourceNodeId: source.nodeId,
-                        sourceSocketId: source.socketId,
-                        targetNodeId: target.nodeId,
-                        targetSocketId: target.socketId,
-                        type: 'curved',
-                     };
-                     setConnections(prev => [...prev, newConnection]);
+                const sourceNode = nodes.find(n => n.id === sourceInfo.nodeId);
+                const targetNode = nodes.find(n => n.id === targetInfo.nodeId);
+
+                if (sourceNode && targetNode) {
+                    const sourceSocket = sourceNode.outputs.find(s => s.id === sourceInfo.socketId);
+                    const targetSocket = targetNode.inputs.find(s => s.id === targetInfo.socketId);
+
+                    if (sourceSocket && targetSocket) {
+                        const sourceType = sourceSocket.type;
+                        const targetType = targetSocket.type;
+                        const areTypesCompatible = sourceType === 'any' || targetType === 'any' || sourceType === targetType;
+
+                        if (!areTypesCompatible) {
+                            addToast({
+                                title: 'Connection Error',
+                                description: `Cannot connect type '${sourceType}' to type '${targetType}'.`,
+                                variant: 'error',
+                            });
+                        } else {
+                            const isTargetConnected = connections.some(c => c.targetNodeId === targetInfo.nodeId && c.targetSocketId === targetInfo.socketId);
+                            if (!isTargetConnected) {
+                                const newConnection: ConnectionData = {
+                                    id: `conn_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+                                    sourceNodeId: sourceInfo.nodeId,
+                                    sourceSocketId: sourceInfo.socketId,
+                                    targetNodeId: targetInfo.nodeId,
+                                    targetSocketId: targetInfo.socketId,
+                                    type: 'curved',
+                                };
+                                setConnections(prev => [...prev, newConnection]);
+                            } else {
+                                 addToast({
+                                    title: 'Connection Warning',
+                                    description: `Input '${targetSocket.label}' is already connected.`,
+                                    variant: 'warning',
+                                });
+                            }
+                        }
+                    }
                 }
             }
         }
         connectingRef.current = null;
         setDraftConnection(null);
-    }, [connections]);
+    }, [connections, nodes, addToast]);
     
     const handleMouseMove = useCallback((e: MouseEvent) => {
         if (connectingRef.current && editorRef.current) {
