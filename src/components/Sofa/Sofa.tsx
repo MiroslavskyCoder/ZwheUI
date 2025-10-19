@@ -14,8 +14,7 @@ export const Sofa: React.FC<SofaProps> = ({ children, className = '', title, des
     const { theme } = useTheme();
     const createStyle = useStyles('sofa');
     
-    const sofaClass = createStyle({
-        width: '100%',
+    const sofaClass = createStyle({ 
         padding: '24px',
         backgroundColor: theme.colors.backgroundSecondary,
         borderRadius: '8px',
