@@ -5,7 +5,7 @@ import { Connection } from './Connection';
 import { useStyles, useTheme } from '../../core';
 import { DraftConnection } from './DraftConnection';
 import { processGraph } from './graphProcessor';
-import { ContextMenu, ContextMenuItem } from '../ContextMenu/ContextMenu';
+import { ContextMenu, ContextMenuItem, Dialog, Input } from '..';
 
 interface GraphicsProviderProps {
     children: React.ReactNode;
@@ -28,6 +28,35 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
     useEffect(() => {
         nodesRef.current = nodes;
     }, [nodes]);
+    
+    const pendingSocketPositions = useRef<Record<string, Record<string, Position>>>({});
+    const positionUpdateTimer = useRef<number | null>(null);
+
+    useEffect(() => {
+        // Cleanup timer on unmount
+        return () => {
+            if (positionUpdateTimer.current !== null) {
+                clearTimeout(positionUpdateTimer.current);
+            }
+        };
+    }, []);
+
+    const registerSocketPositions = useCallback((nodeId: string, positions: Record<string, Position>) => {
+        pendingSocketPositions.current[nodeId] = positions;
+
+        if (positionUpdateTimer.current !== null) {
+            clearTimeout(positionUpdateTimer.current);
+        }
+
+        positionUpdateTimer.current = window.setTimeout(() => {
+            setSocketRelativePositions(prev => ({
+                ...prev,
+                ...pendingSocketPositions.current
+            }));
+            pendingSocketPositions.current = {};
+            positionUpdateTimer.current = null;
+        }, 0);
+    }, []);
 
     const getNodes = useCallback(() => {
         return nodesRef.current;
@@ -51,13 +80,6 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
         setNodes(prev => prev.filter(n => n.id !== nodeId));
         setConnections(prev => prev.filter(c => c.sourceNodeId !== nodeId && c.targetNodeId !== nodeId));
     }, [setNodes, setConnections]);
-    
-    const registerSocketPositions = useCallback((nodeId: string, positions: Record<string, Position>) => {
-        setSocketRelativePositions(prev => ({
-            ...prev,
-            [nodeId]: positions,
-        }));
-    }, []);
 
     const autoConnect = useCallback((sourceNodeId: string, sourceSocketId: string) => {
         const sourceNode = nodes.find(n => n.id === sourceNodeId);
@@ -260,6 +282,13 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
         node: NodeData | null;
     }>({ isOpen: false, position: { x: 0, y: 0 }, node: null });
 
+    const [renameDialog, setRenameDialog] = useState<{
+        isOpen: boolean;
+        nodeId: string | null;
+        currentName: string;
+    }>({ isOpen: false, nodeId: null, currentName: '' });
+    const [newNodeName, setNewNodeName] = useState('');
+
 
     const editorClass = createStyle({
         width: '100%',
@@ -362,6 +391,18 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
         setNodeContextMenu(prev => ({ ...prev, isOpen: false, node: null }));
     };
 
+    const handleCloseRenameDialog = () => {
+        setRenameDialog({ isOpen: false, nodeId: null, currentName: '' });
+        setNewNodeName('');
+    };
+
+    const handleSaveNodeName = () => {
+        if (renameDialog.nodeId && newNodeName.trim()) {
+            updateNode(renameDialog.nodeId, { label: newNodeName.trim() });
+        }
+        handleCloseRenameDialog();
+    };
+
     const connectionPoints = useMemo(() => {
         return connections.map(conn => {
             const sourceNode = nodes.find(n => n.id === conn.sourceNodeId);
@@ -437,10 +478,8 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
             {
                 label: 'Rename Node',
                 onClick: () => {
-                    const newLabel = prompt('Enter new node name:', node.label);
-                    if (newLabel) {
-                        updateNode(node.id, { label: newLabel });
-                    }
+                    setNewNodeName(node.label);
+                    setRenameDialog({ isOpen: true, nodeId: node.id, currentName: node.label });
                     closeNodeContextMenu();
                 }
             },
@@ -525,6 +564,30 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
                     position={nodeContextMenu.position}
                     items={nodeContextMenuItems}
                 />
+            )}
+            {renameDialog.isOpen && (
+                 <Dialog
+                    isOpen={renameDialog.isOpen}
+                    onClose={handleCloseRenameDialog}
+                    title={`Rename Node: "${renameDialog.currentName}"`}
+                    actions={[
+                        { label: 'Cancel', onClick: handleCloseRenameDialog, variant: 'secondary' },
+                        { label: 'Save', onClick: handleSaveNodeName, variant: 'primary' }
+                    ]}
+                >
+                    <Input
+                        label="New Name"
+                        value={newNodeName}
+                        onChange={(e) => setNewNodeName(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleSaveNodeName();
+                            }
+                        }}
+                        autoFocus
+                    />
+                </Dialog>
             )}
         </div>
     );
