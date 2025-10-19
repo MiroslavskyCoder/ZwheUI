@@ -7,12 +7,14 @@ interface LinearProgressProps {
     value?: number; // 0 to 100
     height?: string;
     className?: string;
+    'aria-label'?: string;
 }
 
 export const LinearProgress: React.FC<LinearProgressProps> = ({
     value,
     height = '4px',
     className = '',
+    'aria-label': ariaLabel = 'Loading progress'
 }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('linear-progress');
@@ -48,7 +50,14 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
     });
 
     return (
-        <div className={`${containerClass} ${className}`}>
+        <div
+            className={`${containerClass} ${className}`}
+            role="progressbar"
+            aria-valuenow={isIndeterminate ? undefined : value}
+            aria-valuemin={isIndeterminate ? undefined : 0}
+            aria-valuemax={isIndeterminate ? undefined : 100}
+            aria-label={ariaLabel}
+        >
             <div className={barClass} />
         </div>
     );

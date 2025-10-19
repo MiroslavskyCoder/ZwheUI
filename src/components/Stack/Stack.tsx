@@ -2,7 +2,8 @@ import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 
 interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
-    direction?: 'row' | 'column';
+    // FIX: Add `row-reverse` and `column-reverse` to support more flexbox layouts.
+    direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
     gap?: string;
     align?: 'start' | 'center' | 'end' | 'stretch' | 'baseline';
     justify?: 'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly';

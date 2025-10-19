@@ -8,6 +8,7 @@ interface CircularProgressProps {
     size?: number;
     strokeWidth?: number;
     className?: string;
+    'aria-label'?: string;
 }
 
 export const CircularProgress: React.FC<CircularProgressProps> = ({
@@ -15,6 +16,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
     size = 48,
     strokeWidth = 4,
     className = '',
+    'aria-label': ariaLabel = 'Loading progress'
 }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('circular-progress');
@@ -67,7 +69,14 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
     });
 
     return (
-        <div className={`${containerClass} ${className}`}>
+        <div
+            className={`${containerClass} ${className}`}
+            role="progressbar"
+            aria-valuenow={isIndeterminate ? undefined : value}
+            aria-valuemin={isIndeterminate ? undefined : 0}
+            aria-valuemax={isIndeterminate ? undefined : 100}
+            aria-label={ariaLabel}
+        >
             <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className={svgClass}>
                 <circle
                     className={circleBaseClass}

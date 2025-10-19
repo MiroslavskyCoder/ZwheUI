@@ -4,7 +4,13 @@ import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 
 export const Timeline: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className }) => {
-    return <div className={className}>{children}</div>;
+    const createStyle = useStyles('timeline-list');
+    const listClass = createStyle({
+        listStyle: 'none',
+        padding: 0,
+        margin: 0,
+    });
+    return <ul className={`${listClass} ${className}`}>{children}</ul>;
 };
 
 export const TimelineItem: React.FC<{ children: React.ReactNode, isLast?: boolean }> = ({ children, isLast }) => {
@@ -14,7 +20,7 @@ export const TimelineItem: React.FC<{ children: React.ReactNode, isLast?: boolea
         position: 'relative',
         paddingBottom: isLast ? '0' : '2rem',
     });
-    return <div className={itemClass}>{children}</div>;
+    return <li className={itemClass}>{children}</li>;
 };
 
 export const TimelineConnector: React.FC = () => {

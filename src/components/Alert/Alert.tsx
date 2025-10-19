@@ -45,7 +45,7 @@ export const Alert: React.FC<AlertProps> = ({ title, children, variant = 'info',
 
     return (
         <div role="alert" className={`${containerClass} ${className}`}>
-            <span style={{ flexShrink: 0, width: '20px', height: '20px' }} dangerouslySetInnerHTML={iconHtml}></span>
+            <span aria-hidden="true" style={{ flexShrink: 0, width: '20px', height: '20px' }} dangerouslySetInnerHTML={iconHtml}></span>
             <div>
                 <Text weight="600" style={{ marginBottom: '0.25rem' }}>{title}</Text>
                 {children && <Text size="0.875rem" color="inherit" style={{ opacity: 0.8 }}>{children}</Text>}

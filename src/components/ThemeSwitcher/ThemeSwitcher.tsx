@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Stack, SegmentedControl, Text, defaultTheme, Theme } from '..';
-import { useTheme } from '../../core/theme/ThemeProvider';
+// FIX: `defaultTheme` and `Theme` are not exported from `..`. They should be imported from the core library.
+import { Card, Input, Stack, SegmentedControl, Text } from '..';
+import { Theme } from '../../core';
+import { useTheme, defaultTheme } from '../../core/theme/ThemeProvider';
 import { useDebounce } from '../../core/hooks/useInteractions';
 
 

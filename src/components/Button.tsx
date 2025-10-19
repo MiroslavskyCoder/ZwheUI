@@ -37,11 +37,10 @@ export const Button: React.FC<ButtonProps> = ({ variant = 'primary', className =
 
   const variants = {
     primary: createStyle({
-      backgroundColor: isDark ? theme.colors.backgroundSecondary : theme.colors.primary,
-      color: isDark ? theme.colors.text : '#fff',
-      borderColor: theme.colors.border,
+      backgroundColor: theme.colors.primary,
+      color: isDark ? '#172554' : '#fff', // Use dark text on light blue, white text on dark blue
       '&:hover:not(:disabled)': {
-        backgroundColor: isDark ? theme.colors.border : '#1d4ed8' // darker blue
+        filter: isDark ? 'brightness(1.2)' : 'brightness(0.9)',
       },
        '&:focus-visible': {
         boxShadow: `0 0 0 2px ${theme.colors.background}, 0 0 0 4px ${theme.colors.primary}`
@@ -60,9 +59,8 @@ export const Button: React.FC<ButtonProps> = ({ variant = 'primary', className =
     accent: createStyle({
       backgroundColor: theme.colors.accent,
       color: '#fff',
-      borderColor: theme.colors.border,
       '&:hover:not(:disabled)': {
-        backgroundColor: '#d97706' // darker orange
+        filter: 'brightness(0.9)',
       },
       '&:focus-visible': {
         boxShadow: `0 0 0 2px ${theme.colors.background}, 0 0 0 4px ${theme.colors.accent}`

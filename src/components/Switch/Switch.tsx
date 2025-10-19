@@ -25,7 +25,7 @@ export const Switch: React.FC<SwitchProps> = ({ label, id, checked, disabled, ..
         borderRadius: '999px',
         backgroundColor: checked ? theme.colors.primary : theme.colors.border,
         position: 'relative',
-        transition: 'background-color 0.2s',
+        transition: 'all 0.2s',
     });
     
     const thumbClass = createStyle({
@@ -39,6 +39,16 @@ export const Switch: React.FC<SwitchProps> = ({ label, id, checked, disabled, ..
         transition: 'left 0.2s ease',
     });
 
+    const inputClass = createStyle({
+        position: 'absolute', 
+        opacity: 0, 
+        width: 0, 
+        height: 0,
+         '&:focus-visible + div': {
+             boxShadow: `0 0 0 2px ${theme.colors.background}, 0 0 0 4px ${theme.colors.primary}`,
+        }
+    });
+
     return (
         <label htmlFor={id} className={containerClass}>
             <input
@@ -49,7 +59,7 @@ export const Switch: React.FC<SwitchProps> = ({ label, id, checked, disabled, ..
                 role="switch"
                 aria-checked={checked}
                 {...props}
-                style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }}
+                className={inputClass}
             />
             <div className={trackClass}>
                 <div className={thumbClass}></div>

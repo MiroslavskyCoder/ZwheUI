@@ -30,7 +30,14 @@ export const Rating: React.FC<RatingProps> = ({
         backgroundColor: 'rgba(0, 0, 0, 0.3)',
         backdropFilter: 'blur(8px)',
         borderRadius: '8px',
-        border: '1px solid rgba(255, 255, 255, 0.1)'
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        cursor: readonly ? 'default' : 'pointer',
+        '&:focus': {
+            outline: 'none',
+        },
+        '&:focus-visible': {
+            boxShadow: `0 0 0 2px ${theme.colors.background}, 0 0 0 4px ${theme.colors.primary}`,
+        }
     })
 
     const sizes = {
@@ -42,9 +49,9 @@ export const Rating: React.FC<RatingProps> = ({
     const starClass = createStyle({
         width: sizes[size],
         height: sizes[size],
-        cursor: readonly ? 'default' : 'pointer',
         position: 'relative',
         transition: 'all 0.2s ease',
+        pointerEvents: 'none', // Clicks are handled by the container
         '&::before': {
             content: '"★"',
             position: 'absolute',
@@ -59,27 +66,59 @@ export const Rating: React.FC<RatingProps> = ({
         '&[data-filled="true"]::before': {
             color: theme.colors.primary,
             textShadow: `0 0 10px ${theme.colors.primary}, 0 0 20px ${theme.colors.primary}`
-        },
-        '&:hover::before': readonly ? undefined : {
-            transform: 'translate(-50%, -50%) scale(1.1)',
-            textShadow: `0 0 15px ${theme.colors.primary}, 0 0 30px ${theme.colors.primary}`
         }
     })
 
     const handleClick = (index: number) => {
         if (!readonly && onChange) {
-        onChange(index + 1)
+            onChange(index + 1)
         }
     }
+    
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (readonly || !onChange) return;
+        
+        let newValue = value;
+        if (event.key === 'ArrowRight') {
+            newValue = Math.min(max, value + 1);
+        } else if (event.key === 'ArrowLeft') {
+            newValue = Math.max(0, value - 1);
+        } else if (event.key === 'Home') {
+            newValue = 0;
+        } else if (event.key === 'End') {
+            newValue = max;
+        }
+
+        if (newValue !== value) {
+            event.preventDefault();
+            onChange(newValue);
+        }
+    };
+    
+    const interactiveProps = readonly ? {} : {
+        tabIndex: 0,
+        role: "slider",
+        "aria-valuemin": 0,
+        "aria-valuemax": max,
+        "aria-valuenow": value,
+        "aria-label": "Rating",
+        onKeyDown: handleKeyDown,
+    };
 
     return (
-        <div className={`${containerClass} ${className}`}>
+        <div 
+            className={`${containerClass} ${className}`}
+            {...interactiveProps}
+            role={readonly ? "img" : "slider"}
+            aria-label={readonly ? `${value} out of ${max} stars` : "Rating"}
+        >
             {Array.from({ length: max }, (_, i) => (
                 <span
                     key={i}
                     className={starClass}
                     data-filled={i < value}
                     onClick={() => handleClick(i)}
+                    aria-hidden="true"
                 />
             ))}
         </div>

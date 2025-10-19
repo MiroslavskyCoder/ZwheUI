@@ -72,7 +72,7 @@ export const Pagination: React.FC<PaginationProps> = ({ count, page, onChange, c
                  <Button key={1} onClick={() => handlePageChange(1)} variant="secondary" className={pageButtonClass}>1</Button>
              );
              if (startPage > 2) {
-                pageNumbers.push(<Text key="start-ellipsis" style={{padding: '0 8px'}}>...</Text>);
+                pageNumbers.push(<Text key="start-ellipsis" style={{padding: '0 8px'}} aria-hidden="true">...</Text>);
              }
         }
         
@@ -84,6 +84,8 @@ export const Pagination: React.FC<PaginationProps> = ({ count, page, onChange, c
                     onClick={() => handlePageChange(i)}
                     variant={isActive ? 'primary' : 'secondary'}
                     className={`${pageButtonClass} ${isActive ? activePageButtonClass : ''}`}
+                    aria-current={isActive ? 'page' : undefined}
+                    disabled={isActive}
                 >
                     {i}
                 </Button>
@@ -92,7 +94,7 @@ export const Pagination: React.FC<PaginationProps> = ({ count, page, onChange, c
 
         if (endPage < count) {
             if (endPage < count - 1) {
-                pageNumbers.push(<Text key="end-ellipsis" style={{padding: '0 8px'}}>...</Text>);
+                pageNumbers.push(<Text key="end-ellipsis" style={{padding: '0 8px'}} aria-hidden="true">...</Text>);
             }
             pageNumbers.push(
                  <Button key={count} onClick={() => handlePageChange(count)} variant="secondary" className={pageButtonClass}>{count}</Button>

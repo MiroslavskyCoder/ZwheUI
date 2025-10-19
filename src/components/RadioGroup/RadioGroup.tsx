@@ -77,6 +77,16 @@ export const RadioGroupItem: React.FC<RadioGroupItemProps> = ({ value, label, cl
         transition: 'transform 0.2s',
     });
 
+    const inputClass = createStyle({
+        position: 'absolute', 
+        opacity: 0, 
+        width: 0, 
+        height: 0,
+        '&:focus-visible + span': {
+             boxShadow: `0 0 0 2px ${theme.colors.background}, 0 0 0 4px ${theme.colors.primary}`,
+        }
+    });
+
     return (
         <label className={`${containerClass} ${className}`}>
             <input 
@@ -85,7 +95,7 @@ export const RadioGroupItem: React.FC<RadioGroupItemProps> = ({ value, label, cl
                 value={value} 
                 checked={isChecked} 
                 onChange={() => onChange(value)}
-                style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }} 
+                className={inputClass}
             />
             <span className={radioClass}>
                 <span className={indicatorClass}></span>

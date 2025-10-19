@@ -32,6 +32,16 @@ export const Checkbox: React.FC<CheckboxProps> = ({ label, id, className = '', c
         borderColor: checked ? theme.colors.primary : theme.colors.border,
     });
 
+    const inputClass = createStyle({
+        position: 'absolute',
+        opacity: 0,
+        height: 0,
+        width: 0,
+        '&:focus-visible + div': {
+            boxShadow: `0 0 0 2px ${theme.colors.background}, 0 0 0 4px ${theme.colors.primary}`,
+        }
+    });
+
     return (
         <label htmlFor={id} className={`${containerClass} ${className}`}>
             <input 
@@ -40,7 +50,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({ label, id, className = '', c
                 checked={checked} 
                 disabled={disabled}
                 {...props} 
-                style={{ position: 'absolute', opacity: 0, height: 0, width: 0 }} 
+                className={inputClass}
             />
             <div className={customCheckboxClass}>
                  {checked && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={theme.colors.background} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}

@@ -1,93 +1,60 @@
-import React, { createContext, useContext, useReducer, Dispatch } from 'react';
 
-// --- Types ---
+import React, { createContext, useContext } from 'react';
+
+export interface Position {
+    x: number;
+    y: number;
+}
+
+export interface SocketData {
+    id: string;
+    label: string;
+    value?: any; // Static value for an input socket if not connected
+}
+
 export interface NodeData {
     id: string;
     label: string;
-    position: { x: number; y: number };
-    inputs: number;
-    outputs: number;
+    position: Position;
+    inputs: SocketData[];
+    outputs: SocketData[];
+    component?: React.FC<{ 
+        data: NodeData; 
+        inputs: Record<string, any>; 
+        onUpdateData: (newData: Record<string, any>) => void;
+    }>;
+    process?: (inputs: Record<string, any>, data: NodeData['data']) => Record<string, any>;
+    data?: Record<string, any>;
 }
 
 export interface ConnectionData {
-    id: string;
-    fromNode: string;
-    fromSocket: number;
-    toNode: string;
-    toSocket: number;
+    sourceNodeId: string;
+    sourceSocketId: string;
+    targetNodeId: string;
+    targetSocketId: string;
 }
 
-interface GraphicsState {
-    nodes: Record<string, NodeData>;
+export interface GraphicsContextType {
+    nodes: NodeData[];
+    setNodes: React.Dispatch<React.SetStateAction<NodeData[]>>;
     connections: ConnectionData[];
-    pan: { x: number; y: number };
-    zoom: number;
+    setConnections: React.Dispatch<React.SetStateAction<ConnectionData[]>>;
+    
+    pan: Position;
+    setPan: React.Dispatch<React.SetStateAction<Position>>;
+
+    startConnecting: (nodeId: string, socketId: string, type: 'input' | 'output', e: React.MouseEvent) => void;
+    stopConnecting: (nodeId: string, socketId: string, type: 'input' | 'output') => void;
+    isConnecting: boolean;
+    draftConnection: { start: Position, end: Position } | null;
 }
 
-// --- Actions ---
-type Action =
-    | { type: 'MOVE_NODE'; payload: { id: string; position: { x: number; y: number } } }
-    | { type: 'ADD_NODE'; payload: NodeData }
-    | { type: 'ADD_CONNECTION'; payload: ConnectionData }
-    | { type: 'SET_PAN_ZOOM'; payload: { pan: { x: number; y: number }; zoom: number } };
+export const GraphicsContext = createContext<GraphicsContextType | null>(null);
 
-// --- Reducer ---
-const graphicsReducer = (state: GraphicsState, action: Action): GraphicsState => {
-    switch (action.type) {
-        case 'MOVE_NODE':
-            return {
-                ...state,
-                nodes: {
-                    ...state.nodes,
-                    [action.payload.id]: {
-                        ...state.nodes[action.payload.id],
-                        position: action.payload.position,
-                    },
-                },
-            };
-        case 'ADD_CONNECTION':
-            return {
-                ...state,
-                connections: [...state.connections, action.payload],
-            };
-        case 'SET_PAN_ZOOM':
-            return {
-                ...state,
-                ...action.payload,
-            };
-        default:
-            return state;
-    }
-};
-
-// --- Context ---
-interface GraphicsContextType {
-    state: GraphicsState;
-    dispatch: Dispatch<Action>;
-}
-
-const GraphicsContext = createContext<GraphicsContextType | null>(null);
-
-export const useGraphics = () => {
+export const useGraphicsContext = () => {
     const context = useContext(GraphicsContext);
     if (!context) {
-        throw new Error('useGraphics must be used within a GraphicsProvider');
+        throw new Error('useGraphicsContext must be used within a GraphicsProvider');
     }
     return context;
-};
-
-// --- Provider ---
-interface GraphicsProviderProps {
-    children: React.ReactNode;
-    initialState: GraphicsState;
-}
-
-export const GraphicsProvider: React.FC<GraphicsProviderProps> = ({ children, initialState }) => {
-    const [state, dispatch] = useReducer(graphicsReducer, initialState);
-
-    return (
-        <GraphicsContext.Provider value={{ state, dispatch }}>
-            {children}
-        </GraphicsContext.Provider>
-    );
 };

@@ -1,75 +1,103 @@
+import React, { useState } from 'react';
+import { Card, Sofa, Text, Stack, Input, SegmentedControl, Checkbox, Textarea, Error } from '../src/components';
+import { useTheme } from '../src/core';
 
+const CardConfigurator = () => {
+    const { theme } = useTheme();
 
-import React from 'react';
-import { Card, Sofa, Text, Stack } from '../src/components';
-import { useStyles } from '../src/core/hooks/useStyles';
+    // State for each prop
+    const [title, setTitle] = useState('Configurable Card');
+    const [childrenText, setChildrenText] = useState('This is the content of the card. You can edit it using the controls below.');
+    const [className, setClassName] = useState('');
+    const [variant, setVariant] = useState<'default' | 'glass'>('default');
+    const [hasOnClick, setHasOnClick] = useState(true);
+    const [styleString, setStyleString] = useState('{\n  "minHeight": "120px"\n}');
+    const [styleError, setStyleError] = useState('');
 
-const ResponsiveDemo = () => {
-    const createStyle = useStyles('responsive-demo');
-    const responsiveClass = createStyle({
-        padding: '1rem',
-        backgroundColor: '#ef4444', // Red by default
-        color: '#fff',
-        borderRadius: '6px',
-        textAlign: 'center',
-        transition: 'background-color 0.3s',
-        '@media': {
-            "(minWidth: 'sm')": {
-                backgroundColor: '#3b82f6', // Blue on small screens and up
-            },
-            "(minWidth: 'lg')": {
-                 backgroundColor: '#10b981', // Green on large screens and up
-            }
+    // Parse the style string
+    let parsedStyle: React.CSSProperties = { minHeight: '120px' };
+    try {
+        parsedStyle = JSON.parse(styleString);
+    } catch (e) {
+        // Error is handled via the styleError state
+    }
+
+    const handleStyleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newStyleString = e.target.value;
+        setStyleString(newStyleString);
+        try {
+            JSON.parse(newStyleString);
+            setStyleError('');
+        } catch (error) {
+            setStyleError('Invalid JSON format for style object.');
         }
-    });
+    };
+
+    const cardOnClick = hasOnClick ? () => alert('Card was clicked!') : undefined;
 
     return (
-        <div className={responsiveClass}>
-            <Text color="#fff">This block changes color based on screen width ('sm', 'lg'). Resize your browser to see it in action.</Text>
-        </div>
-    )
-}
+        <Stack gap="2rem">
+            {/* Live Preview */}
+            <Sofa title="Live Preview">
+                <Card
+                    title={title}
+                    className={className}
+                    variant={variant}
+                    onClick={cardOnClick}
+                    style={parsedStyle}
+                >
+                    <Text>{childrenText}</Text>
+                </Card>
+            </Sofa>
 
-const ThemedStylingDemo = () => {
-    const createStyle = useStyles('themed-styling-demo');
-    const themedClass = createStyle({
-        padding: '1rem',
-        borderRadius: '2xl', // This resolves to theme.radii['2xl']
-        border: '1px solid rgba(255,255,255,0.2)',
-        '@supports (backdrop-filter: none)': {
-            backdropFilter: "blur(md)" // This resolves to blur(theme.blur.md)
-        },
-        backgroundColor: 'rgba(255,255,255,0.1)'
-    });
+            {/* Controls */}
+            <Sofa title="Configuration">
+                <Stack gap="1.5rem">
+                    <Input label="Title Prop" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter card title" />
+                    
+                    <Stack gap="4px">
+                        {/* FIX: The `Text` component does not support `as="label"`. The recommended pattern is to wrap a `Text` component with `as="span"` inside a standard `<label>` element. */}
+                        <label htmlFor="card-children-input">
+                            <Text as="span" size={theme.typography.fontSizes.sm} weight={theme.typography.fontWeights.medium} color={theme.colors.textSecondary}>Children Prop (Text)</Text>
+                        </label>
+                        <Textarea id="card-children-input" value={childrenText} onChange={(e) => setChildrenText(e.target.value)} rows={3} />
+                    </Stack>
 
-    return (
-        <div className={themedClass}>
-            <Text color="#fff">This block uses theme keys for `borderRadius` ('2xl') and `backdropFilter` ('blur(md)').</Text>
-        </div>
+                    <Input label="ClassName Prop" value={className} onChange={(e) => setClassName(e.target.value)} placeholder="e.g., custom-class" />
+                    
+                    <Stack gap="4px">
+                         {/* FIX: The `Text` component does not support `as="label"`. Changed to `as="span"` for displaying a label for a non-input component. */}
+                         <Text as="span" size={theme.typography.fontSizes.sm} weight={theme.typography.fontWeights.medium} color={theme.colors.textSecondary}>Variant Prop</Text>
+                        <SegmentedControl
+                            options={[{ label: 'Default', value: 'default' }, { label: 'Glass', value: 'glass' }]}
+                            value={variant}
+                            onChange={(val) => setVariant(val as 'default' | 'glass')}
+                        />
+                    </Stack>
+                    
+                    <Checkbox label="Enable onClick Prop (shows an alert)" checked={hasOnClick} onChange={(e) => setHasOnClick(e.target.checked)} />
+
+                    <Stack gap="4px">
+                        {/* FIX: The `Text` component does not support `as="label"`. The recommended pattern is to wrap a `Text` component with `as="span"` inside a standard `<label>` element. */}
+                        <label htmlFor="card-style-input">
+                            <Text as="span" size={theme.typography.fontSizes.sm} weight={theme.typography.fontWeights.medium} color={theme.colors.textSecondary}>Style Prop (JSON Object)</Text>
+                        </label>
+                        <Textarea id="card-style-input" value={styleString} onChange={handleStyleChange} rows={4} style={{ fontFamily: 'monospace' }} />
+                        <Error>{styleError}</Error>
+                    </Stack>
+                </Stack>
+            </Sofa>
+        </Stack>
     );
-}
+};
 
 
 export const CardDemo = () => (
   <Sofa>
     <Stack gap="1rem">
       <Text as="h2" size="1.5rem" weight="600">Card</Text>
-      <Text>A flexible content container. The "glass" variant adds a semi-transparent, blurred background effect. Now supports an `onClick` prop.</Text>
-      <Card>
-        <Text>This is a default card. It's great for containing any kind of content, from text to interactive elements.</Text>
-      </Card>
-      <Card variant="glass">
-        <Text>This is a "glass" card. It's perfect for creating a modern, layered look, especially over dynamic backgrounds.</Text>
-      </Card>
-      <Card onClick={() => alert('Card was clicked!')}>
-        <Text>This card is clickable. The cursor changes to a pointer on hover, and an alert will show when you click it.</Text>
-      </Card>
-      <Text as="h3" size="1.25rem" weight="600" style={{marginTop: '1rem'}}>Responsive Styling</Text>
-      <Text>The styling system now supports theme-aware media queries using breakpoint keys like `sm`, `md`, etc.</Text>
-      <ResponsiveDemo />
-      <Text as="h3" size="1.25rem" weight="600" style={{marginTop: '1rem'}}>Theme-based Styling</Text>
-      <Text>The styling system now supports theme-aware property values for things like `borderRadius` and `backdropFilter`.</Text>
-      <ThemedStylingDemo />
+      <Text>A flexible content container. Use the controls below to configure the card's properties in real-time.</Text>
+      <CardConfigurator />
     </Stack>
   </Sofa>
 );

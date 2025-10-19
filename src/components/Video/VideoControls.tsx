@@ -30,7 +30,12 @@ export const VideoControls: React.FC<{ className?: string }> = ({ className }) =
 
     return (
         <div className={`${containerClass} ${className}`}>
-            <Button variant="secondary" onClick={togglePlay} style={{ padding: '0.5rem' }}>
+            <Button
+                variant="secondary"
+                onClick={togglePlay}
+                style={{ padding: '0.5rem' }}
+                aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
                 <Icon as={isPlaying ? PauseIcon : PlayIcon} size={20} />
             </Button>
             <Stack direction="row" align="center" gap={theme.spacing.sm}>
@@ -48,7 +53,12 @@ export const VideoControls: React.FC<{ className?: string }> = ({ className }) =
             </Stack>
             <Popover>
                 <PopoverTrigger>
-                    <Button variant="secondary" onClick={toggleMute} style={{ padding: '0.5rem' }}>
+                    <Button
+                        variant="secondary"
+                        onClick={toggleMute}
+                        style={{ padding: '0.5rem' }}
+                        aria-label={isMuted ? 'Unmute' : 'Mute'}
+                    >
                         <Icon as={isMuted || volume === 0 ? VolumeMuteIcon : VolumeUpIcon} size={20} />
                     </Button>
                 </PopoverTrigger>

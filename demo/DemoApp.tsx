@@ -1,6 +1,8 @@
 import React from 'react';
-import { Grid, Stack, Text, Tabs, TabList, Tab, TabPanels, TabPanel, Header, Footer, useBreakpoint } from '../src/components';
+// FIX: `useBreakpoint` is not exported from `../src/components`. It should be imported from `../src/core`.
+import { Grid, Stack, Text, Tabs, TabList, Tab, TabPanels, TabPanel, Header, Footer } from '../src/components';
 import { useTheme } from '../src/core/theme/ThemeProvider';
+import { useBreakpoint } from '../src/core';
 
 import { AccordionDemo } from './Accordion';
 import { AlertDemo } from './Alert';

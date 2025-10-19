@@ -89,7 +89,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
             role="alert"
             aria-live="assertive"
         >
-            <div className={iconContainerClass}>
+            <div className={iconContainerClass} aria-hidden="true">
                 <IconComponent />
             </div>
             <div>

@@ -44,7 +44,7 @@ export const TableHead: React.FC<React.HTMLAttributes<HTMLTableCellElement>> = (
         fontSize: '12px',
         textTransform: 'uppercase',
     });
-    return <th className={`${headClass} ${className}`} {...props}>{children}</th>;
+    return <th className={`${headClass} ${className}`} scope="col" {...props}>{children}</th>;
 };
 
 export const TableCell: React.FC<React.HTMLAttributes<HTMLTableCellElement>> = ({ children, className, ...props }) => {
