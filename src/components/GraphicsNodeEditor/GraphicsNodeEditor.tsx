@@ -13,7 +13,7 @@ interface GraphicsProviderProps {
     initialConnections: ConnectionData[];
 }
 
-export const GraphicsProvider: React.FC<GraphicsProviderProps> = ({ children, initialNodes, initialConnections }) => {
+export const GraphicsProvider = ({ children, initialNodes, initialConnections }: GraphicsProviderProps) => {
     const [nodes, setNodes] = useState<NodeData[]>(initialNodes);
     const [connections, setConnections] = useState<ConnectionData[]>(initialConnections);
     const [pan, setPan] = useState<Position>({ x: 0, y: 0 });
@@ -47,15 +47,15 @@ export const GraphicsProvider: React.FC<GraphicsProviderProps> = ({ children, in
                 const isTargetConnected = connections.some(c => c.targetNodeId === target.nodeId && c.targetSocketId === target.socketId);
 
                 if (!isTargetConnected) {
-                     const newConnection: ConnectionData = {
+                    const newConnection: ConnectionData = {
                         id: `conn_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
                         sourceNodeId: source.nodeId,
                         sourceSocketId: source.socketId,
                         targetNodeId: target.nodeId,
                         targetSocketId: target.socketId,
                         type: 'curved',
-                     };
-                     setConnections(prev => [...prev, newConnection]);
+                    };
+                    setConnections(prev => [...prev, newConnection]);
                 }
             }
         }

@@ -80,21 +80,21 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, onClose, posit
             style={{ top: position.y, left: position.x }}
         >
             {items.map((item, index) => {
-                // FIX: Use an if/else block for type narrowing, as the ternary was causing issues with the type checker.
+                // FIX: The `item` is a discriminated union. Use an `else` block to ensure proper type narrowing. Inside the `else`, TypeScript knows `item` is a menu action and has properties like `label`, `onClick`, etc., resolving the type errors.
                 if (item.isSeparator) {
                     return <hr key={`sep-${index}`} className={dividerClass} />;
+                } else {
+                    return (
+                        <button
+                            key={item.label}
+                            className={itemClass}
+                            onClick={item.onClick}
+                            disabled={item.disabled}
+                        >
+                            {item.label}
+                        </button>
+                    );
                 }
-                
-                return (
-                    <button
-                        key={item.label}
-                        className={itemClass}
-                        onClick={item.onClick}
-                        disabled={item.disabled}
-                    >
-                        {item.label}
-                    </button>
-                );
             })}
         </div>,
         document.body
