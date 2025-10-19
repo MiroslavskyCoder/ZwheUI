@@ -1,4 +1,5 @@
 
+
 export * from './HomeIcon';
 export * from './SettingsIcon';
 export * from './UserIcon';
@@ -57,3 +58,6 @@ export * from './SquareIcon';
 export * from './LockOpenIcon';
 export * from './DiamondIcon';
 export * from './DocumentIcon';
+export * from './SortAscendingIcon';
+export * from './SortDescendingIcon';
+export * from './SelectorIcon';

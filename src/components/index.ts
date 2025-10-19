@@ -33,6 +33,7 @@ export * from './Checkbox/Checkbox';
 export * from './ColorPicker/ColorPicker';
 export * from './Combobox/Combobox';
 export * from './Container/Container';
+export * from './DataTable/DataTable';
 export * from './DatePicker/DatePicker';
 export * from './Dialog/Dialog';
 export * from './Drawer/Drawer';

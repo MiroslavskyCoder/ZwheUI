@@ -19,6 +19,7 @@ import { CheckboxDemo } from './Checkbox';
 import { ColorPickerDemo } from './ColorPicker';
 import { ComboboxDemo } from './Combobox';
 import { ContainerDemo } from './Container';
+import { DataTableDemo } from './DataTable';
 import { DatePickerDemo } from './DatePicker';
 import { DialogDemo } from './Dialog';
 import { DrawerDemo } from './Drawer';
@@ -118,6 +119,7 @@ export const DemoApp = () => {
         <BadgeDemo key="badge" />,
         <BreadcrumbsDemo key="breadcrumbs" />,
         <ContainerDemo key="container" />,
+        <DataTableDemo key="datatable" />,
         <DatePickerDemo key="datepicker" />,
         <DrawerDemo key="drawer" />,
         <DropdownDemo key="dropdown" />,
