@@ -8,13 +8,14 @@ import { useStyles, useTheme } from '../../core';
 // A separator does not need a label, while an action item does.
 export type ContextMenuItem =
     | {
-        isSeparator?: false;
-        label: string;
-        onClick?: () => void;
-        disabled?: boolean;
-    } | {
-        isSeparator: true;
-    };
+          isSeparator?: false;
+          label: string;
+          onClick?: () => void;
+          disabled?: boolean;
+      }
+    | {
+          isSeparator: true;
+      };
 
 interface ContextMenuProps {
     isOpen: boolean;
@@ -80,7 +81,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, onClose, posit
             style={{ top: position.y, left: position.x }}
         >
             {items.map((item, index) => {
-                // FIX: The `item` is a discriminated union. Use an `else` block to ensure proper type narrowing. Inside the `else`, TypeScript knows `item` is a menu action and has properties like `label`, `onClick`, etc., resolving the type errors.
+                // FIX: Use an if/else block with the `in` operator to properly narrow the type of `item`. This allows TypeScript to understand that the `else` block only deals with menu action items, which have properties like `label` and `onClick`, resolving the type errors.
                 if (item.isSeparator) {
                     return <hr key={`sep-${index}`} className={dividerClass} />;
                 } else {

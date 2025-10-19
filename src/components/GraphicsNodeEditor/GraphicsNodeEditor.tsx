@@ -47,15 +47,15 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
                 const isTargetConnected = connections.some(c => c.targetNodeId === target.nodeId && c.targetSocketId === target.socketId);
 
                 if (!isTargetConnected) {
-                    const newConnection: ConnectionData = {
+                     const newConnection: ConnectionData = {
                         id: `conn_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
                         sourceNodeId: source.nodeId,
                         sourceSocketId: source.socketId,
                         targetNodeId: target.nodeId,
                         targetSocketId: target.socketId,
                         type: 'curved',
-                    };
-                    setConnections(prev => [...prev, newConnection]);
+                     };
+                     setConnections(prev => [...prev, newConnection]);
                 }
             }
         }
@@ -116,7 +116,8 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
     const { nodes, setNodes, connections, setConnections, pan, setPan, zoom, editorRef, nodeOutputs } = useGraphicsContext()!;
     const { theme } = useTheme();
     const createStyle = useStyles('graphics-editor');
-    const panState = useRef({ isPanning: false, startPan: { x: 0, y: 0 }, startMouse: { x: 0, y: 0 } });
+    const [isPanning, setIsPanning] = useState(false);
+    const panState = useRef({ startPan: { x: 0, y: 0 }, startMouse: { x: 0, y: 0 } });
 
     const [contextMenu, setContextMenu] = useState<{
         isOpen: boolean;
@@ -133,7 +134,7 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
         backgroundSize: '20px 20px',
         position: 'relative',
         overflow: 'hidden',
-        cursor: panState.current.isPanning ? 'grabbing' : 'grab',
+        cursor: isPanning ? 'grabbing' : 'grab',
     });
     
     const nodeCanvasClass = createStyle({
@@ -154,9 +155,9 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
     });
 
     const handleMouseDown = (e: React.MouseEvent) => {
-        if (e.target === e.currentTarget) {
+        if (e.button === 0 && e.target === e.currentTarget) {
+            setIsPanning(true);
             panState.current = {
-                isPanning: true,
                 startPan: { ...pan },
                 startMouse: { x: e.clientX, y: e.clientY },
             };
@@ -164,7 +165,7 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        if (panState.current.isPanning) {
+        if (isPanning) {
             const dx = e.clientX - panState.current.startMouse.x;
             const dy = e.clientY - panState.current.startMouse.y;
             setPan({
@@ -175,7 +176,7 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
     };
 
     const handleMouseUp = () => {
-        panState.current.isPanning = false;
+        setIsPanning(false);
     };
 
     const handleUpdateNodeData = (nodeId: string, newData: Record<string, any>) => {
@@ -239,12 +240,14 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
             ref={editorRef} 
             className={editorClass} 
             style={style} 
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
         >
-             <svg className={svgOverlayClass}>
+            <svg 
+                className={svgOverlayClass}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+            >
                 <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
                     {connections.map((conn) => (
                         <Connection key={conn.id} connection={conn} onContextMenu={handleConnectionContextMenu} />
@@ -254,7 +257,7 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
             </svg>
             <div className={nodeCanvasClass} style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
                 {nodes.map(node => {
-                     const nodeInputs = useMemo(() => {
+                    const nodeInputs = useMemo(() => {
                         const inputs: Record<string, any> = {};
                         connections.forEach(conn => {
                             if (conn.targetNodeId === node.id) {
