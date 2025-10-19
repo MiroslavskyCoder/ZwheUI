@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
+const webpack = require("webpack"):
 const isProduction = process.env.NODE_ENV === 'production';
 
 // The base path for GitHub Pages. Corresponds to the repository name.
@@ -45,6 +45,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
     }),
+    new webpack.optimize.UglifyJsPlugin()
   ],
   devServer: {
     static: {
