@@ -5,6 +5,7 @@ import { Container } from '../Container/Container';
 
 interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
     children: React.ReactNode;
+    height?: string;
 }
 
 const HeaderLeft: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => {
@@ -36,7 +37,7 @@ const HeaderRight: React.FC<{ children: React.ReactNode; className?: string }> =
             "(maxWidth: 'md')": {
                 justifySelf: 'center',
             },
-             "(maxWidth: 'sm')": {
+            "(maxWidth: 'sm')": {
                 // Hide navigation on mobile for a cleaner look
                 display: 'none',
             },
@@ -51,17 +52,20 @@ HeaderRight.displayName = 'Header.Right';
 export const Header: React.FC<HeaderProps> & {
     Left: typeof HeaderLeft;
     Right: typeof HeaderRight;
-} = ({ children, className = '', ...props }) => {
+} = ({ children, className = '', height, ...props }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('header');
 
     const headerClass = createStyle({
-        padding: `${theme.spacing.md} 0`, // Vertical padding here, horizontal padding is on the container
+        padding: height ? '0' : '10px 0',
         backgroundColor: theme.colors.backgroundSecondary, // Fallback for older browsers
         borderBottom: `1px solid ${theme.colors.border}`,
         position: 'sticky',
         top: 0,
         zIndex: 50,
+        height: height,
+        display: height ? 'flex' : 'block',
+        alignItems: height ? 'center' : undefined,
         '@supports (backdrop-filter: none) or (-webkit-backdrop-filter: none)': {
             backdropFilter: 'blur(16px)',
             // Use a more transparent background for the glass effect
@@ -69,7 +73,7 @@ export const Header: React.FC<HeaderProps> & {
         },
         '@media': {
             "(maxWidth: 'sm')": {
-                padding: `${theme.spacing.sm} 0`,
+                padding: height ? '0' : `${theme.spacing.sm} 0`,
             }
         },
     });
@@ -79,6 +83,7 @@ export const Header: React.FC<HeaderProps> & {
         gridTemplateColumns: '1fr auto',
         alignItems: 'center',
         padding: 0, // Remove container's default padding
+        width: height ? '100%' : undefined,
         '@media': {
             "(maxWidth: 'md')": {
                 gridTemplateColumns: '1fr',

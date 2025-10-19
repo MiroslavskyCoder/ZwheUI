@@ -7,7 +7,8 @@ import { useStyles } from '../../core';
 export const AudioVisualizer: React.FC<{className?: string}> = ({className}) => {
     const { analyserNode, isPlaying } = useAudio();
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const animationFrameId = useRef<number>();
+    // FIX: Provide an initial value of `undefined` to `useRef` to resolve "Expected 1 arguments, but got 0" error.
+    const animationFrameId = useRef<number | undefined>(undefined);
     const { theme } = useTheme();
     const createStyle = useStyles('audio-visualizer');
 
