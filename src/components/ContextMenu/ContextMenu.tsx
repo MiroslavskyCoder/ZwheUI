@@ -79,10 +79,13 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, onClose, posit
             className={containerClass}
             style={{ top: position.y, left: position.x }}
         >
-            {items.map((item, index) => (
-                item.isSeparator ? (
-                    <hr key={`sep-${index}`} className={dividerClass} />
-                ) : (
+            {items.map((item, index) => {
+                // FIX: Use an if/else block for type narrowing, as the ternary was causing issues with the type checker.
+                if (item.isSeparator) {
+                    return <hr key={`sep-${index}`} className={dividerClass} />;
+                }
+                
+                return (
                     <button
                         key={item.label}
                         className={itemClass}
@@ -91,8 +94,8 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, onClose, posit
                     >
                         {item.label}
                     </button>
-                )
-            ))}
+                );
+            })}
         </div>,
         document.body
     );

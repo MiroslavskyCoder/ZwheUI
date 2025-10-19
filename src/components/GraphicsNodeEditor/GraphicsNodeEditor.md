@@ -1,40 +1,67 @@
 # Graphics Node Editor
 
-A visual, interactive editor for creating and manipulating node-based graphs. This component now supports functional data processing, a plugin system for extensibility, and a smooth, interactive canvas with panning and zooming.
+A visual, interactive editor for creating and manipulating node-based graphs. This component features a plugin system for extensibility, a smooth interactive canvas, and a hook-based architecture for flexible external control.
 
 ## Features
 
-*   **Smooth Pan & Zoom**: Drag the background to pan the canvas and use the mouse wheel to zoom in and out with a "zoom-to-cursor" behavior.
-*   **Fluid Node Dragging**: Nodes can be dragged around the canvas with a smooth, responsive feel.
+*   **Smooth Pan & Zoom**: Drag the background to pan the canvas and use the mouse wheel to zoom in and out with a "zoom-to-cursor" behavior (via the `GZoom` plugin).
+*   **Fluid Node Dragging**: Nodes can be dragged around the canvas with a smooth, responsive feel without using the native HTML5 drag-and-drop API.
 *   **Dynamic Curved Connections**: Create connections between compatible input and output sockets by dragging. Lines are rendered as curves, and their color can be determined by the source socket.
+*   **Interactive Connections**: Right-click any connection line to open a context menu with options to delete, change color, or transform the line style between curved and straight.
+*   **External Control via Hooks**: The editor's core logic is exposed through a `useGraphicsContext` hook, allowing you to trigger graph processing and access state from outside the component.
 *   **Plugin System**: Extend the editor's functionality by passing custom plugin components. The first official plugin is `GZoom`.
-*   **Data Processing**: A "Process Graph" button triggers a dependency-aware evaluation of the entire graph.
 *   **Custom Node Components**: Nodes can render custom React components in their body, allowing for rich UIs like sliders and inputs directly within the graph.
 *   **Type-Safe & Composable**: Built with TypeScript and React Context for a robust and extensible architecture.
 
+## Architecture
+
+The editor is split into two main components: `GraphicsProvider` and `GraphicsNodeEditorView`. This separation allows for flexible control over the editor's state and actions from anywhere within the provider's scope.
+
+*   **`GraphicsProvider`**: A React Context provider that manages all the state for nodes, connections, pan/zoom, and graph processing.
+*   **`GraphicsNodeEditorView`**: The visual component that renders the editor canvas, nodes, and connections. It must be a child of `GraphicsProvider`.
+*   **`useGraphicsContext`**: A hook that provides access to the editor's state and functions, such as `processGraph`.
+
 ## Usage
 
-The editor is initialized with nodes, connections, and optional plugins.
+Wrap the `GraphicsNodeEditorView` with `GraphicsProvider` and use the `useGraphicsContext` hook to interact with it.
 
 ```tsx
-import { GraphicsNodeEditor } from './src/components';
+import { 
+    GraphicsProvider, 
+    GraphicsNodeEditorView, 
+    Button, 
+    useGraphicsContext 
+} from './src/components';
 import { GZoom } from './src/components/GraphicsNodeEditor/plugins/GZoom';
-import { initialNodes, initialConnections } from './demo/data'; // Example data
+import { initialNodes, initialConnections } from './demo/GraphicsNodeEditor';
 
-<div style={{ height: '600px' }}>
-    <GraphicsNodeEditor 
-        initialNodes={initialNodes}
-        initialConnections={initialConnections}
-        plugins={[GZoom]}
-    />
-</div>
+// A component that uses the context to control the editor
+const EditorWithControls = () => {
+    const { processGraph } = useGraphicsContext();
+    return (
+        <div>
+            <Button onClick={processGraph}>Process Graph</Button>
+            <div style={{ height: '600px', marginTop: '1rem' }}>
+                <GraphicsNodeEditorView plugins={[GZoom]} />
+            </div>
+        </div>
+    );
+}
+
+// Main setup in your app
+<GraphicsProvider
+    initialNodes={initialNodes}
+    initialConnections={initialConnections}
+>
+    <EditorWithControls />
+</GraphicsProvider>
 ```
 
-## Creating Custom Nodes
+## Data Structures
 
+### NodeData
 To create a new type of node, you define a `NodeData` template.
 
-### NodeData Structure
 ```ts
 interface NodeData {
     id: string;
@@ -42,54 +69,34 @@ interface NodeData {
     position: { x: number; y: number };
     inputs: SocketData[];
     outputs: SocketData[];
-    component?: React.FC<{...}>;
-    process?: (inputs, data) => outputs;
+    component?: React.FC<{ 
+        data: NodeData; 
+        inputs: Record<string, any>; 
+        onUpdateData: (newData: Record<string, any>) => void;
+    }>;
+    process?: (inputs: Record<string, any>, data: NodeData['data']) => Record<string, any>;
     data?: Record<string, any>;
 }
 
 interface SocketData {
     id: string;
     label: string;
-    value?: any; // Default value if not connected
-    color?: string; // For outgoing connections
+    value?: any; // Default value if input is not connected
+    color?: string; // Default color for outgoing connections
 }
 ```
 
-### Example: An 'Add' Node
+### ConnectionData
+Connections can also be customized.
 
-This node takes two numbers and outputs their sum, with a green connection line.
-
-```tsx
-// In a file like `nodeTypes.tsx`
-
-export const addNodeType = {
-    label: 'Add',
-    inputs: [
-        { id: 'a', label: 'A', value: 0 },
-        { id: 'b', label: 'B', value: 0 },
-    ],
-    outputs: [{ id: 'result', label: 'Result', color: '#10b981' }],
-    process: (inputs) => ({ result: (inputs.a ?? 0) + (inputs.b ?? 0) }),
-};
-```
-
-### Example: An 'Input' Node with a Custom Component
-
-This node provides a number that can be edited directly in the UI.
-
-```tsx
-// Custom component for the node's body
-const SliderComponent = ({ data, onUpdateData }) => {
-    return <Slider value={data.data.value} onChange={v => onUpdateData({ value: v })} />;
-};
-
-// Node type definition
-export const sliderNodeType = {
-    label: 'Slider Input',
-    inputs: [],
-    outputs: [{ id: 'value', label: 'Value', color: '#f59e0b' }],
-    component: SliderComponent, // Assign the custom UI
-    process: (inputs, data) => ({ value: data?.value ?? 50 }),
-    data: { value: 50 }, // Initial instance data
-};
+```ts
+interface ConnectionData {
+    id: string;
+    sourceNodeId: string;
+    sourceSocketId: string;
+    targetNodeId: string;
+    targetSocketId: string;
+    color?: string; // Overrides the source socket's color
+    type?: 'curved' | 'straight'; // Style of the connection line
+}
 ```
