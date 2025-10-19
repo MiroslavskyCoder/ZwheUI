@@ -66,6 +66,6 @@ export const FooterDemo = () => (
             <Text color="textSecondary">This is a standard implementation of the Footer component. No props are available to configure in this demo.</Text>
         }
         documentation={documentation}
-        sourceCode={sourceCode}
+        fullSourceCode={sourceCode}
     />
 );

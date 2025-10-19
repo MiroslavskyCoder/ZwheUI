@@ -1,4 +1,5 @@
 
+
 import React from 'react'
 import { Layer } from '../Layer/Layer'
 import { Stack } from '../Stack/Stack'
@@ -34,7 +35,13 @@ function parseAttributes(node: Element) {
                 attrs.style = a.value;
             }
         } else {
-            attrs[a.name] = a.value
+             if (a.value === 'true') {
+                attrs[a.name] = true;
+            } else if (a.value === 'false') {
+                attrs[a.name] = false;
+            } else {
+                attrs[a.name] = a.value
+            }
         }
     }
     return attrs
@@ -60,7 +67,10 @@ function nodeToElement(node: Node, map: ComponentMap): React.ReactNode {
         return childElement;
     }).filter(child => child != null);
 
-    return React.createElement(Comp as any, props, ...children);
+    if (children.length > 0) {
+        return React.createElement(Comp as any, props, ...children);
+    }
+    return React.createElement(Comp as any, props);
 }
 
 export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components = {} }) => {
@@ -73,9 +83,16 @@ export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components = {} }
 
     try {
         const parser = new DOMParser()
-        const doc = parser.parseFromString(xml, 'text/xml')
+        const doc = parser.parseFromString(`<root>${xml}</root>`, 'text/xml')
 
-        const result = Array.from(doc.childNodes).map((n, index) => {
+        // Check for parsing errors
+        const parseError = doc.querySelector('parsererror');
+        if (parseError) {
+            console.error('XML parsing error:', parseError.textContent);
+            return <div style={{ color: 'red', fontFamily: 'monospace' }}>XML Parsing Error. Check console for details.</div>;
+        }
+
+        const result = Array.from(doc.documentElement.childNodes).map((n, index) => {
             const el = nodeToElement(n, map);
             if (React.isValidElement(el)) {
                 return React.cloneElement(el, { key: index });
@@ -85,7 +102,8 @@ export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components = {} }
 
         return <>{result}</>
     } catch (err) {
-        return <div>{xml}</div>
+        console.error('Error rendering XML:', err);
+        return <div style={{ color: 'red', fontFamily: 'monospace' }}>Error rendering component. Check console.</div>
     }
 }
 

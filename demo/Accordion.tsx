@@ -188,7 +188,7 @@ export const AccordionDemo = () => {
             }
             propControls={<AccordionConfigurator defaultValue={defaultValue} setDefaultValue={setDefaultValue} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

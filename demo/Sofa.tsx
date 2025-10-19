@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Sofa, Text, Stack, Input } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -28,8 +29,6 @@ A styled container component used throughout the component showcase application.
 ## Usage
 
 \`\`\`tsx
-import { Sofa, Text } from './src/components';
-
 <Sofa
   title="Component Demo"
   description="This is a demonstration of another component."
@@ -38,7 +37,7 @@ import { Sofa, Text } from './src/components';
 </Sofa>
 \`\`\``;
 
-const sourceCode = `import React from 'react';
+const fullSourceCode = `import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { Stack } from '../Stack/Stack';
@@ -79,20 +78,20 @@ export const Sofa: React.FC<SofaProps> = ({ children, className = '', title, des
         </div>
     );
 };`;
-// FIX: Export SofaDemo component to be used in DemoApp.tsx.
+
 export const SofaDemo = () => {
   const [title, setTitle] = useState('Sofa Container');
   const [description, setDescription] = useState('This is a styled container component used throughout the showcase.');
+
+  const code = `<Sofa title="${title}" description="${description}">
+    <Text>This is the main content area.</Text>
+</Sofa>`;
 
   return (
     <DemoSection
       title="Sofa"
       description="A styled container component for wrapping content sections. It can include an optional title and description."
-      livePreview={
-        <Sofa title={title} description={description}>
-          <Text>This is the main content area of the Sofa component.</Text>
-        </Sofa>
-      }
+      initialCode={code}
       propControls={
         <SofaConfigurator
           title={title}
@@ -102,7 +101,7 @@ export const SofaDemo = () => {
         />
       }
       documentation={documentation}
-      sourceCode={sourceCode}
+      fullSourceCode={fullSourceCode}
     />
   );
 };

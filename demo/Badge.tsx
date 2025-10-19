@@ -126,7 +126,7 @@ export const BadgeDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

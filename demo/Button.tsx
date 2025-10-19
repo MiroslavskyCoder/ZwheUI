@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Button, Text, Stack, Input, Checkbox, SegmentedControl } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -49,24 +50,9 @@ import { Button } from './src/components';
 <Button variant="primary" onClick={() => alert('Clicked!')}>
   Submit
 </Button>
-
-// Secondary Button
-<Button variant="secondary">
-  Cancel
-</Button>
-
-// Accent Button
-<Button variant="accent">
-  Confirm
-</Button>
-
-// Disabled Button
-<Button variant="primary" disabled>
-  Loading...
-</Button>
 \`\`\``;
 
-const sourceCode = `import React from 'react'
+const fullSourceCode = `import React from 'react'
 import { useStyles } from '../core/hooks/useStyles';
 import { useTheme } from '../core/theme/ThemeProvider';
 
@@ -150,15 +136,13 @@ export const ButtonDemo = () => {
     const [childrenText, setChildrenText] = useState('Click Me');
     const [isDisabled, setIsDisabled] = useState(false);
 
+    const code = `<Button variant="${variant}" disabled="${isDisabled}">${childrenText}</Button>`;
+
     return (
         <DemoSection
             title="Button"
             description="A standard button component with primary, secondary, accent, and disabled states."
-            livePreview={
-                <Button variant={variant} disabled={isDisabled}>
-                    {childrenText}
-                </Button>
-            }
+            initialCode={code}
             propControls={
                 <ButtonConfigurator 
                     variant={variant} 
@@ -170,7 +154,7 @@ export const ButtonDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={fullSourceCode}
         />
     );
 };

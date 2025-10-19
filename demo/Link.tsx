@@ -100,7 +100,7 @@ export const LinkDemo = () => {
             }
             propControls={<LinkConfigurator href={href} setHref={setHref} childrenText={childrenText} setChildrenText={setChildrenText} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

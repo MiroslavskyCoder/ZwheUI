@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Grid, Text, Stack, Card, Input, Slider } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -39,40 +40,16 @@ A responsive grid layout component. It automatically adjusts the number of colum
 ## Props
 
 ### Grid
-*   \`minItemWidth\` (string, optional, default: '350px'): The minimum width for each item in a responsive grid. The grid will create as many columns as can fit.
+*   \`minItemWidth\` (string, optional, default: '350px'): The minimum width for each item in a responsive grid.
 *   \`gap\` (string, optional, default: '1.5rem'): The space between grid items.
-*   \`columns\` (number, optional): A fixed number of columns to create. Overrides \`minItemWidth\`.
-*   \`alignItems\` (string, optional): Aligns grid items along the block (column) axis.
-*   \`justifyContent\` (string, optional): Aligns grid items along the inline (row) axis.
-*   \`flow\` (enum: 'row' | 'column', optional, default: 'row'): The direction in which the grid is automatically filled (\`grid-auto-flow\`).
-*   \`className\` (string, optional): Additional CSS classes for the container.
-*   All other standard \`<div>\` attributes are supported.
+*   \`columns\` (number, optional): A fixed number of columns. Overrides \`minItemWidth\`.
 
 ### Grid.Item
 *   \`colSpan\` (number, optional): The number of columns the item should span.
 *   \`rowSpan\` (number, optional): The number of rows the item should span.
+`;
 
-## Usage
-
-\`\`\`tsx
-import { Grid, Card } from './src/components';
-
-// Responsive grid
-<Grid minItemWidth="200px" gap="1rem">
-    <Grid.Item><Card>Item 1</Card></Grid.Item>
-    <Grid.Item><Card>Item 2</Card></Grid.Item>
-</Grid>
-
-// Column flow grid
-<Grid columns={3} flow="column" gap="1rem" style={{ height: '150px' }}>
-    <Grid.Item><Card>Item 1</Card></Grid.Item>
-    <Grid.Item><Card>Item 2</Card></Grid.Item>
-    <Grid.Item><Card>Item 3</Card></Grid.Item>
-    <Grid.Item><Card>Item 4</Card></Grid.Item>
-</Grid>
-\`\`\``;
-
-const sourceCode = `import React from 'react';
+const fullSourceCode = `import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 
 interface GridItemProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -131,7 +108,6 @@ export const Grid: React.FC<GridProps> & { Item: typeof GridItem } = ({
         justifyContent: justifyContent,
         gridAutoFlow: flow,
         '@media': {
-            // On small screens, force a single column layout for better readability on auto-fit grids
             "(maxWidth: 'sm')": {
                 gridTemplateColumns: columns ? undefined : '1fr',
             },
@@ -152,23 +128,23 @@ export const GridDemo = () => {
     const [minItemWidth, setMinItemWidth] = useState(150);
     const [gap, setGap] = useState(1);
 
+    const gridProps = columns > 0 
+        ? `columns="${columns}"` 
+        : `minItemWidth="${minItemWidth}px"`;
+
+    const code = `<Grid ${gridProps} gap="${gap}rem">
+    <Grid.Item colSpan="${columns > 2 ? 2 : 1}"><Card><Text>Item A</Text></Card></Grid.Item>
+    <Grid.Item><Card><Text>Item B</Text></Card></Grid.Item>
+    <Grid.Item><Card><Text>Item C</Text></Card></Grid.Item>
+    <Grid.Item><Card><Text>Item D</Text></Card></Grid.Item>
+</Grid>`;
+
+
     return (
         <DemoSection
             title="Grid"
             description="A responsive grid layout with support for fixed columns, auto-fit columns, and spanning."
-            livePreview={
-                <Grid 
-                    columns={columns > 0 ? columns : undefined}
-                    minItemWidth={columns > 0 ? undefined : `${minItemWidth}px`}
-                    gap={`${gap}rem`}
-                    style={{width: '100%'}}
-                >
-                    <Grid.Item colSpan={columns > 2 ? 2 : 1}><Card><Text>Item A</Text></Card></Grid.Item>
-                    <Grid.Item><Card><Text>Item B</Text></Card></Grid.Item>
-                    <Grid.Item><Card><Text>Item C</Text></Card></Grid.Item>
-                    <Grid.Item><Card><Text>Item D</Text></Card></Grid.Item>
-                </Grid>
-            }
+            initialCode={code}
             propControls={
                 <GridConfigurator
                     columns={columns} setColumns={setColumns}
@@ -177,7 +153,7 @@ export const GridDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={fullSourceCode}
         />
     );
 };

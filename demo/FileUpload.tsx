@@ -134,7 +134,7 @@ export const FileUploadDemo = () => {
                 <Text color="textSecondary">The main prop, `onFileSelect`, is a callback. Use the Preview tab to test the file selection and drag-and-drop functionality.</Text>
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

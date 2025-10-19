@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Stack, Sofa, Text, Card, Input, Checkbox, SegmentedControl } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -50,37 +51,25 @@ A layout component for arranging items in a vertical or horizontal stack with a 
 
 ## Props
 
-*   \`direction\` (enum: 'row' | 'column' | 'row-reverse' | 'column-reverse', optional, default: 'column'): The direction to stack the items (\`flex-direction\`).
-*   \`gap\` (string, optional, default: '1rem'): The space between items.
-*   \`align\` (string, optional): The alignment of items along the cross axis (\`align-items\`).
-*   \`justify\` (string, optional): The alignment of items along the main axis (\`justify-content\`).
-*   \`wrap\` (boolean, optional, default: false): Whether to wrap items to the next line (\`flex-wrap\`).
-*   All other standard HTML \`<div>\` attributes are supported.
+*   \`direction\` (enum: 'row' | 'column' | 'row-reverse' | 'column-reverse', optional): The \`flex-direction\`.
+*   \`gap\` (string, optional): The space between items.
+*   \`align\` (string, optional): The \`align-items\`.
+*   \`justify\` (string, optional): The \`justify-content\`.
+*   \`wrap\` (boolean, optional): Whether to wrap items to the next line (\`flex-wrap\`).
 
 ## Usage
 
 \`\`\`tsx
-import { Stack, Card } from './src/components';
-
-// Vertical Stack
-<Stack gap="1rem">
-  <Card>Item 1</Card>
-  <Card>Item 2</Card>
-</Stack>
-
-// Wrapped Horizontal Stack
 <Stack direction="row" gap="1rem" align="center" wrap={true}>
   <Card>Item A</Card>
   <Card>Item B</Card>
-  <Card>Item C</Card>
 </Stack>
 \`\`\``;
 
-const sourceCode = `import React from 'react';
+const fullSourceCode = `import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 
 interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
-    // FIX: Add \`row-reverse\` and \`column-reverse\` to support more flexbox layouts.
     direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
     gap?: string;
     align?: 'start' | 'center' | 'end' | 'stretch' | 'baseline';
@@ -123,17 +112,17 @@ export const StackDemo = () => {
     const [justify, setJustify] = useState<'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly'>('start');
     const [wrap, setWrap] = useState(true);
 
+    const code = `<Stack direction="${direction}" gap="${gap}" align="${align}" justify="${justify}" wrap={${wrap}}>
+    <Card><Text>Item 1</Text></Card>
+    <Card><Text>Item 2</Text></Card>
+    <Card><Text>Item 3</Text></Card>
+</Stack>`;
+
     return (
       <DemoSection
         title="Stack"
         description="A layout component for arranging items with consistent spacing, powered by Flexbox."
-        livePreview={
-            <Stack direction={direction} gap={gap} align={align} justify={justify} wrap={wrap} style={{width: '100%', minHeight: '100px', backgroundColor: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '8px'}}>
-                <Card><Text>Item 1</Text></Card>
-                <Card><Text>Item 2</Text></Card>
-                <Card><Text>Item 3</Text></Card>
-            </Stack>
-        }
+        initialCode={code}
         propControls={
             <StackConfigurator 
                 direction={direction}
@@ -149,7 +138,7 @@ export const StackDemo = () => {
             />
         }
         documentation={documentation}
-        sourceCode={sourceCode}
+        fullSourceCode={fullSourceCode}
       />
     );
 };

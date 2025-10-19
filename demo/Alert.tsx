@@ -60,7 +60,7 @@ import { Alert } from './src/components';
 </Alert>
 \`\`\``;
 
-const sourceCode = `import React from 'react';
+const fullSourceCode = `import React from 'react';
 import { Text } from '../Text/Text';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { useStyles } from '../../core/hooks/useStyles';
@@ -121,15 +121,13 @@ export const AlertDemo = () => {
     const [childrenText, setChildrenText] = useState('This is an informational message.');
     const [variant, setVariant] = useState<'info' | 'warning' | 'error' | 'success'>('info');
 
+    const code = `<Alert title="${title}" variant="${variant}">${childrenText}</Alert>`;
+
     return (
         <DemoSection
             title="Alert"
             description="Provides contextual feedback messages for typical user actions, with variants for different severity levels."
-            livePreview={
-                <Alert title={title} variant={variant}>
-                    {childrenText}
-                </Alert>
-            }
+            initialCode={code}
             propControls={
                 <AlertConfigurator
                     title={title}
@@ -141,7 +139,7 @@ export const AlertDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={fullSourceCode}
         />
     );
 };

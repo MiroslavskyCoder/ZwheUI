@@ -159,7 +159,7 @@ export const AvatarDemo = () => {
             title="Avatar"
             description="An image element with a fallback for representing a user. Includes an AvatarGroup for stacking."
             livePreview={
-                <Stack gap="2rem" align="center">
+                <Stack direction="row" gap="2rem" align="center">
                     <Avatar size={size} fallback={fallback} src={src} />
                     <AvatarGroup max={groupMax}>
                         <Avatar fallback="A" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
@@ -179,7 +179,7 @@ export const AvatarDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

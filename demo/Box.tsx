@@ -67,7 +67,7 @@ export const BoxDemo = () => {
                 <BoxConfigurator as={as} setAs={setAs} />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

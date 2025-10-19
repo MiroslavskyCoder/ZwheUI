@@ -116,6 +116,6 @@ export const DropdownDemo = () => (
             <Text color="textSecondary">This is a standard implementation of the Dropdown component. No props are available to configure in this demo.</Text>
         }
         documentation={documentation}
-        sourceCode={sourceCode}
+        fullSourceCode={sourceCode}
     />
 );

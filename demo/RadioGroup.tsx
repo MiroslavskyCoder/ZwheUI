@@ -117,7 +117,7 @@ export const RadioGroupDemo = () => {
                 <RadioGroupConfigurator label={label} setLabel={setLabel} value={plan} />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

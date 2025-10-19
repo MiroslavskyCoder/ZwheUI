@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Input, Sofa, Text, Stack, Checkbox } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -34,21 +35,15 @@ A complete form input component that wraps \`TextInput\` to include a label and 
 *   \`label\` (string, optional): The text label displayed above the input field.
 *   \`error\` (string, optional): An error message to display below the input field.
 *   \`id\` (string, optional): A unique identifier for associating the label with the input.
-*   All other props are passed down to the \`TextInput\` component (e.g., \`placeholder\`, \`value\`, \`onChange\`).
+*   All other props are passed down to the \`TextInput\` component.
 
 ## Usage
 
 \`\`\`tsx
-import { Input } from './src/components';
-
-// Standard input with a label
-<Input label="Email Address" placeholder="you@example.com" />
-
-// Input with an error message
-<Input label="Username" defaultValue="admin" error="This username is already taken." />
+<Input label="Email Address" placeholder="you@example.com" error="Email is required." />
 \`\`\``;
 
-const sourceCode = `import React from 'react';
+const fullSourceCode = `import React from 'react';
 import { TextInput, TextInputProps } from '../TextInput/TextInput';
 import { Error } from '../Error/Error';
 import { Text } from '../Text/Text';
@@ -91,20 +86,18 @@ export const InputDemo = () => {
     const [error, setError] = useState('');
     const [isDisabled, setIsDisabled] = useState(false);
 
+    const code = `<Input 
+    label="${label}" 
+    placeholder="${placeholder}" 
+    error="${error}" 
+    disabled={${isDisabled}} 
+/>`;
+
     return (
         <DemoSection
             title="Input"
             description="A wrapper for TextInput that includes a label and an error message display area."
-            livePreview={
-                <div style={{ width: '300px' }}>
-                    <Input 
-                        label={label} 
-                        placeholder={placeholder} 
-                        error={error} 
-                        disabled={isDisabled} 
-                    />
-                </div>
-            }
+            initialCode={code}
             propControls={
                 <InputConfigurator 
                     label={label}
@@ -118,7 +111,7 @@ export const InputDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={fullSourceCode}
         />
     );
 };

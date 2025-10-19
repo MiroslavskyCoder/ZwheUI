@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ColorPicker, Text, Stack, Input } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -30,7 +31,7 @@ const [color, setColor] = useState('#60a5fa');
 <ColorPicker value={color} onChange={setColor} />
 \`\`\``;
 
-const sourceCode = `import React from 'react';
+const fullSourceCode = `import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { Slider } from '../Slider/Slider';
@@ -121,15 +122,17 @@ export default ColorPicker;`;
 
 export const ColorPickerDemo = () => {
     const [color, setColor] = useState('#60a5fa');
+    
+    const code = `<ColorPicker value="${color}" />`;
 
     return (
         <DemoSection
             title="Color Picker"
             description="An interactive component for selecting a color using RGB sliders."
-            livePreview={<ColorPicker value={color} onChange={setColor} />}
+            initialCode={code}
             propControls={<ColorPickerConfigurator color={color} setColor={setColor} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={fullSourceCode}
         />
     );
 };

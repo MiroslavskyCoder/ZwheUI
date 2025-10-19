@@ -139,7 +139,7 @@ export const DialogDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
         <Dialog 
             isOpen={isOpen} 

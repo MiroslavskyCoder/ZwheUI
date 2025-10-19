@@ -69,6 +69,6 @@ export const PopoverDemo = () => (
         }
         propControls={<Text color="textSecondary">This is a standard implementation of the Popover component. No props are available to configure in this demo.</Text>}
         documentation={documentation}
-        sourceCode={sourceCode}
+        fullSourceCode={sourceCode}
     />
 );

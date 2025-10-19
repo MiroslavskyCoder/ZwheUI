@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Combobox, Text, Stack, Input } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -40,8 +41,6 @@ import { useState } from 'react';
 
 const frameworks = [
   { value: 'react', label: 'React' },
-  { value: 'vue', label: 'Vue.js' },
-  { value: 'svelte', label: 'Svelte' },
 ];
 
 const [selectedValue, setSelectedValue] = useState('react');
@@ -54,7 +53,7 @@ const [selectedValue, setSelectedValue] = useState('react');
 />
 \`\`\``;
 
-const sourceCode = `import React, { useState, useMemo, useRef } from 'react';
+const fullSourceCode = `import React, { useState, useMemo, useRef } from 'react';
 import { Popper, PopperTrigger, PopperContent } from '../Popper/Popper';
 import { TextInput } from '../TextInput/TextInput';
 import { useStyles } from '../../core/hooks/useStyles';
@@ -185,18 +184,21 @@ export const ComboboxDemo = () => {
     const [value, setValue] = useState('react');
     const [placeholder, setPlaceholder] = useState('Select a framework...');
     
+    // Note: Because this component is stateful, we can't generate the XML easily.
+    // The live preview will be a fully interactive instance.
+    const code = `<Combobox placeholder="${placeholder}" /> 
+{/* items, value, and onChange are managed in the preview */}`;
+
     return (
         <DemoSection
             title="Combobox"
             description="An input field that combines a text input with a dropdown list for filtering and selecting options."
-            livePreview={
-                <Combobox items={frameworks} value={value} onChange={setValue} placeholder={placeholder} />
-            }
+            initialCode={code}
             propControls={
                 <ComboboxConfigurator placeholder={placeholder} setPlaceholder={setPlaceholder} value={value} />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={fullSourceCode}
         />
     );
 };

@@ -100,7 +100,7 @@ export const SidebarDemo = () => {
             }
             propControls={<SidebarConfigurator width={width} setWidth={setWidth} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

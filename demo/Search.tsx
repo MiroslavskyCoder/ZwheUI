@@ -66,7 +66,7 @@ export const SearchDemo = () => {
             }
             propControls={<SearchConfigurator placeholder={placeholder} setPlaceholder={setPlaceholder} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

@@ -100,6 +100,6 @@ export const HoverCardDemo = () => (
             <Text color="textSecondary">This is an interactive demo. No props are available to configure.</Text>
         }
         documentation={documentation}
-        sourceCode={sourceCode}
+        fullSourceCode={sourceCode}
     />
 );

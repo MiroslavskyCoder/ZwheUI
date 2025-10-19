@@ -115,7 +115,7 @@ export const ModalDemo = () => {
                     />
                 }
                 documentation={documentation}
-                sourceCode={sourceCode}
+                fullSourceCode={sourceCode}
             />
             <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title={title}>
                 <Text>This is the content of the modal. You can put any React components here.</Text>

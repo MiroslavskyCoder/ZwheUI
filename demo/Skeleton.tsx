@@ -29,7 +29,7 @@ A placeholder component used to indicate that content is loading. It shows a shi
 *   \`width\` (string, optional, default: '100%'): The width of the skeleton shape.
 *   \`height\` (string, optional, default: '1rem'): The height of the skeleton shape.
 *   \`variant\` (enum: 'text' | 'rect' | 'circle', optional, default: 'text'): The shape of the skeleton placeholder.
-*   All other standard HTML \`<div>\` attributes are supported.
+*   All other standard \`<div>\` attributes are supported.
 
 ## Usage
 
@@ -110,7 +110,7 @@ export const SkeletonDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

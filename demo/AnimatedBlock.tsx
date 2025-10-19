@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { AnimatedBlock, Sofa, Text, Stack } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -21,7 +22,7 @@ import { AnimatedBlock } from './src/components';
 <AnimatedBlock />
 \`\`\``;
 
-const sourceCode = `
+const fullSourceCode = `
 import React, { useState } from 'react'
 import { useCurveAnimation } from '../../core/hooks/useCurveAnimation'
 import { useStyles } from '../../core/hooks/useStyles'
@@ -116,9 +117,9 @@ export const AnimatedBlockDemo = () => (
     <DemoSection
         title="Animated Block"
         description="An interactive demonstration of the `useCurveAnimation` hook. The buttons in the preview control the animation. The 'Props' tab is empty as this is a self-contained demo component."
-        livePreview={<AnimatedBlock />}
+        initialCode={`<AnimatedBlock />`}
         propControls={<Text color="textSecondary">This is a self-contained demo. Use the controls in the 'Preview' tab to test different animation curves.</Text>}
         documentation={documentation}
-        sourceCode={sourceCode}
+        fullSourceCode={fullSourceCode}
     />
 );

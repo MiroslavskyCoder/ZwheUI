@@ -103,7 +103,7 @@ export const ContainerDemo = () => {
             }
             propControls={<ContainerConfigurator size={size} setSize={setSize} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

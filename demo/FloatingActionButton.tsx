@@ -109,7 +109,7 @@ export const FloatingActionButtonDemo = () => {
                     <FABConfigurator size={size} setSize={setSize} />
                 }
                 documentation={documentation}
-                sourceCode={sourceCode}
+                fullSourceCode={sourceCode}
             />
             <FloatingActionButton
                 key={size} // Re-mount on size change to see effect

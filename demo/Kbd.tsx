@@ -76,7 +76,7 @@ export const KbdDemo = () => {
             }
             propControls={<KbdConfigurator key1={key1} setKey1={setKey1} key2={key2} setKey2={setKey2} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

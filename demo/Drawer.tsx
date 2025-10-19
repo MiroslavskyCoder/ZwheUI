@@ -225,7 +225,7 @@ export const DrawerDemo = () => {
                     />
                 }
                 documentation={documentation}
-                sourceCode={sourceCode}
+                fullSourceCode={sourceCode}
             />
             <Drawer 
                 isOpen={isOpen} 

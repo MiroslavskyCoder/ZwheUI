@@ -74,7 +74,7 @@ export const PaginationDemo = () => {
                 <PaginationConfigurator count={count} setCount={setCount} />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

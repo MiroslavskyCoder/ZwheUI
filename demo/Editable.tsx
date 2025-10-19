@@ -38,10 +38,9 @@ import { Text } from '../Text/Text';
 import { TextInput } from '../TextInput/TextInput';
 import { ButtonGroup, IconButton } from '..';
 import { Flex } from '../Flex/Flex';
+import { TimesIcon } from '../../icons';
 
 const CheckIcon = () => <svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>;
-const CloseIcon = () => <svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
-
 
 interface EditableProps {
     defaultValue: string;
@@ -76,7 +75,7 @@ export const Editable: React.FC<EditableProps> = ({ defaultValue, onSave }) => {
                 />
                 <ButtonGroup isAttached>
                     <IconButton icon={CheckIcon} aria-label="Save" onClick={handleSave} />
-                    <IconButton icon={CloseIcon} aria-label="Cancel" onClick={handleCancel} />
+                    <IconButton icon={TimesIcon} aria-label="Cancel" onClick={handleCancel} />
                 </ButtonGroup>
             </Flex>
         );
@@ -104,7 +103,7 @@ export const EditableDemo = () => {
                     onSave={(newValue) => {
                         addToast({
                             title: 'Saved!',
-                            description: \`Name changed to "\${newValue}"\`,
+                            description: `Name changed to "${newValue}"`,
                             variant: 'success'
                         });
                     }}

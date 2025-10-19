@@ -112,7 +112,7 @@ export const IconDemo = () => {
                 <IconConfigurator size={size} setSize={setSize} color={color} setColor={setColor} />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

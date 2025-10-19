@@ -104,7 +104,7 @@ export const NavDemo = () => {
             }
             propControls={<NavConfigurator useContainer={useContainer} setUseContainer={setUseContainer} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

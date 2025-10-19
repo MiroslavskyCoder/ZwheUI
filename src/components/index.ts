@@ -1,6 +1,7 @@
 
 
 
+
 export * from './Accordion/Accordion';
 export * from './Alert/Alert';
 export * from './AnimatedBlock/AnimatedBlock';
@@ -36,6 +37,8 @@ export * from './Charts/ChartSparkline';
 export * from './Charts/ChartTooltip';
 export * from './Checkbox/Checkbox';
 export * from './Code/Code';
+export * from './Code/CodeEditor';
+export * from './Code/SyntaxHighlighter';
 export * from './Collapse/Collapse';
 export * from './ColorPicker/ColorPicker';
 export * from './Combobox/Combobox';

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Checkbox, Text, Stack, Input } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -44,7 +45,7 @@ const [isChecked, setIsChecked] = useState(false);
 />
 \`\`\``;
 
-const sourceCode = `import React from 'react';
+const fullSourceCode = `import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 
@@ -111,13 +112,13 @@ export const CheckboxDemo = () => {
     const [isChecked, setIsChecked] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
     
+    const code = `<Checkbox label="${label}" checked={${isChecked}} disabled={${isDisabled}} />`;
+
     return (
         <DemoSection
             title="Checkbox"
             description="A standard checkbox component for capturing boolean input."
-            livePreview={
-                <Checkbox label={label} checked={isChecked} disabled={isDisabled} onChange={(e) => setIsChecked(e.target.checked)} />
-            }
+            initialCode={code}
             propControls={
                 <CheckboxConfigurator
                     label={label} setLabel={setLabel}
@@ -126,7 +127,7 @@ export const CheckboxDemo = () => {
                 />
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={fullSourceCode}
         />
     );
 };

@@ -93,7 +93,7 @@ export const BackdropDemo = () => {
                     <BackdropConfigurator isOpen={isOpen} setIsOpen={setIsOpen} />
                 }
                 documentation={documentation}
-                sourceCode={sourceCode}
+                fullSourceCode={sourceCode}
             />
             {/* Render the actual backdrop at the top level */}
             <Backdrop isOpen={isOpen} onClick={() => setIsOpen(false)} />

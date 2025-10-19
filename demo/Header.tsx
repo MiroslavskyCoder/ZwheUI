@@ -157,7 +157,7 @@ export const HeaderDemo = () => {
             }
             propControls={<HeaderConfigurator height={height} setHeight={setHeight} />}
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabList, Tab, TabPanels, TabPanel, Sofa, Text, Stack, Input, SegmentedControl } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -238,7 +237,7 @@ export const TabsDemo = () => {
                 </Stack>
             }
             documentation={documentation}
-            sourceCode={sourceCode}
+            fullSourceCode={sourceCode}
         />
     );
 };
