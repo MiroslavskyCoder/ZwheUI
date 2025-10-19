@@ -1,31 +1,85 @@
+
 import React, { useRef, useState, useEffect } from 'react';
-import { AudioContext } from './AudioContext';
-import { useStyles } from '../../core/hooks/useStyles';
-import { useTheme } from '../../core/theme/ThemeProvider';
-import { AudioFile } from './AudioFile';
+import { AudioContext, EQBand } from './AudioContext';
+
+const defaultEqBands: EQBand[] = [
+  { freq: 100, gain: 0, q: 1, type: 'lowshelf' }, // Bass
+  { freq: 1000, gain: 0, q: 1, type: 'peaking' }, // Mid
+  { freq: 10000, gain: 0, q: 1, type: 'highshelf' }, // Treble
+];
 
 export const Audio: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className }) => {
     const audioRef = useRef<HTMLAudioElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    const { theme } = useTheme();
-    const createStyle = useStyles('audio-container');
+    const [eqBands, setEqBands] = useState<EQBand[]>(defaultEqBands);
     
-    const containerClass = createStyle({
-        padding: theme.spacing.md,
-        backgroundColor: theme.colors.backgroundSecondary,
-        borderRadius: '8px',
-        border: `1px solid ${theme.colors.border}`,
-        '@supports (backdrop-filter: none) or (-webkit-backdrop-filter: none)': {
-            backdropFilter: 'blur(12px)',
-        },
-    });
+    // Refs for Web Audio API
+    const audioCtxRef = useRef<AudioContext | null>(null);
+    const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
+    const eqNodesRef = useRef<BiquadFilterNode[]>([]);
+    const analyserNodeRef = useRef<AnalyserNode | null>(null);
+    const isGraphReady = useRef(false);
 
+    const setupAudioGraph = () => {
+        if (isGraphReady.current || !audioRef.current) return;
+
+        const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioCtxRef.current = ctx;
+
+        const source = ctx.createMediaElementSource(audioRef.current);
+        sourceNodeRef.current = source;
+
+        // Create EQ nodes
+        const nodes: BiquadFilterNode[] = defaultEqBands.map(band => {
+            const node = ctx.createBiquadFilter();
+            node.type = band.type;
+            node.frequency.value = band.freq;
+            node.gain.value = band.gain;
+            node.Q.value = band.q;
+            return node;
+        });
+        eqNodesRef.current = nodes;
+
+        // Create Analyser for FFT visualization
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 256;
+        analyserNodeRef.current = analyser;
+
+        // Connect graph: source -> eq1 -> eq2 -> ... -> analyser -> destination
+        let lastNode: AudioNode = source;
+        nodes.forEach(node => {
+            lastNode.connect(node);
+            lastNode = node;
+        });
+        lastNode.connect(analyser);
+        analyser.connect(ctx.destination);
+        
+        isGraphReady.current = true;
+        // Force a re-render to provide the analyserNode to consumers
+        setEqBands([...eqBands]); 
+    };
+    
     const togglePlay = () => {
+        // AudioContext must be resumed after a user gesture
+        if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+            audioCtxRef.current.resume();
+        }
+
+        if (!isGraphReady.current) {
+            setupAudioGraph();
+        }
+        
         const audio = audioRef.current;
         if (audio) {
             audio.paused ? audio.play() : audio.pause();
+        }
+    };
+
+    const seek = (time: number) => {
+        if (audioRef.current) {
+            audioRef.current.currentTime = time;
         }
     };
 
@@ -51,22 +105,37 @@ export const Audio: React.FC<{ children: React.ReactNode, className?: string }> 
         };
     }, []);
 
-    const audioFileElement = React.Children.toArray(children).find(child => (React.isValidElement(child) && child.type === AudioFile));
-    
+    // Effect to update EQ gains when state changes
+    useEffect(() => {
+        if (isGraphReady.current) {
+            eqBands.forEach((band, index) => {
+                if (eqNodesRef.current[index]) {
+                    eqNodesRef.current[index].gain.value = band.gain;
+                }
+            });
+        }
+    }, [eqBands]);
+
     const contextValue = {
         audioRef,
         isPlaying,
         currentTime,
         duration,
         togglePlay,
+        seek,
+        eqBands,
+        setEqBands,
+        analyserNode: analyserNodeRef.current,
+        isGraphReady: isGraphReady.current,
     };
 
     return (
         <AudioContext.Provider value={contextValue}>
-            <div className={`${containerClass} ${className}`}>
-                 <audio ref={audioRef} style={{ display: 'none' }} >{audioFileElement}</audio>
-                 {React.Children.toArray(children).filter(child => !(React.isValidElement(child) && child.type === AudioFile))}
+            <div className={className}>
+                {children}
             </div>
         </AudioContext.Provider>
     );
 };
+
+export default Audio;

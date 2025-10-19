@@ -1,4 +1,12 @@
+
 import React, { createContext, useContext } from 'react';
+
+export interface EQBand {
+    freq: number;
+    gain: number;
+    q: number;
+    type: BiquadFilterType;
+}
 
 interface AudioContextType {
     audioRef: React.RefObject<HTMLAudioElement>;
@@ -6,6 +14,12 @@ interface AudioContextType {
     currentTime: number;
     duration: number;
     togglePlay: () => void;
+    seek: (time: number) => void;
+    
+    eqBands: EQBand[];
+    setEqBands: React.Dispatch<React.SetStateAction<EQBand[]>>;
+    analyserNode: AnalyserNode | null;
+    isGraphReady: boolean;
 }
 
 export const AudioContext = createContext<AudioContextType | null>(null);
