@@ -4,8 +4,8 @@ import { useClickOutside } from '../../core/hooks/useInteractions'
 interface MenuContextType {
     isOpen: boolean
     setIsOpen: (open: boolean) => void
-    buttonRef: React.RefObject<HTMLButtonElement | null>
-    itemsRef: React.RefObject<HTMLDivElement | null>
+    buttonRef: React.RefObject<HTMLButtonElement>
+    itemsRef: React.RefObject<HTMLDivElement>
 }
 
 const MenuContext = createContext<MenuContextType | null>(null)
@@ -18,8 +18,8 @@ export interface MenuProps {
 export const Menu: React.FC<MenuProps> = ({ children, className = '' }) => {
     const [isOpen, setIsOpen] = useState(false)
     const menuRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false))
-    const buttonRef = useRef<HTMLButtonElement | null>(null);
-    const itemsRef = useRef<HTMLDivElement | null>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const itemsRef = useRef<HTMLDivElement>(null);
 
     const contextValue = {
         isOpen,
