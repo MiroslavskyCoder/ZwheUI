@@ -63,6 +63,9 @@ export interface GraphicsContextType {
     updateNode: (nodeId: string, data: Partial<Omit<NodeData, 'id'>>) => void;
     deleteNode: (nodeId: string) => void;
     autoConnect: (sourceNodeId: string, sourceSocketId: string) => void;
+
+    socketRelativePositions: Record<string, Record<string, Position>>;
+    registerSocketPositions: (nodeId: string, positions: Record<string, Position>) => void;
 }
 
 export const GraphicsContext = createContext<GraphicsContextType | null>(null);

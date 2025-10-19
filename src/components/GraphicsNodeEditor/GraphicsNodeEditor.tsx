@@ -22,6 +22,7 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
     const connectingRef = useRef<{ nodeId: string; socketId: string; type: 'input' | 'output' } | null>(null);
     const [draftConnection, setDraftConnection] = useState<{ start: Position, end: Position } | null>(null);
     const [nodeOutputs, setNodeOutputs] = useState<Record<string, Record<string, any>>>({});
+    const [socketRelativePositions, setSocketRelativePositions] = useState<Record<string, Record<string, Position>>>({});
 
     const nodesRef = useRef(nodes);
     useEffect(() => {
@@ -50,6 +51,13 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
         setNodes(prev => prev.filter(n => n.id !== nodeId));
         setConnections(prev => prev.filter(c => c.sourceNodeId !== nodeId && c.targetNodeId !== nodeId));
     }, [setNodes, setConnections]);
+    
+    const registerSocketPositions = useCallback((nodeId: string, positions: Record<string, Position>) => {
+        setSocketRelativePositions(prev => ({
+            ...prev,
+            [nodeId]: positions,
+        }));
+    }, []);
 
     const autoConnect = useCallback((sourceNodeId: string, sourceSocketId: string) => {
         const sourceNode = nodes.find(n => n.id === sourceNodeId);
@@ -185,6 +193,8 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
         updateNode,
         deleteNode,
         autoConnect,
+        socketRelativePositions,
+        registerSocketPositions,
     };
 
     return <GraphicsContext.Provider value={contextValue}>{children}</GraphicsContext.Provider>;
@@ -231,7 +241,7 @@ const NodeRenderer: React.FC<{ node: NodeData; onContextMenu: (e: React.MouseEve
 export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plugins?: React.FC[] }> = ({ style, plugins }) => {
     const { 
         nodes, connections, setConnections, pan, setPan, zoom, editorRef,
-        updateNode, deleteNode, autoConnect 
+        updateNode, deleteNode, autoConnect, socketRelativePositions
     } = useGraphicsContext()!;
     const { theme } = useTheme();
     const createStyle = useStyles('graphics-editor');
@@ -352,6 +362,44 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
         setNodeContextMenu(prev => ({ ...prev, isOpen: false, node: null }));
     };
 
+    const connectionPoints = useMemo(() => {
+        return connections.map(conn => {
+            const sourceNode = nodes.find(n => n.id === conn.sourceNodeId);
+            const targetNode = nodes.find(n => n.id === conn.targetNodeId);
+            
+            const sourceSocketRelatives = socketRelativePositions[conn.sourceNodeId];
+            const targetSocketRelatives = socketRelativePositions[conn.targetNodeId];
+    
+            if (!sourceNode || !targetNode || !sourceSocketRelatives || !targetSocketRelatives) return null;
+    
+            const sourceSocketPos = sourceSocketRelatives[conn.sourceSocketId];
+            const targetSocketPos = targetSocketRelatives[conn.targetSocketId];
+    
+            if (!sourceSocketPos || !targetSocketPos) return null;
+    
+            const startPos = {
+                x: sourceNode.position.x + sourceSocketPos.x,
+                y: sourceNode.position.y + sourceSocketPos.y,
+            };
+            const endPos = {
+                x: targetNode.position.x + targetSocketPos.x,
+                y: targetNode.position.y + targetSocketPos.y,
+            };
+    
+            const sourceSocket = sourceNode.outputs.find(s => s.id === conn.sourceSocketId);
+            const color = conn.color || sourceSocket?.color || theme.colors.secondary;
+    
+            return {
+                id: conn.id,
+                startPos,
+                endPos,
+                color,
+                type: conn.type || 'curved',
+                originalConnection: conn,
+            };
+        }).filter((p): p is NonNullable<typeof p> => p !== null);
+    }, [nodes, connections, socketRelativePositions, theme.colors.secondary]);
+
     const connectionContextMenuItems: ContextMenuItem[] = useMemo(() => {
         if (!connectionContextMenu.connection) return [];
         const conn = connectionContextMenu.connection;
@@ -441,8 +489,15 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
                 onMouseLeave={handleMouseUp}
             >
                 <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
-                    {connections.map((conn) => (
-                        <Connection key={conn.id} connection={conn} onContextMenu={handleConnectionContextMenu} />
+                    {connectionPoints.map((points) => (
+                        <Connection 
+                            key={points.id}
+                            startPos={points.startPos}
+                            endPos={points.endPos}
+                            color={points.color}
+                            type={points.type}
+                            onContextMenu={(e) => handleConnectionContextMenu(e, points.originalConnection)}
+                        />
                     ))}
                 </g>
                 <DraftConnection />

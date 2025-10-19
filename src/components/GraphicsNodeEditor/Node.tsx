@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { useGraphicsContext } from './GraphicsContext';
+import React, { useRef, useLayoutEffect } from 'react';
+import { useGraphicsContext, Position } from './GraphicsContext';
 import { useStyles, useTheme } from '../../core';
 
 interface NodeProps {
@@ -13,10 +13,33 @@ interface NodeProps {
 }
 
 export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs, children, onContextMenu }) => {
-    const { startConnecting, stopConnecting, setNodes, zoom } = useGraphicsContext();
+    const { startConnecting, stopConnecting, setNodes, zoom, registerSocketPositions } = useGraphicsContext();
     const { theme } = useTheme();
     const createStyle = useStyles('graphics-node');
     const dragState = useRef({ isDragging: false, startPos: { x: 0, y: 0 }, startMouse: { x: 0, y: 0 } });
+    const nodeRef = useRef<HTMLDivElement>(null);
+    const socketRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+    useLayoutEffect(() => {
+        if (!nodeRef.current) return;
+        const nodeRect = nodeRef.current.getBoundingClientRect();
+        const positions: Record<string, Position> = {};
+    
+        Object.entries(socketRefs.current).forEach(([socketId, socketEl]) => {
+            if (socketEl) {
+                const socketRect = socketEl.getBoundingClientRect();
+                // Position of socket center relative to node top-left, adjusted for zoom
+                positions[socketId] = {
+                    x: (socketRect.left - nodeRect.left + socketRect.width / 2) / zoom,
+                    y: (socketRect.top - nodeRect.top + socketRect.height / 2) / zoom,
+                };
+            }
+        });
+    
+        if (Object.keys(positions).length > 0) {
+            registerSocketPositions(id, positions);
+        }
+    }, [id, inputs.length, outputs.length, registerSocketPositions, zoom]); // Rerun if sockets change or zoom changes
 
     const handleMouseDown = (e: React.MouseEvent) => {
         // Prevent pan from starting when dragging a node
@@ -115,6 +138,7 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
 
     return (
         <div
+            ref={nodeRef}
             className={nodeClass}
             style={{ left: position.x, top: position.y }}
             onMouseDown={handleMouseDown}
@@ -131,6 +155,8 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
                     {inputs.map(socket => (
                         <div key={socket.id} data-socket-id={socket.id} data-socket-type="input" className={socketClass(false)}>
                             <div 
+                                // FIX: The ref callback function was implicitly returning the element, which is not a valid return type for a ref. By wrapping the assignment in curly braces, the arrow function now returns `void`, resolving the TypeScript error.
+                                ref={el => { socketRefs.current[socket.id] = el; }}
                                 className={socketHandleClass}
                                 onMouseDown={(e) => { e.stopPropagation(); startConnecting(id, socket.id, 'input', e); }}
                                 onMouseUp={() => stopConnecting(id, socket.id, 'input')}
@@ -139,10 +165,12 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
                         </div>
                     ))}
                 </div>
-                 <div className={socketsContainerClass(true)}>
+                <div className={socketsContainerClass(true)}>
                     {outputs.map(socket => (
                         <div key={socket.id} data-socket-id={socket.id} data-socket-type="output" className={socketClass(true)}>
                             <div 
+                                // FIX: The ref callback function was implicitly returning the element, which is not a valid return type for a ref. By wrapping the assignment in curly braces, the arrow function now returns `void`, resolving the TypeScript error.
+                                ref={el => { socketRefs.current[socket.id] = el; }}
                                 className={socketHandleClass} 
                                 onMouseDown={(e) => { e.stopPropagation(); startConnecting(id, socket.id, 'output', e); }}
                                 onMouseUp={() => stopConnecting(id, socket.id, 'output')}
