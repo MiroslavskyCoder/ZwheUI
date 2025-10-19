@@ -101,5 +101,13 @@ export const openGLNodeType: Omit<NodeData, 'id' | 'position'> = {
     ],
     outputs: [{ id: 'fragColor', label: 'Frag Color' }],
     process: (inputs) => ({ fragColor: inputs.color ?? { r: 0, g: 0, b: 0, a: 1 } }),
-     component: () => <Text size="12px" color="textSecondary">This node simulates a shader.</Text>
+    component: () => <Text size="12px" color="textSecondary">This node simulates a shader.</Text>
+};
+
+export const creatableNodeTypes = {
+    'Number Input': numberNodeType,
+    'Slider Input': sliderNodeType,
+    'Add': addNodeType,
+    'Subtract': subtractNodeType,
+    'Display': displayNodeType,
 };

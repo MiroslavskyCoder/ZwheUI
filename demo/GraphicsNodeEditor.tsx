@@ -3,6 +3,7 @@ import { Sofa, Text, Stack, Button, GraphicsProvider, GraphicsNodeEditorView, us
 import { NodeData, ConnectionData } from '../src/components/GraphicsNodeEditor/GraphicsContext';
 import { numberNodeType, addNodeType, displayNodeType, sliderNodeType, subtractNodeType } from '../src/components/GraphicsNodeEditor/nodeTypes';
 import { GZoom } from '../src/components/GraphicsNodeEditor/plugins/GZoom';
+import { GMenu } from '../src/components/GraphicsNodeEditor/plugins/GMenu';
 
 const initialNodes: NodeData[] = [
     {
@@ -53,11 +54,11 @@ const EditorWithControls = () => {
     return (
         <Stack gap="1rem">
             <Stack direction="row" justify="space-between" align="center">
-                <Text>A visual editor for creating and connecting nodes. Use the scroll wheel to zoom and drag the background to pan. Right-click a connection line for more options.</Text>
+                <Text>A visual editor for creating and connecting nodes. Use the scroll wheel to zoom and drag the background to pan. Right-click the background to add new nodes.</Text>
                 <Button onClick={processGraph}>Process Graph</Button>
             </Stack>
             <div style={{ height: '600px', width: '100%', borderRadius: '8px', overflow: 'hidden' }}>
-                <GraphicsNodeEditorView plugins={[GZoom]} />
+                <GraphicsNodeEditorView plugins={[GZoom, GMenu]} />
             </div>
         </Stack>
     )

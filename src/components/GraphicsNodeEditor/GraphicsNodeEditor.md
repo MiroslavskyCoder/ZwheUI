@@ -8,8 +8,9 @@ A visual, interactive editor for creating and manipulating node-based graphs. Th
 *   **Fluid Node Dragging**: Nodes can be dragged around the canvas with a smooth, responsive feel without using the native HTML5 drag-and-drop API.
 *   **Dynamic Curved Connections**: Create connections between compatible input and output sockets by dragging. Lines are rendered as curves, and their color can be determined by the source socket.
 *   **Interactive Connections**: Right-click any connection line to open a context menu with options to delete, change color, or transform the line style between curved and straight.
+*   **Context Menu for Node Creation**: Right-click on the canvas to open a menu and add new nodes to the graph (via the `GMenu` plugin).
 *   **External Control via Hooks**: The editor's core logic is exposed through a `useGraphicsContext` hook, allowing you to trigger graph processing and access state from outside the component.
-*   **Plugin System**: Extend the editor's functionality by passing custom plugin components. The first official plugin is `GZoom`.
+*   **Plugin System**: Extend the editor's functionality by passing custom plugin components. Official plugins include `GZoom` and `GMenu`.
 *   **Custom Node Components**: Nodes can render custom React components in their body, allowing for rich UIs like sliders and inputs directly within the graph.
 *   **Type-Safe & Composable**: Built with TypeScript and React Context for a robust and extensible architecture.
 
@@ -33,7 +34,7 @@ import {
     useGraphicsContext 
 } from './src/components';
 import { GZoom } from './src/components/GraphicsNodeEditor/plugins/GZoom';
-import { initialNodes, initialConnections } from './demo/GraphicsNodeEditor';
+import { GMenu } from './src/components/GraphicsNodeEditor/plugins/GMenu';
 
 // A component that uses the context to control the editor
 const EditorWithControls = () => {
@@ -42,7 +43,7 @@ const EditorWithControls = () => {
         <div>
             <Button onClick={processGraph}>Process Graph</Button>
             <div style={{ height: '600px', marginTop: '1rem' }}>
-                <GraphicsNodeEditorView plugins={[GZoom]} />
+                <GraphicsNodeEditorView plugins={[GZoom, GMenu]} />
             </div>
         </div>
     );
