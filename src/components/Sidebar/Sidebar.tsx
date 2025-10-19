@@ -7,16 +7,17 @@ import { Icon } from '../Icon/Icon';
 interface SidebarProps {
     children: React.ReactNode;
     width?: string;
+    height?: string;
     className?: string;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ children, width = '250px', className }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ children, width = '250px', height = '100%', className }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('sidebar');
 
     const sidebarClass = createStyle({
         width: width,
-        height: '100%',
+        height: height,
         backgroundColor: theme.colors.backgroundSecondary,
         borderRight: `1px solid ${theme.colors.border}`,
         padding: theme.spacing.md,

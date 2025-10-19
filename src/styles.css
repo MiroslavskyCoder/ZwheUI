@@ -1,10 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @layer base {
   html, body, #root {
     height: 100%;
+    overflow: hidden; /* Prevent body scroll with new layout */
   }
   
   #root {
@@ -13,9 +10,31 @@
   }
 
   body {
-    background-color: #000000;
+    background-color: #0a0a0a;
+    background-image: radial-gradient(circle at top left, rgba(67, 56, 202, 0.3), transparent 40%),
+                      radial-gradient(circle at bottom right, rgba(219, 39, 119, 0.3), transparent 40%);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    color: #e6edf3;
   }
 }
 
 /* Library-level utilities / resets can go here */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 #1f2937;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+  border-radius: 10px;
+  border: 2px solid #1f2937;
+}

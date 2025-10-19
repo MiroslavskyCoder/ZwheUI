@@ -1,11 +1,12 @@
 
+
 import React, { useState, useEffect } from 'react';
 import {
     Audio, AudioView, AudioFile, AudioControls, AudioFilters, AudioVisualizer,
     Sofa, Text, Stack, FileUpload
 } from '../src/components';
 
-const defaultAudioSrc = "https://cdn.pixabay.com/audio/2022/08/03/audio_51f6922b13.mp3";
+const defaultAudioSrc = null;
 
 export const AudioDemo = () => {
     const [audioSrc, setAudioSrc] = useState<string | null>(defaultAudioSrc);
@@ -43,6 +44,8 @@ export const AudioDemo = () => {
           <Text>A composable audio player with Web Audio API effects like EQ and a real-time FFT visualizer. Upload your own audio file to try it out.</Text>
           
           <FileUpload onFileSelect={handleFileSelect} />
+          
+          {!audioSrc && <Text size="sm" color="textSecondary" style={{textAlign: 'center', padding: '1rem'}}>No audio file loaded. Upload one to use the player.</Text>}
           
           {audioSrc && (
             <Audio>

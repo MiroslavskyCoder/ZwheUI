@@ -6,7 +6,7 @@ export const defaultTheme: Theme = {
         primary: '#60a5fa', // A nice blue from the charts
         secondary: '#4b5563', // A darker gray for borders/secondary elements
         accent: '#b45309', // amber-700, WCAG AA compliant with white text
-        background: '#000000', // Main background, pure black
+        background: 'transparent', // Main background, pure black
         backgroundSecondary: 'rgba(28, 28, 28, 0.75)', // A slightly off-black glassy background
         border: 'rgba(255, 255, 255, 0.15)', // A slightly brighter border for better definition
         text: '#e6edf3', // Main text color
@@ -81,7 +81,7 @@ const darkTheme: Theme = {
         ...defaultTheme.colors,
         primary: '#60a5fa', // blue-400
         secondary: '#94a3b8',
-        background: '#1f2937',
+        background: 'transparent',
         text: '#f3f4f6'
     }
 }

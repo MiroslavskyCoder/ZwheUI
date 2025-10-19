@@ -33,6 +33,7 @@ interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
     columns?: number;
     alignItems?: string;
     justifyContent?: string;
+    flow?: 'row' | 'column';
 }
 
 export const Grid: React.FC<GridProps> & { Item: typeof GridItem } = ({ 
@@ -41,6 +42,7 @@ export const Grid: React.FC<GridProps> & { Item: typeof GridItem } = ({
     columns,
     alignItems,
     justifyContent,
+    flow = 'row',
     className = '', 
     children, 
     ...props 
@@ -53,6 +55,7 @@ export const Grid: React.FC<GridProps> & { Item: typeof GridItem } = ({
         gap: gap,
         alignItems: alignItems,
         justifyContent: justifyContent,
+        gridAutoFlow: flow,
         '@media': {
             // On small screens, force a single column layout for better readability on auto-fit grids
             "(maxWidth: 'sm')": {

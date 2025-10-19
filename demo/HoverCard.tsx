@@ -1,13 +1,85 @@
 import React from 'react';
-import { HoverCard, HoverCardTrigger, HoverCardContent, Sofa, Text, Stack, Link, Avatar } from '../src/components';
+import { HoverCard, HoverCardTrigger, HoverCardContent, Text, Stack, Link, Avatar } from '../src/components';
+import { DemoSection } from './DemoSection';
+
+const documentation = `# Hover Card
+
+A popover that appears when a user hovers their mouse over a trigger element.
+
+## Components
+
+*   **HoverCard**: The main wrapper that manages the hover state.
+*   **HoverCardTrigger**: The element that triggers the popover on hover.
+*   **HoverCardContent**: The content that appears in the popover.
+
+## Usage
+
+\`\`\`tsx
+import { HoverCard, HoverCardTrigger, HoverCardContent, Link, Text } from './src/components';
+
+<p>
+    Hover over the <HoverCard>
+        <HoverCardTrigger>
+            <Link href="#">@username</Link>
+        </HoverCardTrigger>
+        <HoverCardContent>
+            <Text>User profile information goes here.</Text>
+        </HoverCardContent>
+    </HoverCard> profile link.
+</p>
+\`\`\``;
+
+const sourceCode = `import React, { useState, useRef } from 'react';
+import { Popper, PopperContent, PopperTrigger } from '../Popper/Popper';
+import { PopoverContent as StyledContent } from '../Popover/Popover';
+
+interface HoverCardContextType {
+    isOpen: boolean;
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const HoverCard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+    const handleOpen = () => {
+        clearTimeout(timeoutRef.current);
+        setIsOpen(true);
+    };
+
+    const handleClose = () => {
+        timeoutRef.current = setTimeout(() => {
+            setIsOpen(false);
+        }, 100); // Small delay to allow moving mouse into card
+    };
+    
+    const contextValue = { isOpen, setIsOpen, handleOpen, handleClose };
+
+    return (
+        <Popper isOpen={isOpen} setIsOpen={setIsOpen}>
+            <div onMouseEnter={handleOpen} onMouseLeave={handleClose}>
+                {children}
+            </div>
+        </Popper>
+    );
+};
+
+export const HoverCardTrigger: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    return <PopperTrigger>{children}</PopperTrigger>;
+};
+
+export const HoverCardContent: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className }) => {
+    return <StyledContent className={className}>{children}</StyledContent>;
+};`;
 
 export const HoverCardDemo = () => (
-    <Sofa>
-        <Stack gap="1rem">
-            <Text as="h2" size="1.5rem" weight="600">Hover Card</Text>
-            <Text>A popover that appears when a user hovers over a trigger element.</Text>
+    <DemoSection
+        title="Hover Card"
+        description="A popover that appears when a user hovers over a trigger element."
+        livePreview={
             <Text>
-                Hover over the <HoverCard>
+                Hover over the{' '}
+                <HoverCard>
                     <HoverCardTrigger>
                         <Link href="#" onClick={(e) => e.preventDefault()}>@zwhe</Link>
                     </HoverCardTrigger>
@@ -20,8 +92,14 @@ export const HoverCardDemo = () => (
                            </Stack>
                         </Stack>
                     </HoverCardContent>
-                </HoverCard> profile link.
+                </HoverCard>
+                {' '}profile link.
             </Text>
-        </Stack>
-    </Sofa>
+        }
+        propControls={
+            <Text color="textSecondary">This is an interactive demo. No props are available to configure.</Text>
+        }
+        documentation={documentation}
+        sourceCode={sourceCode}
+    />
 );

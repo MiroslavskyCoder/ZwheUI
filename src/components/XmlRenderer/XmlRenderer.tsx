@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { Layer } from '../Layer/Layer'
 import { Stack } from '../Stack/Stack'
@@ -51,13 +52,15 @@ function nodeToElement(node: Node, map: ComponentMap): React.ReactNode {
     const Comp = map[tag] || map['div'] || 'div'
     const props = parseAttributes(el)
 
-    const children: React.ReactNode[] = []
-    el.childNodes.forEach((n) => {
-        const child = nodeToElement(n, map)
-        if (child != null) children.push(child)
-    })
+    const children = Array.from(el.childNodes).map((childNode, index) => {
+        const childElement = nodeToElement(childNode, map);
+        if (React.isValidElement(childElement)) {
+            return React.cloneElement(childElement, { key: index });
+        }
+        return childElement;
+    }).filter(child => child != null);
 
-    return React.createElement(Comp as any, props, children.length ? children : null)
+    return React.createElement(Comp as any, props, ...children);
 }
 
 export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components = {} }) => {
@@ -71,12 +74,14 @@ export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components = {} }
     try {
         const parser = new DOMParser()
         const doc = parser.parseFromString(xml, 'text/xml')
-        const root = doc.childNodes[0]
-        const result = [] as React.ReactNode[]
-        doc.childNodes.forEach((n) => {
-            const el = nodeToElement(n, map)
-            if (el != null) result.push(el)
-        })
+
+        const result = Array.from(doc.childNodes).map((n, index) => {
+            const el = nodeToElement(n, map);
+            if (React.isValidElement(el)) {
+                return React.cloneElement(el, { key: index });
+            }
+            return el;
+        }).filter(el => el != null);
 
         return <>{result}</>
     } catch (err) {

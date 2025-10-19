@@ -15,6 +15,7 @@ A responsive grid layout component. It automatically adjusts the number of colum
 *   `columns` (number, optional): A fixed number of columns to create. Overrides `minItemWidth`.
 *   `alignItems` (string, optional): Aligns grid items along the block (column) axis.
 *   `justifyContent` (string, optional): Aligns grid items along the inline (row) axis.
+*   `flow` (enum: 'row' | 'column', optional, default: 'row'): The direction in which the grid is automatically filled (`grid-auto-flow`).
 *   `className` (string, optional): Additional CSS classes for the container.
 *   All other standard `<div>` attributes are supported.
 
@@ -33,10 +34,11 @@ import { Grid, Card } from './src/components';
     <Grid.Item><Card>Item 2</Card></Grid.Item>
 </Grid>
 
-// Fixed 4-column grid with spanning
-<Grid columns={4} gap="1rem">
-    <Grid.Item colSpan={2}><Card>Spans 2 columns</Card></Grid.Item>
-    <Grid.Item><Card>Item B</Card></Grid.Item>
-    <Grid.Item><Card>Item C</Card></Grid.Item>
+// Column flow grid
+<Grid columns={3} flow="column" gap="1rem" style={{ height: '150px' }}>
+    <Grid.Item><Card>Item 1</Card></Grid.Item>
+    <Grid.Item><Card>Item 2</Card></Grid.Item>
+    <Grid.Item><Card>Item 3</Card></Grid.Item>
+    <Grid.Item><Card>Item 4</Card></Grid.Item>
 </Grid>
 ```

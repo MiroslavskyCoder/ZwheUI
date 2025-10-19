@@ -16,8 +16,7 @@ export const Input: React.FC<InputProps> = ({ label, id, error, className = '', 
 
     const containerClass = createStyle({
         display: 'grid',
-        gap: '4px',
-        width: '100%',
+        gap: '4px' 
     });
 
     return (

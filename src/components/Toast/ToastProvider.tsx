@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { ToastContext, ToastData, AddToast } from './useToast';
@@ -17,7 +16,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             variant: 'info',
             ...options,
         };
-        setToasts(prev => [newToast, ...prev]);
+        setToasts(prev => [...prev, newToast]);
     }, []);
 
     const removeToast = useCallback((id: string) => {

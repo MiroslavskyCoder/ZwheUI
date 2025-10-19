@@ -43,13 +43,17 @@ export const useTransition = (initialState: boolean = false, options: UseTransit
         opacity: isVisible ? 1 : 0
     }
 
+    const show = useCallback(() => setIsVisible(true), []);
+    const hide = useCallback(() => setIsVisible(false), []);
+    const toggle = useCallback(() => setIsVisible(prev => !prev), []);
+
     return {
         isVisible,
         isRendered,
         style,
-        show: () => setIsVisible(true),
-        hide: () => setIsVisible(false),
-        toggle: () => setIsVisible(prev => !prev)
+        show,
+        hide,
+        toggle
     }
 }
 
@@ -106,12 +110,16 @@ export const useSlide = (
         transform: getTransform()
     }
 
+    const show = useCallback(() => setIsVisible(true), []);
+    const hide = useCallback(() => setIsVisible(false), []);
+    const toggle = useCallback(() => setIsVisible(prev => !prev), []);
+
     return {
         isVisible,
         isRendered,
         style,
-        show: () => setIsVisible(true),
-        hide: () => setIsVisible(false),
-        toggle: () => setIsVisible(prev => !prev)
+        show,
+        hide,
+        toggle
     }
 }
