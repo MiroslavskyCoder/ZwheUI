@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { NodeData } from './GraphicsContext';
 import { Input, Slider, Text } from '..';
@@ -52,7 +51,7 @@ const DisplayComponent: React.FC<{ inputs: Record<string, any> }> = ({ inputs })
 export const numberNodeType: Omit<NodeData, 'id' | 'position'> = {
     label: 'Number Input',
     inputs: [],
-    outputs: [{ id: 'value', label: 'Value' }],
+    outputs: [{ id: 'value', label: 'Value', color: '#60a5fa' }],
     component: NumberComponent,
     process: (inputs, data) => ({ value: data?.value ?? 0 }),
     data: { value: 10 },
@@ -61,7 +60,7 @@ export const numberNodeType: Omit<NodeData, 'id' | 'position'> = {
 export const sliderNodeType: Omit<NodeData, 'id' | 'position'> = {
     label: 'Slider Input',
     inputs: [],
-    outputs: [{ id: 'value', label: 'Value' }],
+    outputs: [{ id: 'value', label: 'Value', color: '#f59e0b' }],
     component: SliderComponent,
     process: (inputs, data) => ({ value: data?.value ?? 50 }),
     data: { value: 50 },
@@ -73,8 +72,18 @@ export const addNodeType: Omit<NodeData, 'id' | 'position'> = {
         { id: 'a', label: 'A', value: 0 },
         { id: 'b', label: 'B', value: 0 },
     ],
-    outputs: [{ id: 'result', label: 'Result' }],
+    outputs: [{ id: 'result', label: 'Result', color: '#10b981' }],
     process: (inputs) => ({ result: (inputs.a ?? 0) + (inputs.b ?? 0) }),
+};
+
+export const subtractNodeType: Omit<NodeData, 'id' | 'position'> = {
+    label: 'Subtract',
+    inputs: [
+        { id: 'a', label: 'A', value: 0 },
+        { id: 'b', label: 'B', value: 0 },
+    ],
+    outputs: [{ id: 'result', label: 'Result', color: '#ef4444' }],
+    process: (inputs) => ({ result: (inputs.a ?? 0) - (inputs.b ?? 0) }),
 };
 
 export const displayNodeType: Omit<NodeData, 'id' | 'position'> = {

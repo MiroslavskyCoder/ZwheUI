@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext } from 'react';
 
 export interface Position {
@@ -10,6 +9,7 @@ export interface SocketData {
     id: string;
     label: string;
     value?: any; // Static value for an input socket if not connected
+    color?: string; // Color for connections originating from this output socket
 }
 
 export interface NodeData {
@@ -42,6 +42,10 @@ export interface GraphicsContextType {
     
     pan: Position;
     setPan: React.Dispatch<React.SetStateAction<Position>>;
+    zoom: number;
+    setZoom: React.Dispatch<React.SetStateAction<number>>;
+
+    editorRef: React.RefObject<HTMLDivElement | null>;
 
     startConnecting: (nodeId: string, socketId: string, type: 'input' | 'output', e: React.MouseEvent) => void;
     stopConnecting: (nodeId: string, socketId: string, type: 'input' | 'output') => void;

@@ -51,7 +51,7 @@ export const DataTableDemo = () => {
     ];
     
     // 4. Define actions for selected items
-    const tableActions = (selectedItems: User[]) => (
+    const tableActions = (selectedItems: User[], clearSelection: () => void) => (
         <Button
             variant="accent"
             onClick={() => {
@@ -60,6 +60,7 @@ export const DataTableDemo = () => {
                     description: selectedItems.map(u => u.name).join(', '),
                     variant: 'error'
                 });
+                clearSelection();
             }}
         >
             <Icon as={TrashIcon} size={16} />

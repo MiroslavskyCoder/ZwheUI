@@ -1,13 +1,10 @@
-
 import React, { useState, useCallback, useRef, useMemo } from 'react';
-// FIX: import useGraphicsContext and fix other imports to prevent circular dependencies.
-import { GraphicsContext, NodeData, ConnectionData, Position, useGraphicsContext } from './GraphicsContext';
+import { GraphicsContext, NodeData, ConnectionData, Position } from './GraphicsContext';
 import { Node } from './Node';
 import { Connection } from './Connection';
 import { useStyles, useTheme } from '../../core';
 import { Button } from '../Button';
 import { Stack } from '../Stack/Stack';
-import { Text } from '../Text/Text';
 import { DraftConnection } from './DraftConnection';
 import { processGraph } from './graphProcessor';
 
@@ -15,6 +12,7 @@ interface GraphicsNodeEditorProps {
     initialNodes: NodeData[];
     initialConnections: ConnectionData[];
     style?: React.CSSProperties;
+    plugins?: React.FC[];
 }
 
 const GraphicsProvider: React.FC<{
@@ -25,22 +23,21 @@ const GraphicsProvider: React.FC<{
     const [nodes, setNodes] = useState<NodeData[]>(initialNodes);
     const [connections, setConnections] = useState<ConnectionData[]>(initialConnections);
     const [pan, setPan] = useState<Position>({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    const editorRef = useRef<HTMLDivElement>(null);
     const connectingRef = useRef<{ nodeId: string; socketId: string; type: 'input' | 'output' } | null>(null);
     const [draftConnection, setDraftConnection] = useState<{ start: Position, end: Position } | null>(null);
 
-    const getSocketPosition = useCallback((nodeId: string, socketId: string, type: 'input' | 'output') => {
-        const element = document.querySelector(`[data-node-id="${nodeId}"] [data-socket-id="${socketId}"][data-socket-type="${type}"]`);
-        if (!element) return null;
-        const rect = element.getBoundingClientRect();
-        return {
-            x: rect.left + rect.width / 2,
-            y: rect.top + rect.height / 2,
-        };
-    }, []);
-
     const startConnecting = useCallback((nodeId: string, socketId: string, type: 'input' | 'output', e: React.MouseEvent) => {
         connectingRef.current = { nodeId, socketId, type };
-        setDraftConnection({ start: { x: e.clientX, y: e.clientY }, end: { x: e.clientX, y: e.clientY } });
+        const rect = editorRef.current?.getBoundingClientRect();
+        if (rect) {
+            const startPos = { 
+                x: e.clientX - rect.left, 
+                y: e.clientY - rect.top 
+            };
+            setDraftConnection({ start: startPos, end: startPos });
+        }
     }, []);
 
     const stopConnecting = useCallback((nodeId: string, socketId: string, type: 'input' | 'output') => {
@@ -52,7 +49,6 @@ const GraphicsProvider: React.FC<{
                 const source = start.type === 'output' ? start : end;
                 const target = start.type === 'input' ? start : end;
                 
-                // Prevent connecting to an already connected input
                 const isTargetConnected = connections.some(c => c.targetNodeId === target.nodeId && c.targetSocketId === target.socketId);
 
                 if (!isTargetConnected) {
@@ -73,8 +69,9 @@ const GraphicsProvider: React.FC<{
     }, [connections]);
     
     const handleMouseMove = useCallback((e: MouseEvent) => {
-        if (connectingRef.current) {
-            setDraftConnection(prev => prev ? { ...prev, end: { x: e.clientX, y: e.clientY } } : null);
+        if (connectingRef.current && editorRef.current) {
+            const rect = editorRef.current.getBoundingClientRect();
+            setDraftConnection(prev => prev ? { ...prev, end: { x: e.clientX - rect.left, y: e.clientY - rect.top } } : null);
         }
     }, []);
 
@@ -102,6 +99,9 @@ const GraphicsProvider: React.FC<{
         setConnections,
         pan,
         setPan,
+        zoom,
+        setZoom,
+        editorRef,
         startConnecting,
         stopConnecting,
         isConnecting: !!connectingRef.current,
@@ -111,9 +111,21 @@ const GraphicsProvider: React.FC<{
     return <GraphicsContext.Provider value={contextValue}>{children}</GraphicsContext.Provider>;
 };
 
-export const GraphicsNodeEditor: React.FC<GraphicsNodeEditorProps> = ({ initialNodes, initialConnections, style }) => {
+export const GraphicsNodeEditor: React.FC<GraphicsNodeEditorProps> = ({ initialNodes, initialConnections, style, plugins }) => {
+    return (
+        <GraphicsProvider initialNodes={initialNodes} initialConnections={initialConnections}>
+            <EditorContent style={style} plugins={plugins} />
+        </GraphicsProvider>
+    );
+};
+
+const EditorContent: React.FC<{ style?: React.CSSProperties; plugins?: React.FC[] }> = ({ style, plugins }) => {
+    const { nodes, setNodes, connections, pan, setPan, zoom, editorRef } = React.useContext(GraphicsContext)!;
     const { theme } = useTheme();
     const createStyle = useStyles('graphics-editor');
+    const panState = useRef({ isPanning: false, startPan: { x: 0, y: 0 }, startMouse: { x: 0, y: 0 } });
+
+    const [nodeOutputs, setNodeOutputs] = useState<Record<string, Record<string, any>>>({});
 
     const editorClass = createStyle({
         width: '100%',
@@ -123,6 +135,7 @@ export const GraphicsNodeEditor: React.FC<GraphicsNodeEditorProps> = ({ initialN
         backgroundSize: '20px 20px',
         position: 'relative',
         overflow: 'hidden',
+        cursor: panState.current.isPanning ? 'grabbing' : 'grab',
     });
     
     const canvasClass = createStyle({
@@ -132,19 +145,30 @@ export const GraphicsNodeEditor: React.FC<GraphicsNodeEditorProps> = ({ initialN
         transformOrigin: 'top left',
     });
 
-    return (
-        <GraphicsProvider initialNodes={initialNodes} initialConnections={initialConnections}>
-            <EditorContent style={style} className={editorClass} canvasClass={canvasClass} />
-        </GraphicsProvider>
-    );
-};
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (e.target === e.currentTarget) {
+            panState.current = {
+                isPanning: true,
+                startPan: { ...pan },
+                startMouse: { x: e.clientX, y: e.clientY },
+            };
+        }
+    };
 
-// Inner component to access context
-const EditorContent: React.FC<{ style?: React.CSSProperties, className: string, canvasClass: string }> = ({ style, className, canvasClass }) => {
-    const { nodes, setNodes, connections, pan, setPan } = useGraphicsContext();
-    const editorRef = useRef<HTMLDivElement>(null);
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (panState.current.isPanning) {
+            const dx = e.clientX - panState.current.startMouse.x;
+            const dy = e.clientY - panState.current.startMouse.y;
+            setPan({
+                x: panState.current.startPan.x + dx,
+                y: panState.current.startPan.y + dy,
+            });
+        }
+    };
 
-    const [nodeOutputs, setNodeOutputs] = useState<Record<string, Record<string, any>>>({});
+    const handleMouseUp = () => {
+        panState.current.isPanning = false;
+    };
 
     const handleProcessGraph = useCallback(() => {
         const outputs = processGraph(nodes, connections);
@@ -159,35 +183,17 @@ const EditorContent: React.FC<{ style?: React.CSSProperties, className: string, 
         );
     };
 
-    const handleDrop = (e: React.DragEvent) => {
-        e.preventDefault();
-        const data = e.dataTransfer.getData('text/plain');
-        if (!data || !editorRef.current) return;
-        
-        try {
-            const { nodeId, offsetX, offsetY } = JSON.parse(data);
-            const rect = editorRef.current.getBoundingClientRect();
-            const x = e.clientX - rect.left - offsetX - pan.x;
-            const y = e.clientY - rect.top - offsetY - pan.y;
-
-            setNodes(prev => prev.map(node => node.id === nodeId ? { ...node, position: { x, y } } : node));
-        } catch (error) {
-            console.error("Error parsing drop data:", error);
-        }
-    };
-
     return (
-        <div ref={editorRef} className={className} style={style} onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
-            <Stack direction="row" justify="space-between" align="center" style={{ position: 'absolute', top: '1rem', left: '1rem', zIndex: 10 }}>
-                <Button onClick={handleProcessGraph}>Process Graph</Button>
-            </Stack>
-            <div className={canvasClass} style={{ transform: `translate(${pan.x}px, ${pan.y}px)` }}>
-                <svg width="100%" height="100%" style={{ position: 'absolute' }}>
-                    <DraftConnection />
-                    {connections.map((conn, i) => (
-                        <Connection key={i} {...conn} />
-                    ))}
-                </svg>
+        <div 
+            ref={editorRef} 
+            className={editorClass} 
+            style={style} 
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+        >
+            <div className={canvasClass} style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
                 {nodes.map(node => {
                      const nodeInputs = useMemo(() => {
                         const inputs: Record<string, any> = {};
@@ -209,14 +215,27 @@ const EditorContent: React.FC<{ style?: React.CSSProperties, className: string, 
                     }, [node.id, node.inputs, connections, nodeOutputs]);
 
                     return (
-                        <div key={node.id} data-node-id={node.id}>
-                            <Node {...node}>
-                                {node.component && <node.component data={node} inputs={nodeInputs} onUpdateData={(newData) => handleUpdateNodeData(node.id, newData)} />}
-                            </Node>
-                        </div>
+                        <Node key={node.id} {...node}>
+                            {node.component && <node.component data={node} inputs={nodeInputs} onUpdateData={(newData) => handleUpdateNodeData(node.id, newData)} />}
+                        </Node>
                     );
                 })}
             </div>
+
+            <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
+                <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+                    {connections.map((conn, i) => (
+                        <Connection key={i} {...conn} />
+                    ))}
+                </g>
+                <DraftConnection />
+            </svg>
+            
+            <Stack direction="row" justify="space-between" align="center" style={{ position: 'absolute', top: '1rem', left: '1rem', zIndex: 10 }}>
+                <Button onClick={handleProcessGraph}>Process Graph</Button>
+            </Stack>
+            
+            {plugins && plugins.map((Plugin, i) => <Plugin key={i} />)}
         </div>
     );
 };

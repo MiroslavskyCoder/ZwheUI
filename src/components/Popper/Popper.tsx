@@ -4,10 +4,9 @@ import { useFade } from '../../core/hooks/useAnimation';
 
 interface PopperContextType {
     isOpen: boolean;
-    // FIX: Changed type to allow functional updates like `setIsOpen(prev => !prev)`.
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     triggerRef: React.MutableRefObject<HTMLElement | null>;
-    popperRef: React.MutableRefObject<HTMLDivElement | null>;
+    popperRef: React.RefObject<HTMLDivElement>;
     setPosition: () => void;
 }
 
@@ -22,7 +21,7 @@ export const usePopperContext = () => {
 export const Popper: React.FC<{ children: React.ReactNode; isOpen?: boolean; setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>; }> = ({ children, ...props }) => {
     const [internalIsOpen, setInternalIsOpen] = useState(false);
     const triggerRef = useRef<HTMLElement | null>(null);
-    const popperRef = useRef<HTMLDivElement | null>(null);
+    const popperRef = useRef<HTMLDivElement>(null);
     
     const isOpen = props.isOpen ?? internalIsOpen;
     const setIsOpen = props.setIsOpen ?? setInternalIsOpen;

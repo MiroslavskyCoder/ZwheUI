@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useRef } from 'react';
 import { useGraphicsContext } from './GraphicsContext';
 import { useStyles, useTheme } from '../../core';
 
@@ -13,16 +12,42 @@ interface NodeProps {
 }
 
 export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs, children }) => {
-    const { startConnecting, stopConnecting, setNodes } = useGraphicsContext();
+    const { startConnecting, stopConnecting, setNodes, zoom } = useGraphicsContext();
     const { theme } = useTheme();
     const createStyle = useStyles('graphics-node');
+    const dragState = useRef({ isDragging: false, startPos: { x: 0, y: 0 }, startMouse: { x: 0, y: 0 } });
 
-    const handleDragStart = (e: React.DragEvent) => {
-        const rect = (e.target as HTMLElement).getBoundingClientRect();
-        const offsetX = e.clientX - rect.left;
-        const offsetY = e.clientY - rect.top;
-        e.dataTransfer.setData('text/plain', JSON.stringify({ nodeId: id, offsetX, offsetY }));
-        e.dataTransfer.effectAllowed = 'move';
+    const handleMouseDown = (e: React.MouseEvent) => {
+        // Prevent pan from starting when dragging a node
+        e.stopPropagation();
+        
+        dragState.current = {
+            isDragging: true,
+            startPos: { ...position },
+            startMouse: { x: e.clientX, y: e.clientY },
+        };
+
+        const handleMouseMove = (moveEvent: MouseEvent) => {
+            if (!dragState.current.isDragging) return;
+            const dx = (moveEvent.clientX - dragState.current.startMouse.x) / zoom;
+            const dy = (moveEvent.clientY - dragState.current.startMouse.y) / zoom;
+            setNodes(prev =>
+                prev.map(node =>
+                    node.id === id
+                        ? { ...node, position: { x: dragState.current.startPos.x + dx, y: dragState.current.startPos.y + dy } }
+                        : node
+                )
+            );
+        };
+
+        const handleMouseUp = () => {
+            dragState.current.isDragging = false;
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
     };
 
     const nodeClass = createStyle({
@@ -53,7 +78,7 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
 
     const contentClass = createStyle({
         padding: children ? '8px 12px' : '0',
-        gridColumn: '1 / -1', // Span across both columns
+        gridColumn: '1 / -1',
     });
 
     const socketsContainerClass = (isOutput: boolean) => createStyle({
@@ -78,7 +103,7 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
         border: `2px solid ${theme.colors.secondary}`,
         borderRadius: '50%',
         cursor: 'crosshair',
-        transition: 'background-color 0.2s',
+        transition: 'background-color 0.2s, border-color 0.2s',
         '&:hover': {
             backgroundColor: theme.colors.primary,
             borderColor: theme.colors.primary,
@@ -89,18 +114,17 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
         <div
             className={nodeClass}
             style={{ left: position.x, top: position.y }}
-            draggable
-            onDragStart={handleDragStart}
-            onDragOver={(e) => e.preventDefault()} // Necessary for drop to work
+            onMouseDown={handleMouseDown}
+            data-node-id={id}
         >
             <div className={headerClass}>{label}</div>
             <div className={bodyClass}>
                 <div className={socketsContainerClass(false)}>
                     {inputs.map(socket => (
-                        <div key={socket.id} className={socketClass(false)}>
+                        <div key={socket.id} data-socket-id={socket.id} data-socket-type="input" className={socketClass(false)}>
                             <div 
                                 className={socketHandleClass}
-                                onMouseDown={(e) => startConnecting(id, socket.id, 'input', e)}
+                                onMouseDown={(e) => { e.stopPropagation(); startConnecting(id, socket.id, 'input', e); }}
                                 onMouseUp={() => stopConnecting(id, socket.id, 'input')}
                             />
                             <span style={{ fontSize: '12px' }}>{socket.label}</span>
@@ -109,10 +133,10 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
                 </div>
                  <div className={socketsContainerClass(true)}>
                     {outputs.map(socket => (
-                        <div key={socket.id} className={socketClass(true)}>
+                        <div key={socket.id} data-socket-id={socket.id} data-socket-type="output" className={socketClass(true)}>
                             <div 
                                 className={socketHandleClass} 
-                                onMouseDown={(e) => startConnecting(id, socket.id, 'output', e)}
+                                onMouseDown={(e) => { e.stopPropagation(); startConnecting(id, socket.id, 'output', e); }}
                                 onMouseUp={() => stopConnecting(id, socket.id, 'output')}
                             />
                             <span style={{ fontSize: '12px' }}>{socket.label}</span>

@@ -10,7 +10,7 @@ A powerful and feature-rich table component for displaying complex datasets. It 
 *   `enableFiltering` (boolean, optional, default: true): Toggles the visibility and functionality of the global search filter.
 *   `enableSorting` (boolean, optional, default: true): Toggles the ability to sort columns by clicking their headers.
 *   `enableSelection` (boolean, optional, default: true): Toggles the row selection functionality (checkboxes).
-*   `actions` (function, optional): A render function that receives an array of the selected items and should return a React node (e.g., buttons for bulk actions). This UI appears when one or more rows are selected.
+*   `actions` (function, optional): A render function that receives an array of the selected items and a `clearSelection` callback function. It should return a React node (e.g., buttons for bulk actions). The UI appears when one or more rows are selected. The callback can be used to deselect all items after an action is performed.
 *   `className` (string, optional): A custom class name for the root `Card` element.
 
 ## Column Definition (`ColumnDef`)
@@ -60,8 +60,11 @@ const columns: ColumnDef<User>[] = [
 ];
 
 // 4. (Optional) Define actions
-const tableActions = (selectedItems: User[]) => (
-    <Button variant="accent" onClick={() => alert(`Deleting ${selectedItems.length} users...`)}>
+const tableActions = (selectedItems: User[], clearSelection: () => void) => (
+    <Button variant="accent" onClick={() => {
+        alert(`Deleting ${selectedItems.length} users...`);
+        clearSelection();
+    }}>
       <Icon as={TrashIcon} size={16} /> Delete
     </Button>
 );

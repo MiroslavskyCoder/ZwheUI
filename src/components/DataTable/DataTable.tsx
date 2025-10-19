@@ -22,7 +22,7 @@ export interface DataTableProps<T extends { id: string | number }> {
   enableFiltering?: boolean;
   enableSorting?: boolean;
   enableSelection?: boolean;
-  actions?: (selectedItems: T[]) => React.ReactNode;
+  actions?: (selectedItems: T[], clearSelection: () => void) => React.ReactNode;
   className?: string;
 }
 
@@ -113,6 +113,10 @@ export const DataTable = <T extends { id: string | number }>({
     });
   };
   
+  const clearSelection = () => {
+      setSelection(new Set());
+  };
+
   const selectedItems = useMemo(() => data.filter(item => selection.has(item.id)), [data, selection]);
   
   const isAllOnPageSelected = paginatedData.length > 0 && paginatedData.every(item => selection.has(item.id));
@@ -144,7 +148,7 @@ export const DataTable = <T extends { id: string | number }>({
               }}>
                   <Stack direction="row" align="center" gap="1rem">
                       <Text size={theme.typography.fontSizes.sm} color={theme.colors.textSecondary}>{selection.size} selected</Text>
-                      {actions(selectedItems)}
+                      {actions(selectedItems, clearSelection)}
                   </Stack>
               </div>
             )}
