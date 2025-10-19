@@ -27,6 +27,12 @@ export const Grid: React.FC<GridProps> = ({
         gap: gap,
         alignItems: alignItems,
         justifyContent: justifyContent,
+        '@media': {
+            // On small screens, force a single column layout for better readability
+            "(maxWidth: 'sm')": {
+                gridTemplateColumns: '1fr',
+            },
+        },
     });
 
     return (
