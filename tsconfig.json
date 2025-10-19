@@ -16,5 +16,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "demo", "examples", "temp"]
+  "include": ["src", "demo", "examples"]
 }

@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import { ToastContext, ToastData, AddToast } from './useToast';
 import { Toast } from './Toast';
 import { useStyles } from '../../core/hooks/useStyles';
@@ -36,7 +36,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return (
         <ToastContext.Provider value={{ addToast }}>
             {children}
-            {ReactDOM.createPortal(
+            {createPortal(
                 <div className={containerClass}>
                     {toasts.map(toast => (
                         <Toast key={toast.id} toast={toast} onDismiss={removeToast} />

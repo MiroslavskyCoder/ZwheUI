@@ -1,5 +1,4 @@
 
-
 import React, { createContext, useContext, useState, useRef, useLayoutEffect, useCallback } from 'react';
 import { useFade } from '../../core/hooks/useAnimation';
 
@@ -7,8 +6,8 @@ interface PopperContextType {
     isOpen: boolean;
     // FIX: Changed type to allow functional updates like `setIsOpen(prev => !prev)`.
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    triggerRef: React.RefObject<HTMLElement | null>;
-    popperRef: React.RefObject<HTMLDivElement | null>;
+    triggerRef: React.MutableRefObject<HTMLElement | null>;
+    popperRef: React.MutableRefObject<HTMLDivElement | null>;
     setPosition: () => void;
 }
 
@@ -64,7 +63,7 @@ export const PopperTrigger: React.FC<{ children: React.ReactNode }> = ({ childre
         if (typeof childRef === 'function') {
             childRef(node);
         } else if (childRef) {
-            childRef.current = node;
+            (childRef as React.MutableRefObject<HTMLElement | null>).current = node;
         }
     };
 

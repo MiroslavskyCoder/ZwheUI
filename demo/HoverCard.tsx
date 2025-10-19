@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { HoverCard, HoverCardTrigger, HoverCardContent, Sofa, Text, Stack, Link, Avatar } from '../src/components';
 
@@ -21,7 +20,7 @@ export const HoverCardDemo = () => (
                            </Stack>
                         </Stack>
                     </HoverCardContent>
-                </HoverCard>> profile link.
+                </HoverCard> profile link.
             </Text>
         </Stack>
     </Sofa>

@@ -97,16 +97,20 @@ export const DataTable = <T extends { id: string | number }>({
   };
 
   const handleSelectAll = () => {
-    const pageIds = paginatedData.map(item => item.id);
-    const newSelection = new Set(selection);
-    const allOnPageSelected = pageIds.length > 0 && pageIds.every(id => newSelection.has(id));
-    
-    if (allOnPageSelected) {
-        pageIds.forEach(id => newSelection.delete(id));
-    } else {
-        pageIds.forEach(id => newSelection.add(id));
-    }
-    setSelection(newSelection);
+    setSelection(prevSelection => {
+        const newSelection = new Set(prevSelection);
+        const pageIds = paginatedData.map(item => item.id);
+        const allOnPageSelected = pageIds.length > 0 && pageIds.every(id => newSelection.has(id));
+
+        if (allOnPageSelected) {
+            // If all are selected, deselect them
+            pageIds.forEach(id => newSelection.delete(id));
+        } else {
+            // Otherwise, select them all
+            pageIds.forEach(id => newSelection.add(id));
+        }
+        return newSelection;
+    });
   };
   
   const selectedItems = useMemo(() => data.filter(item => selection.has(item.id)), [data, selection]);

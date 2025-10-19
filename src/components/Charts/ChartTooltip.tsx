@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import { useCharts } from './ChartsHook';
 import { Tooltip } from '../Tooltip/Tooltip';
 import { useTheme } from '../../core/theme/ThemeProvider';
@@ -104,7 +104,7 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
                         )
                     })}
                     
-                    {ReactDOM.createPortal(
+                    {createPortal(
                         <Tooltip style={{
                             top: hoveredData.y,
                             left: hoveredData.x,
@@ -116,7 +116,7 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
                            <div style={{ display: 'grid', gridTemplateColumns: 'auto auto auto', gap: '0.25rem 1rem', alignItems: 'center' }}>
                                 {series.map(({ key, label, color, accessor }) => (
                                     <React.Fragment key={key}>
-                                        <div style={{ width: '10px', height: '10px', backgroundColor: color, borderRadius: '50%' }} />
+                                        <div style={{ width: '10-px', height: '10px', backgroundColor: color, borderRadius: '50%' }} />
                                         <span style={{ color: theme.colors.textSecondary }}>{label}:</span>
                                         <span style={{ fontWeight: '500', textAlign: 'right' }}>{formatY(accessor(hoveredData.point))}</span>
                                     </React.Fragment>

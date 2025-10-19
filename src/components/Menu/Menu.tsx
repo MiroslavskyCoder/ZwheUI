@@ -18,8 +18,8 @@ export interface MenuProps {
 export const Menu: React.FC<MenuProps> = ({ children, className = '' }) => {
     const [isOpen, setIsOpen] = useState(false)
     const menuRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false))
-    const buttonRef = useRef<HTMLButtonElement>(null);
-    const itemsRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement | null>(null);
+    const itemsRef = useRef<HTMLDivElement | null>(null);
 
     const contextValue = {
         isOpen,

@@ -28,6 +28,9 @@ export const Modal: React.FC<ModalProps> = ({
 
     useEffect(() => {
         if (isOpen) {
+            const originalBodyOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+
             triggerRef.current = document.activeElement as HTMLElement;
             
             // Focus the modal container after it appears
@@ -68,6 +71,7 @@ export const Modal: React.FC<ModalProps> = ({
 
             document.addEventListener('keydown', handleKeyDown);
             return () => {
+                document.body.style.overflow = originalBodyOverflow;
                 clearTimeout(focusTimeout);
                 document.removeEventListener('keydown', handleKeyDown);
                 triggerRef.current?.focus();

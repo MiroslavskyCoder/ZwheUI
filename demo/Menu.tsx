@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { StyledMenu, Sofa, Text, Stack, Icon } from '../src/components';
+import { StyledMenu, Sofa, Text, Stack, Icon, Kbd } from '../src/components';
 import { PencilIcon, CopyIcon, ArchiveIcon, TrashIcon } from '../src/icons';
 
 export const MenuDemo = () => {
@@ -26,7 +25,7 @@ export const MenuDemo = () => {
         <Sofa>
             <Stack gap="1rem">
                 <Text as="h2" size="1.5rem" weight="600">Menu</Text>
-                <Text>A styled dropdown menu. Dividers can be added within a group using `{'{ type: \\'divider\\' }'}` or between groups using the `divider: 'after'` prop.</Text>
+                <Text>A styled dropdown menu. Dividers can be added within a group using <Kbd>{`{ type: 'divider' }`}</Kbd> or between groups using the `divider: 'after'` prop.</Text>
                 <StyledMenu label="Actions" items={menuItems} />
             </Stack>
         </Sofa>

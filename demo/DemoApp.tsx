@@ -74,7 +74,6 @@ import { XmlRendererDemo } from './XmlRenderer';
 import { XNodeTreeDemo } from './XNodeTree';
 
 import { ExampleAudio, ExampleFileBrowser, ExampleVideo } from '../examples';
-import { TempDemo } from './Temp';
 
 export const DemoApp = () => {
     const { theme } = useTheme();
@@ -180,10 +179,9 @@ export const DemoApp = () => {
             </Header>
 
             <main style={{ flex: 1, padding: isMobile ? theme.spacing.md : theme.spacing.lg }}>
-                <Tabs defaultValue="temp">
+                <Tabs defaultValue="new">
                     <Stack align="center" gap={theme.spacing.lg}>
                         <TabList>
-                            <Tab value="temp">Temp Showcase</Tab>
                             <Tab value="new">Newly Added</Tab>
                             <Tab value="original">Original Components</Tab>
                             <Tab value="layout">Layout & Charting</Tab>
@@ -191,9 +189,6 @@ export const DemoApp = () => {
                         </TabList>
                     </Stack>
                     <TabPanels>
-                        <TabPanel value="temp">
-                           <TempDemo />
-                        </TabPanel>
                         <TabPanel value="new">
                             <Grid minItemWidth="350px" gap="1.5rem">
                                 {newDemos}
