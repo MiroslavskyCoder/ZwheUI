@@ -42,12 +42,14 @@ export interface Theme {
     [key: string]: string
   }
   breakpoints: {
-    sm: string
-    md: string
-    lg: string
-    xl: string
-    [key: string]: string
-  }
+    xs: string;
+    sm: string;
+    md: string;
+    lg: string;
+    xl: string;
+    '2xl': string;
+    [key: string]: string;
+  };
   typography: {
     fontSizes: {
       [key: string]: string
@@ -66,6 +68,12 @@ export interface Theme {
     [key: string]: string;
   };
   maxWidths: {
-    [key: string]: string;
+    xs: string;
+    sm: string;
+    md: string;
+    lg: string;
+    xl: string;
+    '2xl': string;
+    container: string;
   }
 }

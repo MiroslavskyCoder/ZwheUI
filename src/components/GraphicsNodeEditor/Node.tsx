@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, useState } from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 import { useGraphicsContext, Position } from './GraphicsContext';
 import { useStyles, useTheme } from '../../core';
 
@@ -27,39 +27,41 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, size, inputs, o
         startSize: { width: number; height: number };
         startMouse: Position;
     } | null>(null);
-    const [nodeDimensions, setNodeDimensions] = useState({ width: 0, height: 0 });
 
     useLayoutEffect(() => {
         const element = nodeRef.current;
         if (!element) return;
-
-        const observer = new ResizeObserver(() => {
-            setNodeDimensions({ width: element.offsetWidth, height: element.offsetHeight });
-        });
-        observer.observe(element);
-        return () => observer.disconnect();
-    }, []);
-
-    useLayoutEffect(() => {
-        if (!nodeRef.current) return;
-        const nodeRect = nodeRef.current.getBoundingClientRect();
-        const positions: Record<string, Position> = {};
     
-        Object.entries(socketRefs.current).forEach(([socketId, socketEl]) => {
-            if (socketEl) {
-                const socketRect = socketEl.getBoundingClientRect();
-                // Position of socket center relative to node top-left, adjusted for zoom
-                positions[socketId] = {
-                    x: (socketRect.left - nodeRect.left + socketRect.width / 2) / zoom,
-                    y: (socketRect.top - nodeRect.top + socketRect.height / 2) / zoom,
-                };
+        const calculateAndRegisterPositions = () => {
+            if (!nodeRef.current) return;
+            const nodeRect = nodeRef.current.getBoundingClientRect();
+            const positions: Record<string, Position> = {};
+        
+            Object.entries(socketRefs.current).forEach(([socketId, socketEl]) => {
+                if (socketEl) {
+                    const socketRect = socketEl.getBoundingClientRect();
+                    positions[socketId] = {
+                        x: (socketRect.left - nodeRect.left + socketRect.width / 2) / zoom,
+                        y: (socketRect.top - nodeRect.top + socketRect.height / 2) / zoom,
+                    };
+                }
+            });
+        
+            if (Object.keys(positions).length > 0) {
+                registerSocketPositions(id, positions);
             }
-        });
+        };
     
-        if (Object.keys(positions).length > 0) {
-            registerSocketPositions(id, positions);
-        }
-    }, [id, inputs.length, outputs.length, registerSocketPositions, zoom, size, nodeDimensions]); // Rerun if sockets change, zoom, size, or content-driven dimensions change
+        // Initial calculation and for prop changes
+        calculateAndRegisterPositions();
+    
+        // Setup observer for subsequent size changes from content
+        const observer = new ResizeObserver(calculateAndRegisterPositions);
+        observer.observe(element);
+        
+        return () => observer.disconnect();
+    
+    }, [id, inputs.length, outputs.length, registerSocketPositions, zoom, size]);
 
     const handleDragMouseDown = (e: React.MouseEvent) => {
         // Prevent pan from starting when dragging a node

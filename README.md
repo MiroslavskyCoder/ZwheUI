@@ -140,18 +140,30 @@ const MyComponent = () => {
 }
 ```
 
-**Example with Responsive and Themed Styles:**
-The styling system can use breakpoint keys for media queries and theme keys for property values.
+### Example with Responsive and Themed Styles
+The styling system has built-in support for responsive design using theme-aware media queries. We provide a set of standard breakpoints (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`) but you can define your own in the theme.
+
+**Note on Device Targeting**: While it's tempting to target operating systems like iOS or Android directly, the modern web approach is to use feature-based media queries. For example, you can target touch devices using `(pointer: coarse)` instead of trying to guess the OS. This makes your design more robust and future-proof.
+
+**Example:**
+
 ```tsx
 const responsiveClass = createStyle({
     fontSize: '1rem',
+    // Use theme keys for values
     borderRadius: 'lg', // uses theme.radii.lg
     '@supports (backdrop-filter: none)': {
         backdropFilter: 'blur(md)', // uses theme.blur.md
     },
+    // Use breakpoint keys for media queries
     '@media': {
+        // Styles for screens larger than the 'md' breakpoint
         "(minWidth: 'md')": {
-            fontSize: '1.25rem', // Becomes @media (min-width: 768px)
+            fontSize: '1.25rem',
+        },
+        // Styles for screens smaller than the 'sm' breakpoint
+        "(maxWidth: 'sm')": {
+            padding: '0.5rem',
         }
     }
 });

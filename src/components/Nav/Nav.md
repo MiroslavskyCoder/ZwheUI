@@ -10,6 +10,9 @@ A flexible navigation component for building horizontal navigation bars.
 
 ## Props
 
+### Nav
+*   `container` (boolean, optional, default: false): If true, the navigation content will be wrapped in a `Container` component to center it and constrain its width.
+
 ### Nav.Item
 *   `to` (string, optional): The path for client-side navigation (uses `react-router-dom`).
 *   `href` (string, optional): The URL for a standard link.
@@ -45,6 +48,18 @@ const handleClick = (e, item) => {
     >
       Dashboard
     </Nav.Item>
+  </Nav.List>
+</Nav>
+```
+
+### With a Container
+```tsx
+import { Nav } from './src/components';
+
+<Nav container={true}>
+  <Nav.List>
+    <Nav.Item href="#">Home</Nav.Item>
+    <Nav.Item href="#">About</Nav.Item>
   </Nav.List>
 </Nav>
 ```

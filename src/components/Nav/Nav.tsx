@@ -2,8 +2,11 @@ import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { Link } from '../Link/Link';
+import { Container } from '../Container/Container';
 
-interface NavProps extends React.HTMLAttributes<HTMLElement> {}
+interface NavProps extends React.HTMLAttributes<HTMLElement> {
+    container?: boolean;
+}
 
 const NavList: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => {
     const createStyle = useStyles('nav-list');
@@ -37,29 +40,11 @@ const NavItem: React.FC<NavItemProps> = ({ children, className, isActive, ...pro
             color: theme.colors.text,
             backgroundColor: 'rgba(255, 255, 255, 0.05)',
         },
-        
-        '&::after': {
-            content: '""',
-            position: 'absolute',
-            bottom: '4px',
-            left: '0.75rem',
-            right: '0.75rem',
-            height: '2px',
-            backgroundColor: theme.colors.primary,
-            transform: 'scaleX(0)',
-            transformOrigin: 'bottom',
-            transition: 'transform 0.3s ease',
-        },
 
         '&[data-active="true"]': {
             color: theme.colors.text,
-            backgroundColor: theme.colors.backgroundSecondary,
             fontWeight: '500',
         },
-        
-        '&[data-active="true"]::after': {
-            transform: 'scaleX(1)',
-        }
     });
 
     return <Link className={`${itemClass} ${className}`} data-active={isActive} {...props}>{children}</Link>;
@@ -69,15 +54,17 @@ NavItem.displayName = 'Nav.Item';
 export const Nav: React.FC<NavProps> & {
     List: typeof NavList;
     Item: typeof NavItem;
-} = ({ children, className, ...props }) => {
+} = ({ children, className, container = false, ...props }) => {
     const createStyle = useStyles('nav');
     const navClass = createStyle({
         width: '100%',
     });
 
+    const content = container ? <Container>{children}</Container> : children;
+
     return (
         <nav className={`${navClass} ${className}`} {...props}>
-            {children}
+            {content}
         </nav>
     );
 };

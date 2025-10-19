@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
@@ -15,7 +13,12 @@ const HeaderLeft: React.FC<{ children: React.ReactNode; className?: string }> = 
         display: 'flex',
         alignItems: 'center',
         gap: '1rem',
-        justifySelf: 'start'
+        justifySelf: 'start',
+        '@media': {
+            "(maxWidth: 'md')": {
+                justifySelf: 'center',
+            },
+        },
     });
 
     return <div className={`${class_} ${className}`}>{children}</div>;
@@ -28,7 +31,16 @@ const HeaderRight: React.FC<{ children: React.ReactNode; className?: string }> =
         display: 'flex',
         alignItems: 'center',
         gap: '1rem',
-        justifySelf: 'end'
+        justifySelf: 'end',
+        '@media': {
+            "(maxWidth: 'md')": {
+                justifySelf: 'center',
+            },
+             "(maxWidth: 'sm')": {
+                // Hide navigation on mobile for a cleaner look
+                display: 'none',
+            },
+        },
     });
 
     return <div className={`${class_} ${className}`}>{children}</div>;
@@ -64,9 +76,15 @@ export const Header: React.FC<HeaderProps> & {
     
     const containerClass = createStyle({
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: '1fr auto',
         alignItems: 'center',
         padding: 0, // Remove container's default padding
+        '@media': {
+            "(maxWidth: 'md')": {
+                gridTemplateColumns: '1fr',
+                gap: theme.spacing.sm, // Reduced gap for mobile
+            },
+        },
     });
 
     return (

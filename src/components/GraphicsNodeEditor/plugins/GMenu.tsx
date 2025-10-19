@@ -9,9 +9,23 @@ export const GMenu: React.FC = () => {
     const handleContextMenu = useCallback((e: MouseEvent) => {
         const hasCreatableNodes = creatableNodeTypes && Object.keys(creatableNodeTypes).length > 0;
         const editor = editorRef.current;
-        if (editor && e.target === editor.querySelector('svg') && hasCreatableNodes) {
-            e.preventDefault();
-            setMenu({ isOpen: true, position: { x: e.clientX, y: e.clientY } });
+        const target = e.target as HTMLElement;
+
+        if (!editor || !hasCreatableNodes) return;
+
+        // Check if the event target is within the editor bounds.
+        if (editor.contains(target)) {
+            // Check if the click was on a node or any of its children.
+            // Nodes and connections have their own context menu handlers which stop propagation,
+            // but this is a safe fallback.
+            const clickedOnNode = target.closest('[data-node-id]');
+
+            // If we've reached this handler and the click wasn't on a node,
+            // we can safely assume it was on the background canvas.
+            if (!clickedOnNode) {
+                e.preventDefault();
+                setMenu({ isOpen: true, position: { x: e.clientX, y: e.clientY } });
+            }
         }
     }, [editorRef, creatableNodeTypes]);
 
@@ -19,6 +33,7 @@ export const GMenu: React.FC = () => {
         const editor = editorRef.current;
         if (!editor) return;
         
+        // The listener is attached to the editor container.
         editor.addEventListener('contextmenu', handleContextMenu);
         return () => {
             editor.removeEventListener('contextmenu', handleContextMenu);
@@ -30,6 +45,7 @@ export const GMenu: React.FC = () => {
         if (!editor) return;
 
         const rect = editor.getBoundingClientRect();
+        // Convert mouse position to canvas coordinates
         const canvasX = (menu.position.x - rect.left - pan.x) / zoom;
         const canvasY = (menu.position.y - rect.top - pan.y) / zoom;
         

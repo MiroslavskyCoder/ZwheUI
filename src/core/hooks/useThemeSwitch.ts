@@ -20,10 +20,12 @@ export const defaultTheme: Theme = {
         xl: '2.5rem'
     },
     breakpoints: {
+        xs: '480px',
         sm: '640px',
         md: '768px',
         lg: '1024px',
-        xl: '1280px'
+        xl: '1280px',
+        '2xl': '1536px',
     },
     typography: {
         fontSizes: {
@@ -65,6 +67,7 @@ export const defaultTheme: Theme = {
         md: '1024px',
         lg: '1280px',
         xl: '1536px',
+        '2xl': '1800px',
         container: '1280px',
     }
 }
