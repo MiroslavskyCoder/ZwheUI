@@ -70,6 +70,7 @@ import { TransferListDemo } from './TransferList';
 import { TreeViewDemo } from './TreeView';
 import { VideoDemo } from './Video';
 import { XmlRendererDemo } from './XmlRenderer';
+import { XNodeTreeDemo } from './XNodeTree';
 
 import { ExampleAudio, ExampleFileBrowser, ExampleVideo } from '../examples';
 import { TempDemo } from './Temp';
@@ -142,6 +143,7 @@ export const DemoApp = () => {
         <ToggleButtonDemo key="togglebutton" />,
         <TransferListDemo key="transferlist" />,
         <TreeViewDemo key="treeview" />,
+        <XNodeTreeDemo key="xnodetree" />,
         <VideoDemo key="video" />,
     ];
 
