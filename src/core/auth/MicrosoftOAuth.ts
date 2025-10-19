@@ -21,7 +21,7 @@ export function Microsoft(options: { clientId: string, clientSecret: string, ten
             id: profile.sub,
             name: profile.name,
             email: profile.email,
-            image: null,
+            image: undefined,
         }),
     });
 }

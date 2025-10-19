@@ -19,7 +19,7 @@ export function Twitter(options: { clientId: string, clientSecret: string }) {
         profile: (profile) => ({
             id: profile.data.id,
             name: profile.data.name,
-            email: null,
+            email: undefined,
             image: profile.data.profile_image_url,
         }),
     });

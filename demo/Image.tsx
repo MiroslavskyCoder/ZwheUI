@@ -16,7 +16,7 @@ const ImageConfigurator: React.FC<{
         <Input label="Src Prop (URL)" value={src} onChange={e => setSrc(e.target.value)} placeholder="Enter image URL" />
         <Stack gap="0.5rem">
             <Text as="label" size="sm" weight="medium" color="textSecondary">Fit Prop</Text>
-            <SegmentedControl value={fit} onChange={setFit} options={[{label: 'Cover', value: 'cover'}, {label: 'Contain', value: 'contain'}, {label: 'Fill', value: 'fill'}]} />
+            <SegmentedControl value={fit as any} onChange={setFit} options={[{label: 'Cover', value: 'cover'}, {label: 'Contain', value: 'contain'}, {label: 'Fill', value: 'fill'}]} />
         </Stack>
         <Input label="Radius Prop (e.g., 8px, 50%)" value={radius} onChange={e => setRadius(e.target.value)} />
     </Stack>

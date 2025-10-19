@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const isProduction = process.env.NODE_ENV === 'production';
 
 // The base path for GitHub Pages. Corresponds to the repository name.
-const publicPath = isProduction ? '/ZwheUI/' : '/';
+const publicPath = '/';
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',
@@ -20,11 +20,20 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   module: {
-    rules: [
+    rules: [ 
       {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: 'ts-loader',
+        test: /\.(ts|tsx)$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                '@babel/preset-typescript',
+                '@babel/preset-react',
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,
@@ -48,3 +57,4 @@ module.exports = {
     historyApiFallback: true, 
   },
 };
+

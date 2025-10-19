@@ -18,7 +18,7 @@ export function Apple(options: { clientId: string, clientSecret: string }) {
             id: profile.sub,
             name: profile.name,
             email: profile.email,
-            image: null,
+            image: undefined,
         }),
     });
 }

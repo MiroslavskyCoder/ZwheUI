@@ -18,7 +18,7 @@ const FlexConfigurator: React.FC<{
         <Stack gap="1.5rem">
             <Stack gap="0.5rem">
                 <Text as="label" size="sm" weight="medium" color="textSecondary">Direction</Text>
-                <SegmentedControl value={direction} onChange={setDirection} options={[
+                <SegmentedControl value={direction as any} onChange={setDirection} options={[
                     { label: 'row', value: 'row' },
                     { label: 'column', value: 'column' },
                     { label: 'row-reverse', value: 'row-reverse' },
@@ -27,7 +27,7 @@ const FlexConfigurator: React.FC<{
             </Stack>
             <Stack gap="0.5rem">
                 <Text as="label" size="sm" weight="medium" color="textSecondary">Align Items</Text>
-                <SegmentedControl value={align} onChange={setAlign} options={[
+                <SegmentedControl value={align as any} onChange={setAlign} options={[
                     { label: 'start', value: 'flex-start' },
                     { label: 'center', value: 'center' },
                     { label: 'end', value: 'flex-end' },
@@ -36,7 +36,7 @@ const FlexConfigurator: React.FC<{
             </Stack>
             <Stack gap="0.5rem">
                 <Text as="label" size="sm" weight="medium" color="textSecondary">Justify Content</Text>
-                <SegmentedControl value={justify} onChange={setJustify} options={[
+                <SegmentedControl value={justify as any} onChange={setJustify} options={[
                     { label: 'start', value: 'flex-start' },
                     { label: 'center', value: 'center' },
                     { label: 'end', value: 'flex-end' },
@@ -45,7 +45,7 @@ const FlexConfigurator: React.FC<{
             </Stack>
             <Stack gap="0.5rem">
                 <Text as="label" size="sm" weight="medium" color="textSecondary">Wrap</Text>
-                <SegmentedControl value={wrap} onChange={setWrap} options={[
+                <SegmentedControl value={wrap as any} onChange={setWrap} options={[
                     { label: 'nowrap', value: 'nowrap' },
                     { label: 'wrap', value: 'wrap' }
                 ]}/>
