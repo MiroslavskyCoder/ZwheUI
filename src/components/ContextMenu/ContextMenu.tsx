@@ -1,3 +1,4 @@
+
 import React, { useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useClickOutside } from '../../core/hooks/useInteractions';
@@ -7,14 +8,13 @@ import { useStyles, useTheme } from '../../core';
 // A separator does not need a label, while an action item does.
 export type ContextMenuItem =
     | {
-          isSeparator?: false;
-          label: string;
-          onClick?: () => void;
-          disabled?: boolean;
-      }
-    | {
-          isSeparator: true;
-      };
+        isSeparator?: false;
+        label: string;
+        onClick?: () => void;
+        disabled?: boolean;
+    } | {
+        isSeparator: true;
+    };
 
 interface ContextMenuProps {
     isOpen: boolean;
