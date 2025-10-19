@@ -82,7 +82,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, onClose, posit
         >
             {items.map((item, index) => {
                 // FIX: Use an if/else block with the `in` operator to properly narrow the type of `item`. This allows TypeScript to understand that the `else` block only deals with menu action items, which have properties like `label` and `onClick`, resolving the type errors.
-                if (item.isSeparator) {
+                if ('isSeparator' in item && item.isSeparator) {
                     return <hr key={`sep-${index}`} className={dividerClass} />;
                 } else {
                     return (

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { GraphicsContext, NodeData, ConnectionData, Position, useGraphicsContext } from './GraphicsContext';
 import { Node } from './Node';
 import { Connection } from './Connection';
@@ -22,6 +22,79 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
     const connectingRef = useRef<{ nodeId: string; socketId: string; type: 'input' | 'output' } | null>(null);
     const [draftConnection, setDraftConnection] = useState<{ start: Position, end: Position } | null>(null);
     const [nodeOutputs, setNodeOutputs] = useState<Record<string, Record<string, any>>>({});
+
+    const nodesRef = useRef(nodes);
+    useEffect(() => {
+        nodesRef.current = nodes;
+    }, [nodes]);
+
+    const getNodes = useCallback(() => {
+        return nodesRef.current;
+    }, []);
+
+    const createNode = useCallback((nodeData: Omit<NodeData, 'id'>) => {
+        const newNode: NodeData = {
+            ...nodeData,
+            id: `node_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+            // Ensure data is a copy to prevent reference issues
+            data: { ...(nodeData.data || {}) },
+        };
+        setNodes(prev => [...prev, newNode]);
+    }, [setNodes]);
+
+    const updateNode = useCallback((nodeId: string, data: Partial<Omit<NodeData, 'id'>>) => {
+        setNodes(prev => prev.map(n => (n.id === nodeId ? { ...n, ...data } : n)));
+    }, [setNodes]);
+
+    const deleteNode = useCallback((nodeId: string) => {
+        setNodes(prev => prev.filter(n => n.id !== nodeId));
+        setConnections(prev => prev.filter(c => c.sourceNodeId !== nodeId && c.targetNodeId !== nodeId));
+    }, [setNodes, setConnections]);
+
+    const autoConnect = useCallback((sourceNodeId: string, sourceSocketId: string) => {
+        const sourceNode = nodes.find(n => n.id === sourceNodeId);
+        if (!sourceNode) return;
+
+        let bestTarget: {
+            targetNodeId: string;
+            targetSocketId: string;
+            distance: number;
+        } | null = null;
+
+        nodes.forEach(targetNode => {
+            if (targetNode.id === sourceNodeId) return;
+
+            targetNode.inputs.forEach(inputSocket => {
+                const isConnected = connections.some(c => c.targetNodeId === targetNode.id && c.targetSocketId === inputSocket.id);
+                if (!isConnected) {
+                    const distance = Math.sqrt(
+                        Math.pow(targetNode.position.x - sourceNode.position.x, 2) +
+                        Math.pow(targetNode.position.y - sourceNode.position.y, 2)
+                    );
+
+                    if (bestTarget === null || distance < bestTarget.distance) {
+                        bestTarget = {
+                            targetNodeId: targetNode.id,
+                            targetSocketId: inputSocket.id,
+                            distance,
+                        };
+                    }
+                }
+            });
+        });
+
+        if (bestTarget) {
+            const newConnection: ConnectionData = {
+                id: `conn_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+                sourceNodeId,
+                sourceSocketId,
+                targetNodeId: bestTarget.targetNodeId,
+                targetSocketId: bestTarget.targetSocketId,
+                type: 'curved',
+            };
+            setConnections(prev => [...prev, newConnection]);
+        }
+    }, [nodes, connections, setConnections]);
 
     const startConnecting = useCallback((nodeId: string, socketId: string, type: 'input' | 'output', e: React.MouseEvent) => {
         connectingRef.current = { nodeId, socketId, type };
@@ -107,23 +180,75 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections }:
         draftConnection,
         processGraph: handleProcessGraph,
         nodeOutputs,
+        createNode,
+        getNodes,
+        updateNode,
+        deleteNode,
+        autoConnect,
     };
 
     return <GraphicsContext.Provider value={contextValue}>{children}</GraphicsContext.Provider>;
 };
 
+const NodeRenderer: React.FC<{ node: NodeData; onContextMenu: (e: React.MouseEvent, nodeId: string) => void }> = ({ node, onContextMenu }) => {
+    const { connections, nodeOutputs, setNodes } = useGraphicsContext();
+
+    const nodeInputs = useMemo(() => {
+        const inputs: Record<string, any> = {};
+        connections.forEach(conn => {
+            if (conn.targetNodeId === node.id) {
+                const sourceNodeOutput = nodeOutputs[conn.sourceNodeId];
+                if (sourceNodeOutput) {
+                    inputs[conn.targetSocketId] = sourceNodeOutput[conn.sourceSocketId];
+                }
+            }
+        });
+        node.inputs.forEach(inputSocket => {
+            const isConnected = connections.some(c => c.targetNodeId === node.id && c.targetSocketId === inputSocket.id);
+            if (!isConnected && inputSocket.value !== undefined) {
+                inputs[inputSocket.id] = inputSocket.value;
+            }
+        });
+        return inputs;
+    }, [node.id, node.inputs, connections, nodeOutputs]);
+
+    const handleUpdateNodeData = useCallback((newData: Record<string, any>) => {
+        setNodes(currentNodes =>
+            currentNodes.map(n =>
+                n.id === node.id ? { ...n, data: { ...n.data, ...newData } } : n
+            )
+        );
+    }, [node.id, setNodes]);
+
+    return (
+        <Node {...node} onContextMenu={onContextMenu}>
+            {node.component && <node.component data={node} inputs={nodeInputs} onUpdateData={handleUpdateNodeData} />}
+        </Node>
+    );
+};
+
+
 export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plugins?: React.FC[] }> = ({ style, plugins }) => {
-    const { nodes, setNodes, connections, setConnections, pan, setPan, zoom, editorRef, nodeOutputs } = useGraphicsContext()!;
+    const { 
+        nodes, connections, setConnections, pan, setPan, zoom, editorRef,
+        updateNode, deleteNode, autoConnect 
+    } = useGraphicsContext()!;
     const { theme } = useTheme();
     const createStyle = useStyles('graphics-editor');
     const [isPanning, setIsPanning] = useState(false);
     const panState = useRef({ startPan: { x: 0, y: 0 }, startMouse: { x: 0, y: 0 } });
 
-    const [contextMenu, setContextMenu] = useState<{
+    const [connectionContextMenu, setConnectionContextMenu] = useState<{
         isOpen: boolean;
         position: { x: number; y: number };
         connection: ConnectionData | null;
     }>({ isOpen: false, position: { x: 0, y: 0 }, connection: null });
+    
+    const [nodeContextMenu, setNodeContextMenu] = useState<{
+        isOpen: boolean;
+        position: Position;
+        node: NodeData | null;
+    }>({ isOpen: false, position: { x: 0, y: 0 }, node: null });
 
 
     const editorClass = createStyle({
@@ -178,38 +303,30 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
     const handleMouseUp = () => {
         setIsPanning(false);
     };
-
-    const handleUpdateNodeData = (nodeId: string, newData: Record<string, any>) => {
-        setNodes(currentNodes =>
-            currentNodes.map(n =>
-                n.id === nodeId ? { ...n, data: { ...n.data, ...newData } } : n
-            )
-        );
-    };
     
     const handleConnectionContextMenu = (e: React.MouseEvent, connection: ConnectionData) => {
         e.preventDefault();
-        setContextMenu({
+        setConnectionContextMenu({
             isOpen: true,
             position: { x: e.clientX, y: e.clientY },
             connection,
         });
     };
 
-    const closeContextMenu = () => {
-        setContextMenu(prev => ({ ...prev, isOpen: false, connection: null }));
+    const closeConnectionContextMenu = () => {
+        setConnectionContextMenu(prev => ({ ...prev, isOpen: false, connection: null }));
     };
 
     const updateConnectionProp = (connectionId: string, props: Partial<ConnectionData>) => {
         setConnections(prev => prev.map(c => 
             c.id === connectionId ? { ...c, ...props } : c
         ));
-        closeContextMenu();
+        closeConnectionContextMenu();
     };
 
     const deleteConnection = (connectionId: string) => {
         setConnections(prev => prev.filter(c => c.id !== connectionId));
-        closeContextMenu();
+        closeConnectionContextMenu();
     };
 
     const toggleConnectionType = (connectionId: string) => {
@@ -219,10 +336,25 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
             updateConnectionProp(connectionId, { type: newType });
         }
     };
+    
+    const handleNodeContextMenu = (e: React.MouseEvent, nodeId: string) => {
+        const node = nodes.find(n => n.id === nodeId);
+        if (node) {
+            setNodeContextMenu({
+                isOpen: true,
+                position: { x: e.clientX, y: e.clientY },
+                node,
+            });
+        }
+    };
 
-    const contextMenuItems: ContextMenuItem[] = useMemo(() => {
-        if (!contextMenu.connection) return [];
-        const conn = contextMenu.connection;
+    const closeNodeContextMenu = () => {
+        setNodeContextMenu(prev => ({ ...prev, isOpen: false, node: null }));
+    };
+
+    const connectionContextMenuItems: ContextMenuItem[] = useMemo(() => {
+        if (!connectionContextMenu.connection) return [];
+        const conn = connectionContextMenu.connection;
         return [
             { label: 'Delete Connection', onClick: () => deleteConnection(conn.id) },
             { isSeparator: true },
@@ -232,7 +364,67 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
             { isSeparator: true },
             { label: `Set Type to ${conn.type === 'straight' ? 'Curved' : 'Straight'}`, onClick: () => toggleConnectionType(conn.id) },
         ];
-    }, [contextMenu.connection, theme.colors]);
+    }, [connectionContextMenu.connection, theme.colors, connections, setConnections]);
+
+    const nodeContextMenuItems: ContextMenuItem[] = useMemo(() => {
+        if (!nodeContextMenu.node) return [];
+        const node = nodeContextMenu.node;
+        const colorCycle = [theme.colors.primary, theme.colors.accent, '#10b981', '#ef4444', theme.colors.secondary, '#9333ea'];
+
+        const handleChangeOutputColor = (socketId: string) => {
+            const newOutputs = node.outputs.map(output => {
+                if (output.id === socketId) {
+                    const currentColor = output.color || theme.colors.secondary;
+                    const currentIndex = colorCycle.indexOf(currentColor);
+                    const nextIndex = (currentIndex + 1) % colorCycle.length;
+                    return { ...output, color: colorCycle[nextIndex] };
+                }
+                return output;
+            });
+            updateNode(node.id, { outputs: newOutputs });
+            closeNodeContextMenu();
+        };
+
+        const items: ContextMenuItem[] = [
+            {
+                label: 'Rename Node',
+                onClick: () => {
+                    const newLabel = prompt('Enter new node name:', node.label);
+                    if (newLabel) {
+                        updateNode(node.id, { label: newLabel });
+                    }
+                    closeNodeContextMenu();
+                }
+            },
+            {
+                label: 'Delete Node',
+                onClick: () => {
+                    deleteNode(node.id);
+                    closeNodeContextMenu();
+                }
+            },
+        ];
+
+        if (node.outputs.length > 0) {
+            items.push({ isSeparator: true });
+            node.outputs.forEach(output => {
+                items.push({
+                    label: `Cycle '${output.label}' Color`,
+                    onClick: () => handleChangeOutputColor(output.id)
+                });
+                items.push({
+                    label: `Auto-connect '${output.label}'`,
+                    onClick: () => {
+                        autoConnect(node.id, output.id);
+                        closeNodeContextMenu();
+                    }
+                });
+            });
+        }
+
+        return items;
+
+    }, [nodeContextMenu.node, theme.colors, updateNode, deleteNode, autoConnect]);
 
 
     return (
@@ -241,7 +433,7 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
             className={editorClass} 
             style={style} 
         >
-            <svg 
+             <svg 
                 className={svgOverlayClass}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
@@ -256,42 +448,27 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
                 <DraftConnection />
             </svg>
             <div className={nodeCanvasClass} style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
-                {nodes.map(node => {
-                    const nodeInputs = useMemo(() => {
-                        const inputs: Record<string, any> = {};
-                        connections.forEach(conn => {
-                            if (conn.targetNodeId === node.id) {
-                                const sourceNodeOutput = nodeOutputs[conn.sourceNodeId];
-                                if (sourceNodeOutput) {
-                                    inputs[conn.targetSocketId] = sourceNodeOutput[conn.sourceSocketId];
-                                }
-                            }
-                        });
-                        node.inputs.forEach(inputSocket => {
-                            const isConnected = connections.some(c => c.targetNodeId === node.id && c.targetSocketId === inputSocket.id);
-                            if (!isConnected && inputSocket.value !== undefined) {
-                                inputs[inputSocket.id] = inputSocket.value;
-                            }
-                        });
-                        return inputs;
-                    }, [node.id, node.inputs, connections, nodeOutputs]);
-
-                    return (
-                        <Node key={node.id} {...node}>
-                            {node.component && <node.component data={node} inputs={nodeInputs} onUpdateData={(newData) => handleUpdateNodeData(node.id, newData)} />}
-                        </Node>
-                    );
-                })}
+                {nodes.map(node => (
+                    <NodeRenderer key={node.id} node={node} onContextMenu={handleNodeContextMenu} />
+                ))}
             </div>
             
             {plugins && plugins.map((Plugin, i) => <Plugin key={i} />)}
             
-            {contextMenu.isOpen && (
+            {connectionContextMenu.isOpen && (
                 <ContextMenu
-                    isOpen={contextMenu.isOpen}
-                    onClose={closeContextMenu}
-                    position={contextMenu.position}
-                    items={contextMenuItems}
+                    isOpen={connectionContextMenu.isOpen}
+                    onClose={closeConnectionContextMenu}
+                    position={connectionContextMenu.position}
+                    items={connectionContextMenuItems}
+                />
+            )}
+            {nodeContextMenu.isOpen && (
+                <ContextMenu
+                    isOpen={nodeContextMenu.isOpen}
+                    onClose={closeNodeContextMenu}
+                    position={nodeContextMenu.position}
+                    items={nodeContextMenuItems}
                 />
             )}
         </div>

@@ -57,6 +57,12 @@ export interface GraphicsContextType {
 
     processGraph: () => void;
     nodeOutputs: Record<string, Record<string, any>>;
+
+    createNode: (node: Omit<NodeData, 'id'>) => void;
+    getNodes: () => NodeData[];
+    updateNode: (nodeId: string, data: Partial<Omit<NodeData, 'id'>>) => void;
+    deleteNode: (nodeId: string) => void;
+    autoConnect: (sourceNodeId: string, sourceSocketId: string) => void;
 }
 
 export const GraphicsContext = createContext<GraphicsContextType | null>(null);

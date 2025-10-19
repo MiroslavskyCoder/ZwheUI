@@ -7,7 +7,7 @@ import { Input, Slider, Text } from '..';
 const NumberComponent: React.FC<{ data: NodeData; onUpdateData: (d: any) => void; }> = ({ data, onUpdateData }) => {
     const value = data.data?.value ?? 0;
     return (
-        <div style={{ padding: '0 8px', width: '150px' }}>
+        <div style={{ padding: '0 8px' }}>
             <Input 
                 type="number"
                 label="Value"
@@ -21,7 +21,7 @@ const NumberComponent: React.FC<{ data: NodeData; onUpdateData: (d: any) => void
 const SliderComponent: React.FC<{ data: NodeData; onUpdateData: (d: any) => void; }> = ({ data, onUpdateData }) => {
     const value = data.data?.value ?? 50;
     return (
-        <div style={{ padding: '8px', width: '200px' }}>
+        <div style={{ padding: '8px' }}>
             <Slider 
                 min={0}
                 max={100}

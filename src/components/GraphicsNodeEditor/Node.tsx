@@ -9,9 +9,10 @@ interface NodeProps {
     inputs: { id: string; label: string }[];
     outputs: { id: string; label: string }[];
     children?: React.ReactNode;
+    onContextMenu?: (event: React.MouseEvent, nodeId: string) => void;
 }
 
-export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs, children }) => {
+export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs, children, onContextMenu }) => {
     const { startConnecting, stopConnecting, setNodes, zoom } = useGraphicsContext();
     const { theme } = useTheme();
     const createStyle = useStyles('graphics-node');
@@ -117,6 +118,11 @@ export const Node: React.FC<NodeProps> = ({ id, label, position, inputs, outputs
             className={nodeClass}
             style={{ left: position.x, top: position.y }}
             onMouseDown={handleMouseDown}
+            onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onContextMenu?.(e, id);
+            }}
             data-node-id={id}
         >
             <div className={headerClass}>{label}</div>

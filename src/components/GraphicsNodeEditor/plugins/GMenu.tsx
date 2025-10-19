@@ -8,8 +8,10 @@ export const GMenu: React.FC = () => {
     const [menu, setMenu] = useState<{ isOpen: boolean; position: { x: number; y: number } }>({ isOpen: false, position: { x: 0, y: 0 } });
 
     const handleContextMenu = useCallback((e: MouseEvent) => {
-        // Only open menu if right-clicking on the editor background
-        if (e.target === editorRef.current) {
+        const editor = editorRef.current;
+        // The SVG overlay is the intended "background" for clicks.
+        // Check if the target is the SVG itself, not a path or other element inside it.
+        if (editor && e.target === editor.querySelector('svg')) {
             e.preventDefault();
             setMenu({ isOpen: true, position: { x: e.clientX, y: e.clientY } });
         }
@@ -19,6 +21,8 @@ export const GMenu: React.FC = () => {
         const editor = editorRef.current;
         if (!editor) return;
         
+        // We attach to the main editor div, but the check inside handleContextMenu
+        // ensures we only react to right-clicks on the SVG background.
         editor.addEventListener('contextmenu', handleContextMenu);
         return () => {
             editor.removeEventListener('contextmenu', handleContextMenu);
