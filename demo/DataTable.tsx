@@ -36,7 +36,7 @@ export const DataTableDemo = () => {
 
     // 3. Define columns
     const columns: ColumnDef<User>[] = [
-        { accessorKey: 'name', header: 'Name' },
+        { accessorKey: 'name', header: 'Name', enableHiding: false },
         { accessorKey: 'email', header: 'Email' },
         { accessorKey: 'role', header: 'Role' },
         {

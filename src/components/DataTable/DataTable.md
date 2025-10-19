@@ -2,6 +2,14 @@
 
 A powerful and feature-rich table component for displaying complex datasets. It includes built-in support for pagination, global filtering, column sorting, and row selection with contextual actions.
 
+## Features
+*   **Pagination**: Automatically handles splitting data across multiple pages.
+*   **Global Filtering**: A search input to filter data across all columns.
+*   **Column Sorting**: Clickable column headers to sort data.
+*   **Row Selection**: Checkboxes to select single or multiple rows for bulk actions.
+*   **Column Visibility**: A "View" dropdown is available to toggle the visibility of columns.
+*   **Contextual Actions**: Provide a render function to display action buttons (e.g., "Delete Selected") when rows are selected.
+
 ## Props
 
 *   `data` (array of objects, required): The array of data to display. Each object in the array must have a unique `id` property of type `string` or `number`.
@@ -23,12 +31,15 @@ interface ColumnDef<T> {
   header: string;
   cell?: (value: T[keyof T], row: T) => React.ReactNode;
   enableSorting?: boolean;
+  enableHiding?: boolean;
 }
 ```
 *   `accessorKey`: The key from your data object to display in this column.
 *   `header`: The text to display in the table header for this column.
 *   `cell`: An optional render function for custom cell content. It receives the cell's value and the entire row object.
 *   `enableSorting`: An optional boolean to disable sorting for a specific column, overriding the global prop.
+*   `enableHiding`: An optional boolean to prevent a column from being hidden via the 'View' dropdown. Defaults to `true`.
+
 
 ## Usage
 
@@ -51,7 +62,7 @@ const myData: User[] = [
 
 // 3. Define your columns
 const columns: ColumnDef<User>[] = [
-    { accessorKey: 'name', header: 'Name' },
+    { accessorKey: 'name', header: 'Name', enableHiding: false }, // This column cannot be hidden
     { 
       accessorKey: 'status', 
       header: 'Status',

@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import {
     Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
-    Checkbox, Pagination, Search, Stack, Button, Text, Icon, Card
+    Checkbox, Pagination, Search, Stack, Button, Text, Icon, Card,
+    Dropdown, DropdownTrigger, DropdownContent
 } from '..';
 import { useTheme } from '../../core';
-import { SortAscendingIcon, SortDescendingIcon, SelectorIcon } from '../../icons';
+import { SortAscendingIcon, SortDescendingIcon, SelectorIcon, LayoutIcon } from '../../icons';
 
 // Column definition
 export interface ColumnDef<T> {
@@ -12,6 +13,7 @@ export interface ColumnDef<T> {
   header: string;
   cell?: (value: T[keyof T], row: T) => React.ReactNode;
   enableSorting?: boolean;
+  enableHiding?: boolean;
 }
 
 // Main component props
@@ -41,6 +43,18 @@ export const DataTable = <T extends { id: string | number }>({
   const [sortConfig, setSortConfig] = useState<{ key: keyof T; direction: 'asc' | 'desc' } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selection, setSelection] = useState<Set<string | number>>(new Set());
+
+  const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>(() => {
+    const visibility: Record<string, boolean> = {};
+    columns.forEach(col => {
+      visibility[col.accessorKey as string] = true;
+    });
+    return visibility;
+  });
+
+  const visibleColumns = useMemo(() => {
+    return columns.filter(col => columnVisibility[col.accessorKey as string]);
+  }, [columns, columnVisibility]);
 
   // 1. Filtering
   const filteredData = useMemo(() => {
@@ -124,20 +138,51 @@ export const DataTable = <T extends { id: string | number }>({
   return (
     <Card className={className}>
       <Stack gap="1.5rem">
-        {(enableFiltering || (actions && selection.size > 0)) && (
-          <Stack direction="row" justify="space-between" align="center">
-            {enableFiltering ? (
-              <div style={{minWidth: '250px'}}>
-                <Search
-                  placeholder="Search table..."
-                  value={filter}
-                  onChange={(e) => {
-                    setFilter(e.target.value);
-                    setCurrentPage(1); // Reset to first page on filter
-                  }}
-                />
-              </div>
-            ) : <div />}
+        <Stack direction="row" justify="space-between" align="center">
+            <Stack direction="row" gap="1rem" align="center" style={{ flex: 1 }}>
+                {enableFiltering && (
+                    <div style={{minWidth: '250px'}}>
+                        <Search
+                        placeholder="Search table..."
+                        value={filter}
+                        onChange={(e) => {
+                            setFilter(e.target.value);
+                            setCurrentPage(1); // Reset to first page on filter
+                        }}
+                        />
+                    </div>
+                )}
+                 <Dropdown>
+                    <DropdownTrigger>
+                        <Button variant="secondary">
+                            <Icon as={LayoutIcon} size={16} />
+                            <span>View</span>
+                        </Button>
+                    </DropdownTrigger>
+                    <DropdownContent>
+                        <div style={{ padding: '0.5rem' }}>
+                            <Text size="sm" weight="600" style={{ padding: '0.2rem 0.5rem' }}>Toggle columns</Text>
+                            <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                {columns.map(col => (
+                                    <div key={col.accessorKey as string} style={{ padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+                                        <Checkbox
+                                            label={col.header}
+                                            checked={columnVisibility[col.accessorKey as string]}
+                                            onChange={() => {
+                                                setColumnVisibility(prev => ({
+                                                    ...prev,
+                                                    [col.accessorKey as string]: !prev[col.accessorKey as string]
+                                                }));
+                                            }}
+                                            disabled={col.enableHiding === false}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </DropdownContent>
+                </Dropdown>
+            </Stack>
             
             {actions && (
               <div style={{
@@ -152,10 +197,9 @@ export const DataTable = <T extends { id: string | number }>({
                   </Stack>
               </div>
             )}
-          </Stack>
-        )}
+        </Stack>
 
-        <div style={{ overflowX: 'auto' }}>
+        <div style={{ overflowX: 'auto', marginTop: '1.5rem' }}>
           <Table>
             <TableHeader>
               <TableRow>
@@ -169,7 +213,7 @@ export const DataTable = <T extends { id: string | number }>({
                     />
                   </TableHead>
                 )}
-                {columns.map(col => (
+                {visibleColumns.map(col => (
                   <TableHead
                     key={String(col.accessorKey)}
                     onClick={() => col.enableSorting !== false && handleSort(col.accessorKey)}
@@ -205,7 +249,7 @@ export const DataTable = <T extends { id: string | number }>({
                       />
                     </TableCell>
                   )}
-                  {columns.map(col => (
+                  {visibleColumns.map(col => (
                     <TableCell key={`${row.id}-${String(col.accessorKey)}`}>
                       {col.cell ? col.cell(row[col.accessorKey], row) : String(row[col.accessorKey])}
                     </TableCell>
