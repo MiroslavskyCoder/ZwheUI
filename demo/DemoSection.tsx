@@ -7,7 +7,8 @@ import {
 import * as components from '../src/components';
 import * as icons from '../src/icons';
 import { useTheme } from '../src/core';
-
+import remarkGfm from 'remark-gfm';
+import ReactMarkdown from 'react-markdown';
 
 interface DemoSectionProps {
     title: string;
@@ -86,12 +87,10 @@ export const DemoSection: React.FC<DemoSectionProps> = ({
                                     </Stack>
                                 </AccordionContent>
                             </AccordionItem>
-                             <AccordionItem value="docs">
+                            <AccordionItem value="docs">
                                 <AccordionTrigger><Text weight="600">Documentation</Text></AccordionTrigger>
                                 <AccordionContent>
-                                     <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '13px', color: theme.colors.textSecondary, lineHeight: '1.5', paddingTop: '1rem' }}>
-                                        {documentation}
-                                    </pre>
+                                    <ReactMarkdown children={documentation} remarkPlugins={[remarkGfm]} /> 
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
