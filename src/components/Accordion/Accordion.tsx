@@ -90,7 +90,7 @@ export const AccordionContent: React.FC<{ children: React.ReactNode; value?: str
     const contentClass = createStyle({
         overflow: 'hidden',
         transition: 'max-height 0.3s ease, padding 0.3s ease',
-        maxHeight: isOpen ? '500px' : '0',
+        maxHeight: isOpen ? 'auto' : '0',
     });
 
     const innerClass = createStyle({
