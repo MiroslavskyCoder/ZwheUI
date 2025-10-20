@@ -1,10 +1,14 @@
-import React from 'react';
+
+import React, { useState, useMemo } from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { Slider } from '../Slider/Slider';
 import { Stack } from '../Stack/Stack';
 import { Text } from '../Text/Text';
-import { parseColor } from '../../core/color/utils';
+import { parseColor, rgbToHsl, hslToRgb, rgbToLab, labToRgb, rgbToHex } from '../../core/color/utils';
+import { SegmentedControl } from '../SegmentedControl/SegmentedControl';
+
+type ColorModel = 'HEX' | 'HSL' | 'LAB';
 
 interface ColorPickerProps {
     value: string; // hex color string e.g. #RRGGBB
@@ -15,16 +19,37 @@ interface ColorPickerProps {
 export const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange, className = '' }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('color-picker');
-    const [r, g, b] = parseColor(value);
+    const [colorModel, setColorModel] = useState<ColorModel>('HEX');
 
-    const handleColorChange = (channel: 'r' | 'g' | 'b', newValue: number) => {
-        const newColor = [r, g, b];
-        if (channel === 'r') newColor[0] = newValue;
-        if (channel === 'g') newColor[1] = newValue;
-        if (channel === 'b') newColor[2] = newValue;
+    const [r, g, b] = useMemo(() => {
+        try {
+            return parseColor(value);
+        } catch {
+            return [0, 0, 0];
+        }
+    }, [value]);
 
-        const toHex = (c: number) => `0${c.toString(16)}`.slice(-2);
-        onChange(`#${toHex(newColor[0])}${toHex(newColor[1])}${toHex(newColor[2])}`);
+    const { h, s, l } = useMemo(() => rgbToHsl(r, g, b), [r, g, b]);
+    const { L, a, b: b_lab } = useMemo(() => rgbToLab(r, g, b), [r, g, b]);
+
+    const handleRgbChange = (channel: 'r' | 'g' | 'b', newValue: number) => {
+        const newColor = { r, g, b };
+        newColor[channel] = newValue;
+        onChange(rgbToHex(newColor.r, newColor.g, newColor.b));
+    };
+
+    const handleHslChange = (channel: 'h' | 's' | 'l', newValue: number) => {
+        const newHsl = { h, s, l };
+        newHsl[channel] = newValue;
+        const { r: newR, g: newG, b: newB } = hslToRgb(newHsl.h, newHsl.s, newHsl.l);
+        onChange(rgbToHex(newR, newG, newB));
+    };
+
+    const handleLabChange = (channel: 'L' | 'a' | 'b', newValue: number) => {
+        const newLab = { L, a, b: b_lab };
+        newLab[channel] = newValue;
+        const { r: newR, g: newG, b: newB } = labToRgb(newLab.L, newLab.a, newLab.b);
+        onChange(rgbToHex(newR, newG, newB));
     };
 
     const containerClass = createStyle({
@@ -46,7 +71,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange, class
         border: `1px solid ${theme.colors.border}`,
         marginBottom: theme.spacing.md,
     });
-    
+
     const hexInputClass = createStyle({
         width: '100%',
         fontFamily: 'monospace',
@@ -58,28 +83,79 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange, class
         borderRadius: '4px'
     });
 
+    const renderRgbSliders = () => (
+        <Stack direction="column" gap={theme.spacing.sm}>
+            <Stack direction="row" align="center" gap={theme.spacing.sm}>
+                <Text as="span" size="14px" color="#ef4444" style={{width: '15px'}}>R</Text>
+                <Slider value={r} onChange={(newR) => handleRgbChange('r', newR)} min={0} max={255} color="#ef4444" showValue />
+            </Stack>
+            <Stack direction="row" align="center" gap={theme.spacing.sm}>
+                <Text as="span" size="14px" color="#10b981" style={{width: '15px'}}>G</Text>
+                <Slider value={g} onChange={(newG) => handleRgbChange('g', newG)} min={0} max={255} color="#10b981" showValue />
+            </Stack>
+            <Stack direction="row" align="center" gap={theme.spacing.sm}>
+                <Text as="span" size="14px" color="#3b82f6" style={{width: '15px'}}>B</Text>
+                <Slider value={b} onChange={(newB) => handleRgbChange('b', newB)} min={0} max={255} color="#3b82f6" showValue />
+            </Stack>
+            <input 
+                className={hexInputClass} 
+                type="text" 
+                value={value} 
+                onChange={(e) => onChange(e.target.value)}
+            />
+        </Stack>
+    );
+
+    const renderHslSliders = () => (
+        <Stack direction="column" gap={theme.spacing.sm}>
+            <Stack direction="row" align="center" gap={theme.spacing.sm}>
+                <Text as="span" size="14px" style={{width: '15px'}}>H</Text>
+                <Slider value={Math.round(h)} onChange={(newH) => handleHslChange('h', newH)} min={0} max={360} showValue />
+            </Stack>
+            <Stack direction="row" align="center" gap={theme.spacing.sm}>
+                <Text as="span" size="14px" style={{width: '15px'}}>S</Text>
+                <Slider value={Math.round(s)} onChange={(newS) => handleHslChange('s', newS)} min={0} max={100} showValue />
+            </Stack>
+            <Stack direction="row" align="center" gap={theme.spacing.sm}>
+                <Text as="span" size="14px" style={{width: '15px'}}>L</Text>
+                <Slider value={Math.round(l)} onChange={(newL) => handleHslChange('l', newL)} min={0} max={100} showValue />
+            </Stack>
+        </Stack>
+    );
+
+    const renderLabSliders = () => (
+        <Stack direction="column" gap={theme.spacing.sm}>
+            <Stack direction="row" align="center" gap={theme.spacing.sm}>
+                <Text as="span" size="14px" style={{width: '15px'}}>L*</Text>
+                <Slider value={Math.round(L)} onChange={(newL) => handleLabChange('L', newL)} min={0} max={100} showValue />
+            </Stack>
+            <Stack direction="row" align="center" gap={theme.spacing.sm}>
+                <Text as="span" size="14px" style={{width: '15px'}}>a*</Text>
+                <Slider value={Math.round(a)} onChange={(newA) => handleLabChange('a', newA)} min={-128} max={127} showValue />
+            </Stack>
+            <Stack direction="row" align="center" gap={theme.spacing.sm}>
+                <Text as="span" size="14px" style={{width: '15px'}}>b*</Text>
+                <Slider value={Math.round(b_lab)} onChange={(newB) => handleLabChange('b', newB)} min={-128} max={127} showValue />
+            </Stack>
+        </Stack>
+    );
+    
     return (
         <div className={`${containerClass} ${className}`}>
             <div className={swatchClass} />
-            <Stack direction="column" gap={theme.spacing.sm}>
-                <Stack direction="row" align="center" gap={theme.spacing.sm} style={{ gridTemplateColumns: 'auto 1fr' }}>
-                    <Text as="span" size="14px" color="#ef4444" style={{width: '15px'}}>R</Text>
-                    <Slider value={r} onChange={(newR) => handleColorChange('r', newR)} min={0} max={255} color="#ef4444" />
-                </Stack>
-                <Stack direction="row" align="center" gap={theme.spacing.sm} style={{ gridTemplateColumns: 'auto 1fr' }}>
-                    <Text as="span" size="14px" color="#10b981" style={{width: '15px'}}>G</Text>
-                    <Slider value={g} onChange={(newG) => handleColorChange('g', newG)} min={0} max={255} color="#10b981" />
-                </Stack>
-                <Stack direction="row" align="center" gap={theme.spacing.sm} style={{ gridTemplateColumns: 'auto 1fr' }}>
-                    <Text as="span" size="14px" color="#3b82f6" style={{width: '15px'}}>B</Text>
-                    <Slider value={b} onChange={(newB) => handleColorChange('b', newB)} min={0} max={255} color="#3b82f6" />
-                </Stack>
-                <input 
-                    className={hexInputClass} 
-                    type="text" 
-                    value={value} 
-                    onChange={(e) => onChange(e.target.value)}
+            <Stack gap={theme.spacing.md}>
+                <SegmentedControl
+                    value={colorModel}
+                    onChange={(val) => setColorModel(val as ColorModel)}
+                    options={[
+                        { label: 'HEX', value: 'HEX' },
+                        { label: 'HSL', value: 'HSL' },
+                        { label: 'LAB', value: 'LAB' },
+                    ]}
                 />
+                {colorModel === 'HEX' && renderRgbSliders()}
+                {colorModel === 'HSL' && renderHslSliders()}
+                {colorModel === 'LAB' && renderLabSliders()}
             </Stack>
         </div>
     );

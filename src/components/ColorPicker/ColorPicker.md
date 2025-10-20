@@ -1,6 +1,6 @@
 # Color Picker
 
-An interactive component for selecting a color. It displays a color swatch, RGB sliders, and a hex input field.
+An interactive component for selecting a color. It displays a color swatch and allows editing in different color models: HEX/RGB, HSL, and CIELAB.
 
 ## Props
 
