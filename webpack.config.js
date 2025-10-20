@@ -45,50 +45,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
     }),
-    new webpack.optimize.SplitChunksPlugin({
-      chunks: 'all',
-      minSize: 30000,
-      minRemainingSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 30,
-      maxInitialRequests: 30,
-      enforceSizeThreshold: 50000,
-      cacheGroups: {
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-          reuseExistingChunk: true,
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
-        zwheui: {
-          test: /[\\/]ZwheUI.*[\\/]/,
-          priority: -5,
-          reuseExistingChunk: true,
-        },
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          // cacheGroupKey here is `commons` as the key of the cacheGroup
-          name(module, chunks, cacheGroupKey) {
-            const moduleFileName = module
-              .identifier()
-              .split('/')
-              .reduceRight((item) => item)
-              .replace(/[\\]/g, '_');
-            const allChunksNames = chunks.map((item) => item.name).join('~');
-            const crypto = require('crypto');
-            const hash = crypto.createHash('sha256');
-            hash.update(`${cacheGroupKey}.${moduleFileName}.${allChunksNames}`);
-            const hex = hash.digest('hex').slice(0, 32);
-            return `ZWHEUI.${cacheGroupKey}.${hex}`;
-          },
-          chunks: 'all',
-        },
-      },
-    }),
+    new webpack.HotModuleReplacementPlugin(), // Enable HMR
+    
   ],
   devServer: {
     static: {
