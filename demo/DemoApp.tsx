@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Grid, Stack, Text, Header, Sidebar, SidebarNav, SidebarNavItem, Icon, ThemeSwitcher } from '../src/components';
-import { ThemeProvider, useTheme } from '../src/core';
+import { Grid, Stack, Text, Header, Sidebar, SidebarNav, SidebarNavItem, Icon, ThemeSwitcher, Drawer, IconButton } from '../src/components';
+import { ThemeProvider, useTheme, useBreakpoint } from '../src/core';
 import { Welcome } from './Welcome';
 
 // Import all demos
@@ -87,10 +87,17 @@ import { GraphicsNodeEditorDemo } from './GraphicsNodeEditor';
 import { PhotoEditorDemo } from './PhotoEditor';
 import { ExampleFileBrowser, ExampleVideo, ExampleAudio, ExamplePhotoEditor, ExampleSignInPage } from '../examples';
 import { LayoutDemo } from './Layout';
-import { PageHeaderDemo } from './PageHeader';
 import { MarkdownDemo } from './Markdown';
 import { StatDemo } from './Stat';
 import { EmptyStateDemo } from './EmptyState';
+
+import { BlockquoteDemo } from './Blockquote';
+import { CarouselDemo } from './Carousel';
+import { CodePreviewDemo } from './CodePreview';
+import { CommandDemo } from './Command';
+import { MessageDemo } from './Message';
+import { TooltipDemo } from './Tooltip';
+import { MenuIcon } from '../src/icons';
 
 const demos = {
     general: [
@@ -102,6 +109,7 @@ const demos = {
         { id: 'badge', label: 'Badge', component: <BadgeDemo /> },
         { id: 'tag', label: 'Tag', component: <TagDemo /> },
         { id: 'code', label: 'Code', component: <CodeDemo /> },
+        { id: 'blockquote', label: 'Blockquote', component: <BlockquoteDemo /> },
     ],
     layout: [
         { id: 'box', label: 'Box', component: <BoxDemo /> },
@@ -117,7 +125,6 @@ const demos = {
         { id: 'footer', label: 'Footer', component: <FooterDemo /> },
         { id: 'sidebar', label: 'Sidebar', component: <SidebarDemo /> },
         { id: 'layout', label: 'Layout', component: <LayoutDemo /> },
-        { id: 'page-header', label: 'PageHeader', component: <PageHeaderDemo /> },
     ],
     forms: [
         { id: 'form-control', label: 'FormControl', component: <FormControlDemo /> },
@@ -155,6 +162,9 @@ const demos = {
         { id: 'image', label: 'Image', component: <ImageDemo /> },
         { id: 'markdown', label: 'Markdown', component: <MarkdownDemo /> },
         { id: 'stat', label: 'Stat', component: <StatDemo /> },
+        { id: 'carousel', label: 'Carousel', component: <CarouselDemo /> },
+        { id: 'message', label: 'Message', component: <MessageDemo /> },
+        { id: 'code-preview', label: 'CodePreview', component: <CodePreviewDemo /> },
     ],
     feedback: [
         { id: 'alert', label: 'Alert', component: <AlertDemo /> },
@@ -168,6 +178,7 @@ const demos = {
         { id: 'drawer', label: 'Drawer', component: <DrawerDemo /> },
         { id: 'popover', label: 'Popover', component: <PopoverDemo /> },
         { id: 'hover-card', label: 'HoverCard', component: <HoverCardDemo /> },
+        { id: 'tooltip', label: 'Tooltip', component: <TooltipDemo /> },
         { id: 'backdrop', label: 'Backdrop', component: <BackdropDemo /> },
         { id: 'empty-state', label: 'EmptyState', component: <EmptyStateDemo /> },
     ],
@@ -182,6 +193,7 @@ const demos = {
         { id: 'fab', label: 'FloatingActionButton', component: <FloatingActionButtonDemo /> },
         { id: 'speed-dial', label: 'SpeedDial', component: <SpeedDialDemo /> },
         { id: 'transfer-list', label: 'TransferList', component: <TransferListDemo /> },
+        { id: 'command', label: 'Command', component: <CommandDemo /> },
     ],
     advanced: [
         { id: 'animated-block', label: 'AnimatedBlock', component: <AnimatedBlockDemo /> },
@@ -204,9 +216,21 @@ const demos = {
 
 const allDemos = Object.values(demos).flat();
 
+const NavItems = ({ items, activeId, onClick }: { items: { id: string, label: string }[], activeId: string, onClick: (e: React.MouseEvent, id: string) => void }) => (
+    <>
+        {items.map(item => (
+            <SidebarNavItem key={item.id} href="#" isActive={activeId === item.id} onClick={(e) => onClick(e, item.id)}>
+                {item.label}
+            </SidebarNavItem>
+        ))}
+    </>
+);
+
 const AppContent = () => {
     const [activeDemoId, setActiveDemoId] = useState('welcome');
     const { theme } = useTheme();
+    const isDesktop = useBreakpoint('md');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const activeDemo = useMemo(() => {
         if (activeDemoId === 'welcome') return <Welcome onNavigate={setActiveDemoId} />;
@@ -216,36 +240,52 @@ const AppContent = () => {
     const handleNavClick = (e: React.MouseEvent, id: string) => {
         e.preventDefault();
         setActiveDemoId(id);
+        if (!isDesktop) {
+            setIsSidebarOpen(false);
+        }
     };
+    
+    const SidebarLayout = ({ isDesktopLayout }: { isDesktopLayout: boolean }) => (
+        <Stack justify="space-between" style={{ height: '100%' }}>
+            <Stack gap="2rem" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+                <div onClick={(e) => handleNavClick(e, 'welcome')} style={{ cursor: 'pointer', padding: isDesktopLayout ? '0 1rem' : undefined }}>
+                    <Text as="h1" size="1.5rem" weight="700">ZwheUI</Text>
+                    <Text size="0.875rem" color="textSecondary">Component Showcase</Text>
+                </div>
+                <div style={{ flex: '1 1 0', minHeight: 0, overflowY: 'auto', paddingRight: isDesktopLayout ? '0.5rem' : undefined }}>
+                    <Stack gap="1.5rem">
+                        <SidebarNav title="Examples"><NavItems items={demos.examples} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
+                        <SidebarNav title="General"><NavItems items={demos.general} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
+                        <SidebarNav title="Layout"><NavItems items={demos.layout} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
+                        <SidebarNav title="Forms & Input"><NavItems items={demos.forms} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
+                        <SidebarNav title="Data Display"><NavItems items={demos.dataDisplay} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
+                        <SidebarNav title="Feedback & Overlays"><NavItems items={demos.feedback} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
+                        <SidebarNav title="Navigation"><NavItems items={demos.navigation} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
+                        <SidebarNav title="Advanced"><NavItems items={demos.advanced} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
+                    </Stack>
+                </div>
+            </Stack>
+        </Stack>
+    );
     
     return (
         <div style={{ display: 'flex', height: '100vh', width: '100vw', backgroundColor: theme.colors.background }}>
-            <Sidebar width="280px" height='auto'>
-                <Stack justify="space-between" style={{ height: '100%' }}>
-                    <Stack gap="2rem" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-                        <div onClick={(e) => handleNavClick(e, 'welcome')} style={{ cursor: 'pointer', padding: '0 1rem' }}>
-                            <Text as="h1" size="1.5rem" weight="700">ZwheUI</Text>
-                            <Text size="0.875rem" color="textSecondary">Component Showcase</Text>
-                        </div>
-                        <div style={{ flex: '1 1 0', minHeight: 0, overflowY: 'auto', paddingRight: '0.5rem' }}>
-                            <Stack gap="1.5rem">
-                                <SidebarNav title="Examples"><NavItems items={demos.examples} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
-                                <SidebarNav title="General"><NavItems items={demos.general} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
-                                <SidebarNav title="Layout"><NavItems items={demos.layout} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
-                                <SidebarNav title="Forms & Input"><NavItems items={demos.forms} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
-                                <SidebarNav title="Data Display"><NavItems items={demos.dataDisplay} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
-                                <SidebarNav title="Feedback & Overlays"><NavItems items={demos.feedback} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
-                                <SidebarNav title="Navigation"><NavItems items={demos.navigation} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
-                                <SidebarNav title="Advanced"><NavItems items={demos.advanced} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
-                            </Stack>
-                        </div>
-                    </Stack>
-                </Stack>
-            </Sidebar>
+            {isDesktop ? (
+                <Sidebar width="280px" height='auto'>
+                    <SidebarLayout isDesktopLayout={true} />
+                </Sidebar>
+            ) : (
+                <Drawer isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} position="left">
+                    <SidebarLayout isDesktopLayout={false} />
+                </Drawer>
+            )}
 
             <main style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', minWidth: 0 }}>
-                <Header height="60px">
+                <Header>
                     <Header.Left>
+                        {!isDesktop && (
+                            <IconButton icon={MenuIcon} aria-label="Open navigation" onClick={() => setIsSidebarOpen(true)} />
+                        )}
                         <Text weight="600" size="1.125rem">{(allDemos.find(d => d.id === activeDemoId)?.label || 'Welcome')}</Text>
                     </Header.Left>
                     <Header.Right>
@@ -260,17 +300,6 @@ const AppContent = () => {
     );
 };
 
-const NavItems = ({ items, activeId, onClick }: { items: { id: string, label: string }[], activeId: string, onClick: (e: React.MouseEvent, id: string) => void }) => (
-    <>
-        {items.map(item => (
-            <SidebarNavItem key={item.id} href="#" isActive={activeId === item.id} onClick={(e) => onClick(e, item.id)}>
-                {item.label}
-            </SidebarNavItem>
-        ))}
-    </>
-);
-
-
 export const DemoApp = () => ( 
-    <AppContent />
+    <AppContent /> 
 );
