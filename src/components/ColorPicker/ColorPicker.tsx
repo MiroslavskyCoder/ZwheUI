@@ -1,5 +1,4 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { Slider } from '../Slider/Slider';
@@ -14,12 +13,33 @@ interface ColorPickerProps {
     value: string; // hex color string e.g. #RRGGBB
     onChange: (color: string) => void;
     className?: string;
+    disableColorModel?: ColorModel[];
 }
 
-export const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange, className = '' }) => {
+const allColorModels: { label: string, value: ColorModel }[] = [
+    { label: 'HEX', value: 'HEX' },
+    { label: 'HSL', value: 'HSL' },
+    { label: 'LAB', value: 'LAB' },
+];
+
+export const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange, className = '', disableColorModel = [] }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('color-picker');
-    const [colorModel, setColorModel] = useState<ColorModel>('HEX');
+
+    const availableOptions = useMemo(() => 
+        allColorModels.filter(model => !disableColorModel.includes(model.value)),
+        [disableColorModel]
+    );
+
+    const [colorModel, setColorModel] = useState<ColorModel>(availableOptions[0]?.value || 'HEX');
+    
+    useEffect(() => {
+        // If the current color model is disabled, switch to the first available one.
+        if (disableColorModel.includes(colorModel) && availableOptions.length > 0) {
+            setColorModel(availableOptions[0].value);
+        }
+    }, [disableColorModel, colorModel, availableOptions]);
+
 
     const [r, g, b] = useMemo(() => {
         try {
@@ -144,15 +164,13 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange, class
         <div className={`${containerClass} ${className}`}>
             <div className={swatchClass} />
             <Stack gap={theme.spacing.md}>
-                <SegmentedControl
-                    value={colorModel}
-                    onChange={(val) => setColorModel(val as ColorModel)}
-                    options={[
-                        { label: 'HEX', value: 'HEX' },
-                        { label: 'HSL', value: 'HSL' },
-                        { label: 'LAB', value: 'LAB' },
-                    ]}
-                />
+                {availableOptions.length > 1 && (
+                    <SegmentedControl
+                        value={colorModel}
+                        onChange={(val) => setColorModel(val as ColorModel)}
+                        options={availableOptions}
+                    />
+                )}
                 {colorModel === 'HEX' && renderRgbSliders()}
                 {colorModel === 'HSL' && renderHslSliders()}
                 {colorModel === 'LAB' && renderLabSliders()}

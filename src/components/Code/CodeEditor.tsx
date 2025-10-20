@@ -1,17 +1,19 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useStyles, useTheme } from '../../core';
-import { SyntaxHighlighter } from './SyntaxHighlighter';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface CodeEditorProps {
     value: string;
     onChange: (value: string) => void;
+    language?: string;
 }
 
-export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange }) => {
+export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, language = 'tsx' }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('code-editor');
-    const preRef = useRef<HTMLPreElement>(null);
+    const preRef = useRef<HTMLDivElement>(null);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
     const handleScroll = () => {
@@ -30,8 +32,6 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange }) => {
         lineHeight: '1.5',
         tabSize: 2,
         MozTabSize: 2,
-        whiteSpace: 'pre-wrap' as 'pre-wrap',
-        wordBreak: 'break-word' as 'break-word',
     };
 
     const containerClass = createStyle({
@@ -41,7 +41,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange }) => {
         borderRadius: '8px',
     });
 
-    const highlighterClass = createStyle({
+    const highlighterContainerClass = createStyle({
         ...commonStyles,
         position: 'absolute',
         top: 0,
@@ -64,6 +64,8 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange }) => {
         caretColor: theme.colors.text,
         resize: 'none',
         outline: 'none',
+        whiteSpace: 'pre',
+        wordWrap: 'normal'
     });
 
 
@@ -80,8 +82,27 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange }) => {
                 autoComplete="off"
                 autoCorrect="off"
             />
-            <div ref={preRef as any} className={highlighterClass}>
-                <SyntaxHighlighter code={value} />
+            <div ref={preRef} className={highlighterContainerClass} aria-hidden="true">
+                <SyntaxHighlighter
+                    language={language}
+                    style={vscDarkPlus}
+                    customStyle={{
+                        margin: 0,
+                        padding: 0,
+                        background: 'transparent',
+                        whiteSpace: 'pre',
+                        wordWrap: 'normal',
+                    }}
+                    codeTagProps={{
+                        style: {
+                            fontFamily: 'monospace',
+                            fontSize: '13px',
+                            lineHeight: '1.5',
+                        }
+                    }}
+                >
+                    {value.endsWith('\n') ? value : `${value}\n`}
+                </SyntaxHighlighter>
             </div>
         </div>
     );

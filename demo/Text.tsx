@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Text, Stack, Input, SegmentedControl } from '../src/components';
 import { useTheme } from './../src/core/theme/ThemeProvider';
-import { useStyles } from './../src/core/hooks/useStyles';
 import { DemoSection } from './DemoSection';
 
 const TextConfigurator: React.FC<{

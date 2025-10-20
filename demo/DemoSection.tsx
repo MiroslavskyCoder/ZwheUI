@@ -2,10 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
     Sofa, Stack, Text, Accordion, AccordionItem, AccordionTrigger, AccordionContent, 
-    Center, XmlRenderer, ComponentMap, CodeEditor, Grid
+    CodeEditor, Grid, CodePreview
 } from '../src/components';
-import * as components from '../src/components';
-import * as icons from '../src/icons';
 import { useTheme } from '../src/core';
 
 
@@ -18,21 +16,6 @@ interface DemoSectionProps {
     documentation: string;
     fullSourceCode: string;
 }
-
-// Create a map of all available components and icons for the XmlRenderer
-const renderableComponents: ComponentMap = {};
-// Manually iterate over the imported components object to build the map.
-// This is a safer way to exclude hooks than destructuring with a rest pattern.
-for (const key in components) {
-    if (Object.prototype.hasOwnProperty.call(components, key)) {
-        // Exclude hooks which are not components
-        if (!key.startsWith('use')) {
-            (renderableComponents as any)[key] = (components as any)[key];
-        }
-    }
-}
-const componentMap: ComponentMap = { ...renderableComponents, ...icons };
-
 
 export const DemoSection: React.FC<DemoSectionProps> = ({ 
     title, 
@@ -86,9 +69,7 @@ export const DemoSection: React.FC<DemoSectionProps> = ({
                     <Grid.Item colSpan={2}>
                         <Stack gap="1.5rem">
                             <Sofa title="Live Preview">
-                                <Center style={{ minHeight: '150px', padding: '1rem' }}>
-                                    {livePreview ?? <XmlRenderer xml={code} components={componentMap} />}
-                                </Center>
+                                {livePreview ?? <CodePreview code={code} />}
                             </Sofa>
 
                             {initialCode !== undefined && (

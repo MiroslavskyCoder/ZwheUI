@@ -1,12 +1,11 @@
 
-
 import React from 'react';
 import { Link } from '../Link/Link';
 import { Text } from '../Text/Text';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { useStyles } from '../../core/hooks/useStyles';
 
-// FIX: Export BreadcrumbItem interface to make it available for other components.
+// FIX: Export BreadcrumbItem to be used in other components like PageHeader.
 export interface BreadcrumbItem {
     label: string;
     href?: string;
