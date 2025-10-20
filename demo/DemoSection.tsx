@@ -1,9 +1,11 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { 
     Sofa, Stack, Text, Accordion, AccordionItem, AccordionTrigger, AccordionContent, 
-    CodeEditor, Grid, CodePreview
+    CodeEditor, Grid
 } from '../src/components';
+import { CodePreview } from '../src/components/Code/CodePreview';
 import { useTheme } from '../src/core';
 
 
