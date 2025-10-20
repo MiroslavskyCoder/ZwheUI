@@ -22,6 +22,7 @@ export * from './SlidersIcon';
 export * from './SignOutAltIcon';
 export * from './ShoppingCartIcon';
 export * from './ArrowDownIcon';
+export * from './ArrowUpIcon';
 export * from './BookOpenIcon';
 export * from './ChevronLeftIcon';
 export * from './CloudArrowDownIcon';

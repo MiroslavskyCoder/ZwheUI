@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Flex, Text, Stack, Card, SegmentedControl } from '../src/components';
 import { useTheme } from '../src/core';
@@ -18,25 +19,25 @@ const FlexConfigurator: React.FC<{
         <Stack gap="1.5rem">
             <Stack gap="0.5rem">
                 <Text as="label" size="sm" weight="medium" color="textSecondary">Direction</Text>
-                <SegmentedControl value={direction as any} onChange={setDirection} options={[
+                <SegmentedControl value={direction} onChange={setDirection} options={[
                     { label: 'row', value: 'row' },
                     { label: 'column', value: 'column' },
                     { label: 'row-reverse', value: 'row-reverse' },
                     { label: 'column-reverse', value: 'column-reverse' }
                 ]}/>
             </Stack>
-            <Stack gap="0.5rem">
+             <Stack gap="0.5rem">
                 <Text as="label" size="sm" weight="medium" color="textSecondary">Align Items</Text>
-                <SegmentedControl value={align as any} onChange={setAlign} options={[
+                <SegmentedControl value={align} onChange={setAlign} options={[
                     { label: 'start', value: 'flex-start' },
                     { label: 'center', value: 'center' },
                     { label: 'end', value: 'flex-end' },
                     { label: 'stretch', value: 'stretch' }
                 ]}/>
             </Stack>
-            <Stack gap="0.5rem">
+             <Stack gap="0.5rem">
                 <Text as="label" size="sm" weight="medium" color="textSecondary">Justify Content</Text>
-                <SegmentedControl value={justify as any} onChange={setJustify} options={[
+                <SegmentedControl value={justify} onChange={setJustify} options={[
                     { label: 'start', value: 'flex-start' },
                     { label: 'center', value: 'center' },
                     { label: 'end', value: 'flex-end' },
@@ -45,7 +46,7 @@ const FlexConfigurator: React.FC<{
             </Stack>
             <Stack gap="0.5rem">
                 <Text as="label" size="sm" weight="medium" color="textSecondary">Wrap</Text>
-                <SegmentedControl value={wrap as any} onChange={setWrap} options={[
+                <SegmentedControl value={wrap} onChange={setWrap} options={[
                     { label: 'nowrap', value: 'nowrap' },
                     { label: 'wrap', value: 'wrap' }
                 ]}/>

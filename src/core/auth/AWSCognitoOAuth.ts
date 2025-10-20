@@ -19,7 +19,7 @@ export function AWSCognito(options: { clientId: string, clientSecret: string, is
             id: profile.sub,
             name: profile.username,
             email: profile.email,
-            image: undefined,
+            image: null,
         }),
     });
 }

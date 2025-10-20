@@ -17,8 +17,8 @@ export function LinkedIn(options: { clientId: string, clientSecret: string }) {
         profile: (profile) => ({
             id: profile.id,
             name: `${profile.firstName.localized.en_US} ${profile.lastName.localized.en_US}`,
-            email: undefined, // Email requires a separate API call
-            image: undefined,
+            email: null, // Email requires a separate API call
+            image: null,
         }),
     });
 }

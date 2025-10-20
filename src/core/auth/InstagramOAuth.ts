@@ -17,8 +17,8 @@ export function Instagram(options: { clientId: string, clientSecret: string }) {
         profile: (profile) => ({
             id: profile.id,
             name: profile.username,
-            email: undefined,
-            image: undefined,
+            email: null,
+            image: null,
         }),
     });
 }

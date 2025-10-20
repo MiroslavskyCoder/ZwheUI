@@ -7,8 +7,7 @@ import {
 import * as components from '../src/components';
 import * as icons from '../src/icons';
 import { useTheme } from '../src/core';
-import remarkGfm from 'remark-gfm';
-import ReactMarkdown from 'react-markdown';
+
 
 interface DemoSectionProps {
     title: string;
@@ -21,21 +20,7 @@ interface DemoSectionProps {
 }
 
 // Create a map of all available components and icons for the XmlRenderer
-const renderableComponents: ComponentMap = {
-    Input: components.Input,
-    Button: components.Button,
-    Text: components.Text,
-    Stack: components.Stack,
-    Center: components.Center,
-    Accordion: components.Accordion,
-    AccordionItem: components.AccordionItem,
-    AccordionTrigger: components.AccordionTrigger,
-    AccordionContent: components.AccordionContent,
-    Grid: components.Grid,
-    "Grid.Item": components.Grid.Item,
-    SegmentedControl: components.SegmentedControl,
-    
-};
+const renderableComponents: ComponentMap = {};
 // Manually iterate over the imported components object to build the map.
 // This is a safer way to exclude hooks than destructuring with a rest pattern.
 for (const key in components) {
@@ -87,10 +72,12 @@ export const DemoSection: React.FC<DemoSectionProps> = ({
                                     </Stack>
                                 </AccordionContent>
                             </AccordionItem>
-                            <AccordionItem value="docs">
+                             <AccordionItem value="docs">
                                 <AccordionTrigger><Text weight="600">Documentation</Text></AccordionTrigger>
                                 <AccordionContent>
-                                    <ReactMarkdown children={documentation} remarkPlugins={[remarkGfm]} /> 
+                                     <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '13px', color: theme.colors.textSecondary, lineHeight: '1.5', paddingTop: '1rem' }}>
+                                        {documentation}
+                                    </pre>
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
@@ -115,9 +102,9 @@ export const DemoSection: React.FC<DemoSectionProps> = ({
                                 </Sofa>
                             )}
 
-                            <Sofa title="Full Component Source">
+                             <Sofa title="Full Component Source">
                                 <div style={{ height: '300px', overflow: 'auto' }}>
-                                    <CodeEditor value={fullSourceCode} onChange={() => {}} />
+                                     <CodeEditor value={fullSourceCode} onChange={() => {}} />
                                 </div>
                             </Sofa>
 

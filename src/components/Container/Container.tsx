@@ -11,7 +11,8 @@ export const Container: React.FC<ContainerProps> = ({ children, className = '', 
     const { theme } = useTheme();
     const createStyle = useStyles('container');
 
-    const containerClass = createStyle({ 
+    const containerClass = createStyle({
+        width: '100%',
         maxWidth: (size ? theme.maxWidths[size] : undefined) || maxWidth || theme.maxWidths.container,
         margin: '0 auto',
         padding: `0 ${theme.spacing.lg}`,

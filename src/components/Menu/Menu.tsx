@@ -54,9 +54,9 @@ export const MenuButton: React.FC<MenuButtonProps> = ({ children, className = ''
         }
     };
 
-    return ( 
+    return (
         <button
-            {...props} 
+            {...props}
             ref={context.buttonRef}
             className={className}
             onClick={() => setIsOpen(!isOpen)}

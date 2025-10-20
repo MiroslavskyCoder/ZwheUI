@@ -17,7 +17,7 @@ export function TikTok(options: { clientId: string, clientSecret: string }) {
         profile: (profile) => ({
             id: profile.data.user.union_id,
             name: profile.data.user.display_name,
-            email: undefined,
+            email: null,
             image: profile.data.user.avatar_url,
         }),
     });

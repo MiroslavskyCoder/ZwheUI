@@ -33,7 +33,7 @@ export const Welcome: React.FC<WelcomeProps> = ({ onNavigate }) => {
                     </Text>
                 </Stack>
 
-                <Grid minItemWidth="200px" gap="4rem" style={{width: '100%'}}>
+                <Grid minItemWidth="200px" gap="1rem" style={{width: '100%'}}>
                     {featured.map(item => (
                         <Card key={item.id} onClick={() => onNavigate(item.id)}>
                             <Stack direction="row" gap="1rem" align="center">
@@ -43,9 +43,9 @@ export const Welcome: React.FC<WelcomeProps> = ({ onNavigate }) => {
                         </Card>
                     ))}
                 </Grid>
-                <Text size="0.875rem" color={theme.colors.textSecondary} style={{ marginTop: '2rem' }}>
+                 <Text size="0.875rem" color={theme.colors.textSecondary} style={{ marginTop: '2rem' }}>
                     This entire showcase is built with the ZwheUI components themselves.
-                </Text>
+                 </Text>
             </Stack>
         </Center>
     );

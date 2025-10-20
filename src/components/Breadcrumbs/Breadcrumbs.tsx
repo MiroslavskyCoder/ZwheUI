@@ -6,7 +6,8 @@ import { Text } from '../Text/Text';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { useStyles } from '../../core/hooks/useStyles';
 
-interface BreadcrumbItem {
+// FIX: Export BreadcrumbItem interface to make it available for other components.
+export interface BreadcrumbItem {
     label: string;
     href?: string;
     to?: string;

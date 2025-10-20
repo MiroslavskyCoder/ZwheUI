@@ -86,6 +86,11 @@ import { XmlRendererDemo } from './XmlRenderer';
 import { GraphicsNodeEditorDemo } from './GraphicsNodeEditor';
 import { PhotoEditorDemo } from './PhotoEditor';
 import { ExampleFileBrowser, ExampleVideo, ExampleAudio, ExamplePhotoEditor, ExampleSignInPage } from '../examples';
+import { LayoutDemo } from './Layout';
+import { PageHeaderDemo } from './PageHeader';
+import { MarkdownDemo } from './Markdown';
+import { StatDemo } from './Stat';
+import { EmptyStateDemo } from './EmptyState';
 
 const demos = {
     general: [
@@ -111,6 +116,8 @@ const demos = {
         { id: 'header', label: 'Header', component: <HeaderDemo /> },
         { id: 'footer', label: 'Footer', component: <FooterDemo /> },
         { id: 'sidebar', label: 'Sidebar', component: <SidebarDemo /> },
+        { id: 'layout', label: 'Layout', component: <LayoutDemo /> },
+        { id: 'page-header', label: 'PageHeader', component: <PageHeaderDemo /> },
     ],
     forms: [
         { id: 'form-control', label: 'FormControl', component: <FormControlDemo /> },
@@ -146,6 +153,8 @@ const demos = {
         { id: 'x-node-tree', label: 'XNodeTree', component: <XNodeTreeDemo /> },
         { id: 'timeline', label: 'Timeline', component: <TimelineDemo /> },
         { id: 'image', label: 'Image', component: <ImageDemo /> },
+        { id: 'markdown', label: 'Markdown', component: <MarkdownDemo /> },
+        { id: 'stat', label: 'Stat', component: <StatDemo /> },
     ],
     feedback: [
         { id: 'alert', label: 'Alert', component: <AlertDemo /> },
@@ -160,6 +169,7 @@ const demos = {
         { id: 'popover', label: 'Popover', component: <PopoverDemo /> },
         { id: 'hover-card', label: 'HoverCard', component: <HoverCardDemo /> },
         { id: 'backdrop', label: 'Backdrop', component: <BackdropDemo /> },
+        { id: 'empty-state', label: 'EmptyState', component: <EmptyStateDemo /> },
     ],
     navigation: [
         { id: 'nav', label: 'Nav', component: <NavDemo /> },
@@ -261,8 +271,6 @@ const NavItems = ({ items, activeId, onClick }: { items: { id: string, label: st
 );
 
 
-export const DemoApp = () => (
-    <ThemeProvider>
-        <AppContent />
-    </ThemeProvider>
+export const DemoApp = () => ( 
+    <AppContent />
 );
