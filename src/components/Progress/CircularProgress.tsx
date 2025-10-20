@@ -30,7 +30,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
 
     const svgClass = createStyle({
         transform: 'rotate(-90deg)',
-        animation: isIndeterminate ? '$spin 1.4s linear infinite' : undefined,
+        animation: isIndeterminate ? 'spin 1.4s linear infinite' : undefined,
         '@keyframes spin': {
             '0%': { transform: 'rotate(-90deg)' },
             '100%': { transform: 'rotate(270deg)' },
@@ -51,7 +51,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
         fill: 'transparent',
         strokeLinecap: 'round',
         transition: 'stroke-dashoffset 0.3s',
-        animation: isIndeterminate ? '$dash 1.4s ease-in-out infinite' : undefined,
+        animation: isIndeterminate ? 'dash 1.4s ease-in-out infinite' : undefined,
         '@keyframes dash': {
             '0%': {
                 strokeDasharray: '1, 200',

@@ -36,7 +36,7 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
         transition: 'width 0.3s ease-out',
         width: !isIndeterminate ? `${value}%` : '100%',
         position: 'absolute',
-        animation: isIndeterminate ? '$indeterminate 1.5s ease-in-out infinite' : 'none',
+        animation: isIndeterminate ? 'indeterminate 1.5s ease-in-out infinite' : 'none',
         '@keyframes indeterminate': {
             '0%': {
                 left: '-100%',
