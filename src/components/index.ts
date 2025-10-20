@@ -38,7 +38,6 @@ export * from './Charts/ChartTooltip';
 export * from './Checkbox/Checkbox';
 export * from './Code/Code';
 export * from './Code/CodeEditor';
-export * from './Code/CodePreview';
 export * from './Collapse/Collapse';
 export * from './ColorPicker/ColorPicker';
 export * from './Combobox/Combobox';

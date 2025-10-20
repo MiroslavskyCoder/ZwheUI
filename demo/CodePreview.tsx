@@ -1,7 +1,9 @@
 
+
 import React, { useState } from 'react';
-import { CodePreview, Text, Stack, Textarea } from '../src/components';
+import { Text, Stack, Textarea } from '../src/components';
 import { DemoSection } from './DemoSection';
+import { CodePreview } from '../src/components/Code/CodePreview';
 
 const initialCode = `<Stack gap="1rem" align="center">
     <Text as="h3" size="1.25rem">Live Preview</Text>
