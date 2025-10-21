@@ -5,7 +5,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface CodeEditorProps {
     value: string;
-    onChange: (value: string) => void;
+    onChange?: (value: string) => void;
     language?: string;
     showLineNumbers?: boolean;
 }
@@ -74,7 +74,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, languag
             <textarea
                 ref={textAreaRef}
                 value={value}
-                onChange={e => onChange(e.target.value)}
+                onChange={e => (onChange ? onChange : () => {})(e.target.value)}
                 onScroll={handleScroll}
                 className={textareaClass}
                 spellCheck="false"
