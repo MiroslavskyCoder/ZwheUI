@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { Dialog } from '../Dialog/Dialog';
 import { Stack } from '../Stack/Stack';
@@ -34,7 +33,7 @@ export const CommandDialog: React.FC<{
     }, [onClose]);
 
     return (
-        <Dialog isOpen={isOpen} onClose={onClose}>
+        <Dialog isOpen={isOpen} onClose={onClose} title="Commands">
             <CommandContext.Provider value={{ search, setSearch, onSelect: onClose }}>
                 <Stack>{children}</Stack>
             </CommandContext.Provider>

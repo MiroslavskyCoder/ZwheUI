@@ -557,7 +557,7 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
             className={editorClass} 
             style={style} 
         >
-             <svg 
+            <svg 
                 className={svgOverlayClass}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
@@ -603,7 +603,7 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
                 />
             )}
             {renameDialog.isOpen && (
-                 <Dialog
+                <Dialog
                     isOpen={renameDialog.isOpen}
                     onClose={handleCloseRenameDialog}
                     title={`Rename Node: "${renameDialog.currentName}"`}

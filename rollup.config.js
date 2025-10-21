@@ -1,11 +1,13 @@
 import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import typescript from 'rollup-plugin-typescript2';
+import commonjs from '@rollup/plugin-commonjs'; 
 import postcss from 'rollup-plugin-postcss';
+import babel from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import typescript from 'rollup-plugin-typescript2';
 
 const packageJson = require('./package.json');
+const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
 export default {
   input: 'src/index.ts',
@@ -24,12 +26,16 @@ export default {
   ],
   plugins: [
     peerDepsExternal(),
-    resolve(),
+    resolve({ extensions }),
     commonjs(),
     typescript({
       tsconfig: 'tsconfig.build.json',
-      useTsconfigDeclarationDir: true,
       clean: true,
+    }),
+    babel({
+      extensions,
+      babelHelpers: 'bundled',
+      exclude: 'node_modules/**',
     }),
     postcss({
       config: {

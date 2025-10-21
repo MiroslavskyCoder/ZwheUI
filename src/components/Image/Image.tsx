@@ -5,7 +5,8 @@ import { Center } from '../Center/Center';
 import { Skeleton } from '../Skeleton/Skeleton';
 import { useStyles, useTheme } from '../../core';
 
-interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+// FIX: Export ImageProps to allow it to be imported and used in other components like Card.
+export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     fallbackSrc?: string;
     fallback?: React.ReactNode;
     fit?: React.CSSProperties['objectFit'];
