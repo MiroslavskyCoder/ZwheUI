@@ -123,7 +123,7 @@ const AIAppCreate = () => {
                     <Grid.Item colSpan={2}>
                         <Sofa title="Generated Code">
                             <div style={{height: '250px'}}>
-                                <CodeEditor value={generatedCode} onChange={setGeneratedCode} />
+                                <CodeEditor value={generatedCode} onChange={setGeneratedCode} showLineNumbers />
                             </div>
                         </Sofa>
                     </Grid.Item>

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useStyles, useTheme } from '../../core';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -6,11 +5,12 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface CodeEditorProps {
     value: string;
-    onChange?: (value: string) => void;
+    onChange: (value: string) => void;
     language?: string;
+    showLineNumbers?: boolean;
 }
 
-export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, language = 'tsx' }) => {
+export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, language = 'tsx', showLineNumbers = false }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('code-editor');
     const preRef = useRef<HTMLDivElement>(null);
@@ -42,7 +42,6 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, languag
     });
 
     const highlighterContainerClass = createStyle({
-        ...commonStyles,
         position: 'absolute',
         top: 0,
         left: 0,
@@ -65,7 +64,8 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, languag
         resize: 'none',
         outline: 'none',
         whiteSpace: 'pre',
-        wordWrap: 'normal'
+        wordWrap: 'normal',
+        paddingLeft: showLineNumbers ? '3.5em' : commonStyles.padding,
     });
 
 
@@ -74,7 +74,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, languag
             <textarea
                 ref={textAreaRef}
                 value={value}
-                onChange={e => typeof onChange === 'function' && onChange(e.target.value)}
+                onChange={e => onChange(e.target.value)}
                 onScroll={handleScroll}
                 className={textareaClass}
                 spellCheck="false"
@@ -86,9 +86,18 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, languag
                 <SyntaxHighlighter
                     language={language}
                     style={vscDarkPlus}
+                    showLineNumbers={showLineNumbers}
+                    lineNumberStyle={{
+                        minWidth: '2.25em',
+                        paddingRight: '1em',
+                        textAlign: 'right',
+                        opacity: 0.5,
+                        userSelect: 'none',
+                    }}
                     customStyle={{
+                        ...commonStyles,
                         margin: 0,
-                        padding: 0,
+                        padding: commonStyles.padding,
                         background: 'transparent',
                         whiteSpace: 'pre',
                         wordWrap: 'normal',
