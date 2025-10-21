@@ -13,7 +13,7 @@ import { BadgeDemo } from './Badge';
 import { TagDemo } from './Tag';
 import { CodeDemo } from './Code';
 import { StackDemo } from './Stack';
-import { GridDemo } from './Grid';
+import { GridDemo } from './GridDemo';
 import { ContainerDemo } from './Container';
 import { SofaDemo } from './Sofa';
 import { HeaderDemo } from './Header';
@@ -85,7 +85,7 @@ import { SparklineDemo } from './Sparkline';
 import { XmlRendererDemo } from './XmlRenderer';
 import { GraphicsNodeEditorDemo } from './GraphicsNodeEditor';
 import { PhotoEditorDemo } from './PhotoEditor';
-import { ExampleFileBrowser, ExampleVideo, ExampleAudio, ExamplePhotoEditor, ExampleSignInPage } from '../examples';
+import { ExampleFileBrowser, ExampleVideo, ExampleAudio, ExamplePhotoEditor, ExampleSignInPage, ExampleVideoEditor, ExampleGuideRu } from '../examples';
 import { LayoutDemo } from './Layout';
 import { MarkdownDemo } from './Markdown';
 import { StatDemo } from './Stat';
@@ -98,6 +98,7 @@ import { CommandDemo } from './Command';
 import { MessageDemo } from './Message';
 import { TooltipDemo } from './Tooltip';
 import { MenuIcon } from '../src/icons';
+import { AIAppCreateDemo } from './AIAppCreate';
 
 const demos = {
     general: [
@@ -206,11 +207,14 @@ const demos = {
         { id: 'photo-editor', label: 'PhotoEditor', component: <PhotoEditorDemo /> },
     ],
     examples: [
+        { id: 'ai-app-creator', label: 'AI App Creator', component: <AIAppCreateDemo /> },
         { id: 'signin-page', label: 'Sign-In Page', component: <ExampleSignInPage /> },
         { id: 'file-browser', label: 'File Browser', component: <ExampleFileBrowser /> },
         { id: 'video-player', label: 'Video Player', component: <ExampleVideo /> },
         { id: 'audio-player', label: 'Audio Player', component: <ExampleAudio /> },
         { id: 'photo-editor-example', label: 'Photo Editor', component: <ExamplePhotoEditor /> },
+        { id: 'video-editor-example', label: 'Video Editor', component: <ExampleVideoEditor /> },
+        { id: 'guide-ru', label: 'Учебник', component: <ExampleGuideRu /> },
     ]
 };
 
@@ -300,6 +304,8 @@ const AppContent = () => {
     );
 };
 
-export const DemoApp = () => ( 
-    <AppContent /> 
+export const DemoApp = () => (
+    <ThemeProvider>
+        <AppContent />
+    </ThemeProvider>
 );

@@ -69,3 +69,4 @@ export * from './MinusSquareIcon';
 export * from './FileIcon';
 export * from './FolderIcon';
 export * from './MenuIcon';
+export * from './MagicWandIcon';
