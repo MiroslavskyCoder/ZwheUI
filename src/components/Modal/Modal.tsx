@@ -121,7 +121,7 @@ export const Modal: React.FC<ModalProps> = ({
         borderRadius: '8px',
         border: `1px solid ${theme.colors.border}`,
         padding: theme.spacing.lg,
-        maxWidth: '400px',
+        maxWidth: 'max-content',
         width: '90%',
         position: 'relative',
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
