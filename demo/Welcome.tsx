@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, Center, Grid, Stack, Text, Icon } from '../src/components';
 import { LayoutIcon, TypeIcon, DiamondIcon, ShareIcon, ImageIcon } from '../src/icons';
@@ -36,16 +35,18 @@ export const Welcome: React.FC<WelcomeProps> = ({ onNavigate }) => {
                 <Grid minItemWidth="200px" gap="1rem" style={{width: '100%'}}>
                     {featured.map(item => (
                         <Card key={item.id} onClick={() => onNavigate(item.id)}>
-                            <Stack direction="row" gap="1rem" align="center">
-                                <Icon as={item.icon} size={20} color={theme.colors.primary} />
-                                <Text weight="500">{item.label}</Text>
-                            </Stack>
+                            <Card.Body>
+                                <Stack direction="row" gap="1rem" align="center">
+                                    <Icon as={item.icon} size={20} color={theme.colors.primary} />
+                                    <Text weight="500">{item.label}</Text>
+                                </Stack>
+                            </Card.Body>
                         </Card>
                     ))}
                 </Grid>
-                 <Text size="0.875rem" color={theme.colors.textSecondary} style={{ marginTop: '2rem' }}>
+                <Text size="0.875rem" color={theme.colors.textSecondary} style={{ marginTop: '2rem' }}>
                     This entire showcase is built with the ZwheUI components themselves.
-                 </Text>
+                </Text>
             </Stack>
         </Center>
     );

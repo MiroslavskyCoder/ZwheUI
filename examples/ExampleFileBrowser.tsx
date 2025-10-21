@@ -19,7 +19,10 @@ export const ExampleFileBrowser = () => {
             <Stack gap="1rem">
                  <Text as="h2" size="1.5rem" weight="600">Example: File Browser</Text>
                  <Text>A showcase of how components like Card, List, and Stack can be combined to build a common UI pattern.</Text>
-                 <Card title="My Files">
+                 <Card>
+                    <Card.Header>
+                        <Card.Title>My Files</Card.Title>
+                    </Card.Header>
                     <List>
                         {files.map((file, index) => (
                            <React.Fragment key={file.name}>

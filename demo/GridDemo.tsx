@@ -9,30 +9,30 @@ export const GridDemo = () => (
       
       <Text weight="600">Responsive Grid (default row flow)</Text>
       <Grid minItemWidth="150px" gap="1rem">
-          <Grid.Item><Card><Text>Item 1</Text></Card></Grid.Item>
-          <Grid.Item><Card><Text>Item 2</Text></Card></Grid.Item>
-          <Grid.Item><Card><Text>Item 3</Text></Card></Grid.Item>
-          <Grid.Item><Card><Text>Item 4</Text></Card></Grid.Item>
+          <Grid.Item><Card><Card.Body><Text>Item 1</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card><Card.Body><Text>Item 2</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card><Card.Body><Text>Item 3</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card><Card.Body><Text>Item 4</Text></Card.Body></Card></Grid.Item>
       </Grid>
       
-       <Text weight="600" style={{marginTop: '1rem'}}>Fixed 4-Column Grid with Spanning</Text>
+      <Text weight="600" style={{marginTop: '1rem'}}>Fixed 4-Column Grid with Spanning</Text>
       <Grid columns={4} gap="1rem">
-          <Grid.Item colSpan={2}><Card><Text>Item A (colSpan=2)</Text></Card></Grid.Item>
-          <Grid.Item><Card><Text>Item B</Text></Card></Grid.Item>
-          <Grid.Item><Card><Text>Item C</Text></Card></Grid.Item>
-          <Grid.Item><Card><Text>Item D</Text></Card></Grid.Item>
-          <Grid.Item colSpan={4}><Card><Text>Item E (colSpan=4)</Text></Card></Grid.Item>
+          <Grid.Item colSpan={2}><Card><Card.Body><Text>Item A (colSpan=2)</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card><Card.Body><Text>Item B</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card><Card.Body><Text>Item C</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card><Card.Body><Text>Item D</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item colSpan={4}><Card><Card.Body><Text>Item E (colSpan=4)</Text></Card.Body></Card></Grid.Item>
       </Grid>
 
       <Text weight="600" style={{marginTop: '1rem'}}>Column Flow Grid</Text>
       <Text size="sm">Items fill columns first. This requires a defined height on the grid container to wrap into new columns.</Text>
       <Grid columns={3} flow="column" gap="1rem" style={{ height: '120px' }}>
-          <Grid.Item><Card style={{height: '100%'}}><Text>Item 1</Text></Card></Grid.Item>
-          <Grid.Item><Card style={{height: '100%'}}><Text>Item 2</Text></Card></Grid.Item>
-          <Grid.Item><Card style={{height: '100%'}}><Text>Item 3</Text></Card></Grid.Item>
-          <Grid.Item><Card style={{height: '100%'}}><Text>Item 4</Text></Card></Grid.Item>
-          <Grid.Item><Card style={{height: '100%'}}><Text>Item 5</Text></Card></Grid.Item>
-          <Grid.Item><Card style={{height: '100%'}}><Text>Item 6</Text></Card></Grid.Item>
+          <Grid.Item><Card style={{height: '100%'}}><Card.Body><Text>Item 1</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card style={{height: '100%'}}><Card.Body><Text>Item 2</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card style={{height: '100%'}}><Card.Body><Text>Item 3</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card style={{height: '100%'}}><Card.Body><Text>Item 4</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card style={{height: '100%'}}><Card.Body><Text>Item 5</Text></Card.Body></Card></Grid.Item>
+          <Grid.Item><Card style={{height: '100%'}}><Card.Body><Text>Item 6</Text></Card.Body></Card></Grid.Item>
       </Grid>
     </Stack>
   </Sofa>

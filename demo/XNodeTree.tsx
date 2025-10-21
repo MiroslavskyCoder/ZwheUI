@@ -96,13 +96,15 @@ export const XNodeTreeDemo = () => (
     title="XNodeTree"
     description="A component for displaying hierarchical data, like a scene graph or component tree."
     livePreview={
-        <Card style={{ padding: '0.5rem', minWidth: '300px' }}>
-            <XNodeTree data={demoData} initialExpandedIds={['paper', 'header-container', 'avatar', 'content', 'action-bar']} />
+        <Card style={{ minWidth: '300px' }}>
+            <Card.Body style={{ padding: '0.5rem' }}>
+                <XNodeTree data={demoData} initialExpandedIds={['paper', 'header-container', 'avatar', 'content', 'action-bar']} />
+            </Card.Body>
         </Card>
     }
     propControls={
         <Text color="textSecondary">
-            The main props (`data`, `initialExpandedIds`) are complex arrays. The preview demonstrates the component's interactive features.
+            The main props (\`data\`, \`initialExpandedIds\`) are complex arrays. The preview demonstrates the component's interactive features.
         </Text>
     }
     documentation={documentation}

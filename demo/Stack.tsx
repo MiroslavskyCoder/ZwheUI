@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { Stack, Sofa, Text, Card, Input, Checkbox, SegmentedControl } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -113,9 +111,9 @@ export const StackDemo = () => {
     const [wrap, setWrap] = useState(true);
 
     const code = `<Stack direction="${direction}" gap="${gap}" align="${align}" justify="${justify}" wrap="${wrap}">
-    <Card><Text>Item 1</Text></Card>
-    <Card><Text>Item 2</Text></Card>
-    <Card><Text>Item 3</Text></Card>
+    <Card><Card.Body><Text>Item 1</Text></Card.Body></Card>
+    <Card><Card.Body><Text>Item 2</Text></Card.Body></Card>
+    <Card><Card.Body><Text>Item 3</Text></Card.Body></Card>
 </Stack>`;
 
     return (

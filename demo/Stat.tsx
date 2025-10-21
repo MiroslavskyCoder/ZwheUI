@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stat, Grid } from '../src/components';
+import { Stat, Grid, Card } from '../src/components';
 import { DemoSection } from './DemoSection';
 import { UsersIcon, CoinsIcon, ShoppingCartIcon } from '../src/icons';
 
@@ -27,7 +27,9 @@ export const Stat: React.FC<StatProps> = ({ label, value, icon, helpText, indica
     // ... component logic
     return (
         <Card>
-            {/* ... component structure ... */}
+            <Card.Body>
+                {/* ... component structure ... */}
+            </Card.Body>
         </Card>
     );
 };`;

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 // FIX: `defaultTheme` and `Theme` are not exported from `..`. They should be imported from the core library.
-import { Card, Input, Stack, SegmentedControl, Text } from '..';
+import { Card } from '../Card/Card';
+import { Input } from '../Input/Input';
+import { Stack } from '../Stack/Stack';
+import { SegmentedControl } from '../SegmentedControl/SegmentedControl';
+import { Text } from '../Text/Text';
 import { Theme } from '../../core';
 import { useTheme, defaultTheme } from '../../core/theme/ThemeProvider';
 import { useDebounce } from '../../core/hooks/useInteractions';
@@ -43,25 +47,30 @@ export const ThemeSwitcher: React.FC = () => {
     }, [theme.colors.primary, theme.colors.background, theme.colors.text]);
 
     return (
-        <Card title="Theme Settings">
-            <Stack gap="1rem">
-                <SegmentedControl
-                    options={[
-                        { label: 'Dark', value: 'dark' },
-                        { label: 'Light', value: 'light' },
-                        { label: 'Custom', value: 'custom' },
-                    ]}
-                    value={mode}
-                    onChange={(newMode) => switchTheme(newMode as any)}
-                />
-                {mode === 'custom' && (
-                    <Stack direction="row" gap="1rem" align="end" style={{ transition: 'opacity 0.3s', opacity: 1 }}>
-                        <Input label="Primary" value={primary} onChange={(e) => setPrimary(e.target.value)} />
-                        <Input label="Background" value={background} onChange={(e) => setBackground(e.target.value)} />
-                        <Input label="Text" value={text} onChange={(e) => setText(e.target.value)} />
-                    </Stack>
-                )}
-            </Stack>
+        <Card>
+            <Card.Header>
+                <Card.Title>Theme Settings</Card.Title>
+            </Card.Header>
+            <Card.Body>
+                <Stack gap="1rem">
+                    <SegmentedControl
+                        options={[
+                            { label: 'Dark', value: 'dark' },
+                            { label: 'Light', value: 'light' },
+                            { label: 'Custom', value: 'custom' },
+                        ]}
+                        value={mode}
+                        onChange={(newMode) => switchTheme(newMode as any)}
+                    />
+                    {mode === 'custom' && (
+                        <Stack direction="row" gap="1rem" align="end" style={{ transition: 'opacity 0.3s', opacity: 1 }}>
+                            <Input label="Primary" value={primary} onChange={(e) => setPrimary(e.target.value)} />
+                            <Input label="Background" value={background} onChange={(e) => setBackground(e.target.value)} />
+                            <Input label="Text" value={text} onChange={(e) => setText(e.target.value)} />
+                        </Stack>
+                    )}
+                </Stack>
+            </Card.Body>
         </Card>
     );
 };
