@@ -35,7 +35,26 @@ export const Modal: React.FC<ModalProps> = ({
             
             // Focus the first focusable element in the modal after it appears
             const focusTimeout = setTimeout(() => {
-                modalRef.current?.focus();
+                if (modalRef.current) {
+                    // Prioritize focusing the first user-input field.
+                    const firstInput = modalRef.current.querySelector<HTMLElement>(
+                        'input:not([disabled]), textarea:not([disabled]), select:not([disabled])'
+                    );
+                    
+                    if (firstInput) {
+                        firstInput.focus();
+                    } else {
+                        // Otherwise, find the first focusable element (could be a button).
+                        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+                            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                        );
+                        if (focusableElements.length > 0) {
+                            focusableElements[0].focus();
+                        } else {
+                            modalRef.current.focus(); // Fallback to container
+                        }
+                    }
+                }
             }, 100);
 
             const handleKeyDown = (e: KeyboardEvent) => {
