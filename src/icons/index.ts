@@ -70,3 +70,4 @@ export * from './FileIcon';
 export * from './FolderIcon';
 export * from './MenuIcon';
 export * from './MagicWandIcon';
+export * from './StarIcon';
