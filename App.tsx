@@ -4,7 +4,8 @@ import { DemoApp } from './demo/DemoApp'
 import { ToastProvider } from './src/components/Toast/ToastProvider'
 import { SnackbarProvider } from './src/components/Snackbar/SnackbarProvider'
 import { ThemeProvider } from './src'
-import * as ZwheUIComponents from './src/components'; 
+import * as ZwheUIComponents from './src/components';
+import "./src/style.css"
 
 // Expose all components to the window object for the AI App Creator's iframe preview
 if (typeof window !== 'undefined') {
