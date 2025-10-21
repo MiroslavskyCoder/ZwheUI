@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { Layer } from '../Layer/Layer'
 import { Stack } from '../Stack/Stack' 
@@ -87,7 +86,7 @@ function parseAttributes(node: Element) {
                 attrs.style = a.value;
             }
         } else {
-             if (a.value === 'true') {
+            if (a.value === 'true') {
                 attrs[a.name] = true;
             } else if (a.value === 'false') {
                 attrs[a.name] = false;
@@ -135,7 +134,10 @@ export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components: custo
 
     try {
         const parser = new DOMParser()
-        const doc = parser.parseFromString(`<root>${xml}</root>`, 'text/xml')
+        // FIX: Escape standalone ampersands to prevent XML parsing errors.
+        // This regex replaces '&' unless it's part of a valid XML/HTML entity.
+        const sanitizedXml = xml.replace(/&(?![a-zA-Z0-9#]+;)/g, '&amp;');
+        const doc = parser.parseFromString(`<root>${sanitizedXml}</root>`, 'text/xml')
 
         // Check for parsing errors
         const parseError = doc.querySelector('parsererror');
