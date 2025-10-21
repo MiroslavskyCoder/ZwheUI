@@ -39,7 +39,7 @@ export const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, title, children
             <div className={contentClass}>
                 <div>{children}</div>
                 {actions && actions.length > 0 && (
-                     <Stack direction="row" className={footerClass} justify="end" gap={theme.spacing.sm}>
+                    <Stack direction="row" className={footerClass} justify="end" gap={theme.spacing.sm}>
                         {actions.map(({ label, ...props }, index) => (
                             <Button key={index} {...props}>{label}</Button>
                         ))}
