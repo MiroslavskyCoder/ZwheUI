@@ -33,9 +33,17 @@ export const Modal: React.FC<ModalProps> = ({
 
             triggerRef.current = document.activeElement as HTMLElement;
             
-            // Focus the modal container after it appears
+            // Focus the first focusable element in the modal after it appears
             const focusTimeout = setTimeout(() => {
-                modalRef.current?.focus();
+                const focusableElements = modalRef.current?.querySelectorAll<HTMLElement>(
+                    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+                );
+                if (focusableElements && focusableElements.length > 0) {
+                    focusableElements[0].focus();
+                } else {
+                    // Fallback to the modal container if no focusable elements are found.
+                    modalRef.current?.focus();
+                }
             }, 100);
 
             const handleKeyDown = (e: KeyboardEvent) => {
