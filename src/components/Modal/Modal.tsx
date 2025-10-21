@@ -57,7 +57,7 @@ export const Modal: React.FC<ModalProps> = ({
                 }
             }, 100);
 
-            const handleKeyDown = (e: KeyboardEvent) => {
+            const handleKeyDown = (e: KeyboardEvent) => {  
                 if (e.key === 'Escape') {
                     onClose();
                 }
@@ -85,7 +85,7 @@ export const Modal: React.FC<ModalProps> = ({
                             e.preventDefault();
                         }
                     }
-                }
+                } 
             };
 
             document.addEventListener('keydown', handleKeyDown);
@@ -93,7 +93,7 @@ export const Modal: React.FC<ModalProps> = ({
                 document.body.style.overflow = originalBodyOverflow;
                 clearTimeout(focusTimeout);
                 document.removeEventListener('keydown', handleKeyDown);
-                triggerRef.current?.focus();
+                // triggerRef.current?.focus();
             };
         }
     }, [isOpen, onClose]);
@@ -179,9 +179,9 @@ export const Modal: React.FC<ModalProps> = ({
                 tabIndex={-1}
             >
                 {title && <h2 id={titleId} className={titleClass}>{title}</h2>}
-                <button className={closeButtonClass} onClick={onClose} aria-label="Close modal">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                    <button className={closeButtonClass} onClick={onClose} aria-label="Close modal">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
                 {children}
             </div>
         </div>
