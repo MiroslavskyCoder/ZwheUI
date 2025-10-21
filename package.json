@@ -4,7 +4,7 @@
   "description": "A showcase of a modern, reusable, and aesthetically pleasing React component library built with TypeScript and Tailwind CSS.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/index.d.ts",
   "style": "dist/styles.css",
   "scripts": {
     "dev": "webpack serve --mode development",
