@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Icon, Text, Stack, Button, Input, Slider } from '../src/components';
 import { 
-    HomeIcon, SettingsIcon, UserIcon, LoginIcon, SendIcon
+    HomeIcon, SettingsIcon, UserIcon, LoginIcon, SendIcon,
+    CommentsIcon, PlusIcon, StarIcon
 } from '../src/icons';
 import { useTheme } from '../src/core';
 import { DemoSection } from './DemoSection';
@@ -100,12 +101,15 @@ export const IconDemo = () => {
             title="Icon"
             description="A flexible component for rendering SVG icons with consistent sizing and coloring."
             livePreview={
-                <Stack direction="row" gap="1.5rem" align="center">
+                <Stack direction="row" gap="1.5rem" align="center" wrap={true}>
                     <Icon as={HomeIcon} size={size} color={color} />
                     <Icon as={SettingsIcon} size={size} color={color} />
                     <Icon as={UserIcon} size={size} color={color} />
                     <Icon as={LoginIcon} size={size} color={color} />
                     <Icon as={SendIcon} size={size} color={color} />
+                    <Icon as={CommentsIcon} size={size} color={color} />
+                    <Icon as={PlusIcon} size={size} color={color} />
+                    <Icon as={StarIcon} size={size} color={color} />
                 </Stack>
             }
             propControls={

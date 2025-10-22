@@ -57,7 +57,6 @@ export const MenuButton: React.FC<MenuButtonProps> = ({ children, className = ''
     return (
         <button
             {...props}
-            // @ts-ignore
             ref={context.buttonRef}
             className={className}
             onClick={() => setIsOpen(!isOpen)}
@@ -133,7 +132,6 @@ export const MenuItems: React.FC<MenuItemsProps> = ({ children, className = '' }
 
     return (
         <div
-            // @ts-ignore
             ref={itemsRef}
             className={className}
             role="menu"

@@ -4,9 +4,9 @@ The main wrapper component for creating charts. It sets up the dimensions and pr
 
 ## Props
 
-*   `data` (array, required): The dataset to be visualized.
-*   `xAccessor` (function, required): A function that takes a data point (`d`) and its index (`i`) and returns the x-value.
-*   `yAccessor` (function, required): A function that takes a data point (`d`) and its index (`i`) and returns the y-value.
+*   `dataset` (array, required): The array of data objects to be visualized.
+*   `xAxis` (array, required): Configuration for the X-axis. For a categorical axis (like in bar charts), use `{ scaleType: 'band', dataKey: '...' }`. For a linear axis, use `{ dataKey: '...' }`.
+*   `series` (array, required): An array defining the data series to plot. Each object must have a `type` ('line', 'area', or 'bar') and a `dataKey`.
 *   `children` (React.ReactNode): The chart components to be rendered (e.g., `ChartAxis`, `ChartLine`).
 *   `className` (string, optional): Additional CSS classes for the container.
 *   `style` (React.CSSProperties, optional): Inline styles for the container.
@@ -17,20 +17,23 @@ The main wrapper component for creating charts. It sets up the dimensions and pr
 import { Charts, ChartLine, ChartArea, ChartAxis } from './src/components';
 
 const myData = [
-  { day: 1, value: 10 },
-  { day: 2, value: 15 },
-  { day: 3, value: 8 },
+  { month: 'Jan', revenue: 1200, expenses: 800 },
+  { month: 'Feb', revenue: 1500, expenses: 900 },
+  { month: 'Mar', revenue: 1300, expenses: 850 },
 ];
 
 <Charts
-  data={myData}
-  xAccessor={d => d.day}
-  yAccessor={d => d.value}
+  dataset={myData}
+  xAxis={[{ dataKey: 'month', scaleType: 'band' }]}
+  series={[
+    { type: 'area', dataKey: 'revenue', color: '#60a5fa' },
+    { type: 'line', dataKey: 'revenue', color: '#60a5fa' },
+    { type: 'line', dataKey: 'expenses', color: '#ef4444' },
+  ]}
   style={{ height: '300px' }}
 >
   <ChartAxis dimension="x" />
   <ChartAxis dimension="y" />
-  <ChartArea />
-  <ChartLine />
+  {/* The ChartLine and ChartArea components are now rendered automatically based on the 'series' prop */}
 </Charts>
 ```

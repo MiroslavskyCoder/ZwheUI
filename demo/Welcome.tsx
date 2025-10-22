@@ -44,9 +44,9 @@ export const Welcome: React.FC<WelcomeProps> = ({ onNavigate }) => {
                         </Card>
                     ))}
                 </Grid>
-                <Text size="0.875rem" color={theme.colors.textSecondary} style={{ marginTop: '2rem' }}>
+                 <Text size="0.875rem" color={theme.colors.textSecondary} style={{ marginTop: '2rem' }}>
                     This entire showcase is built with the ZwheUI components themselves.
-                </Text>
+                 </Text>
             </Stack>
         </Center>
     );

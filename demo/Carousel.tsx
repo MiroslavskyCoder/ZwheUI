@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Carousel, Image, Text } from '../src/components';
 import { DemoSection } from './DemoSection';

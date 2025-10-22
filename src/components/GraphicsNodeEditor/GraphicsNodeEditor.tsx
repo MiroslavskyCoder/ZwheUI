@@ -17,6 +17,12 @@ interface GraphicsProviderProps {
     creatableNodeTypes?: Record<string, Omit<NodeData, 'id' | 'position'>>;
 }
 
+interface BestTarget {
+    targetNodeId: string;
+    targetSocketId: string;
+    distance: number;
+}
+
 export const GraphicsProvider = ({ children, initialNodes, initialConnections, creatableNodeTypes: initialCreatableNodeTypes = {} }: GraphicsProviderProps) => {
     const [nodes, setNodes] = useState<NodeData[]>(initialNodes);
     const [connections, setConnections] = useState<ConnectionData[]>(initialConnections);
@@ -95,11 +101,7 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections, c
         const sourceNode = nodes.find(n => n.id === sourceNodeId);
         if (!sourceNode) return;
 
-        let bestTarget: {
-            targetNodeId: string;
-            targetSocketId: string;
-            distance: number;
-        } | null = null;
+        let bestTarget: BestTarget | null = null;
 
         nodes.forEach(targetNode => {
             if (targetNode.id === sourceNodeId) return;
@@ -128,9 +130,7 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections, c
                 id: `conn_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
                 sourceNodeId,
                 sourceSocketId,
-                // @ts-ignore
                 targetNodeId: bestTarget.targetNodeId,
-                // @ts-ignore
                 targetSocketId: bestTarget.targetSocketId,
                 type: 'curved',
             };
@@ -558,12 +558,11 @@ export const GraphicsNodeEditorView: React.FC<{ style?: React.CSSProperties; plu
 
     return (
         <div 
-            // @ts-ignore
-            ref={editorRef} 
+            ref={editorRef as React.Ref<HTMLDivElement>} 
             className={editorClass} 
             style={style} 
         >
-            <svg 
+             <svg 
                 className={svgOverlayClass}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}

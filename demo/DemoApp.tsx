@@ -85,7 +85,7 @@ import { SparklineDemo } from './Sparkline';
 import { XmlRendererDemo } from './XmlRenderer';
 import { GraphicsNodeEditorDemo } from './GraphicsNodeEditor';
 import { PhotoEditorDemo } from './PhotoEditor';
-import { ExampleFileBrowser, ExampleVideo, ExampleAudio, ExamplePhotoEditor, ExampleSignInPage, ExampleVideoEditor, ExampleGuideRu } from '../examples';
+import { ExampleFileBrowser, ExampleVideo, ExampleAudio, ExamplePhotoEditor, ExampleSignInPage, ExampleVideoEditor, GuideRu } from '../examples';
 import { LayoutDemo } from './Layout';
 import { MarkdownDemo } from './Markdown';
 import { StatDemo } from './Stat';
@@ -95,10 +95,13 @@ import { BlockquoteDemo } from './Blockquote';
 import { CarouselDemo } from './Carousel';
 import { CodePreviewDemo } from './CodePreview';
 import { CommandDemo } from './Command';
+import { ContextMenuDemo } from './ContextMenu';
+import { LayerDemo } from './Layer';
 import { MessageDemo } from './Message';
 import { TooltipDemo } from './Tooltip';
 import { MenuIcon } from '../src/icons';
 import { AIAppCreateDemo } from './AIAppCreate';
+import { HooksDemo } from './Hooks';
 
 const demos = {
     general: [
@@ -126,6 +129,7 @@ const demos = {
         { id: 'footer', label: 'Footer', component: <FooterDemo /> },
         { id: 'sidebar', label: 'Sidebar', component: <SidebarDemo /> },
         { id: 'layout', label: 'Layout', component: <LayoutDemo /> },
+        { id: 'layer', label: 'Layer', component: <LayerDemo /> },
     ],
     forms: [
         { id: 'form-control', label: 'FormControl', component: <FormControlDemo /> },
@@ -182,6 +186,7 @@ const demos = {
         { id: 'tooltip', label: 'Tooltip', component: <TooltipDemo /> },
         { id: 'backdrop', label: 'Backdrop', component: <BackdropDemo /> },
         { id: 'empty-state', label: 'EmptyState', component: <EmptyStateDemo /> },
+        { id: 'context-menu', label: 'ContextMenu', component: <ContextMenuDemo /> },
     ],
     navigation: [
         { id: 'nav', label: 'Nav', component: <NavDemo /> },
@@ -206,6 +211,9 @@ const demos = {
         { id: 'graphics-node-editor', label: 'GraphicsNodeEditor', component: <GraphicsNodeEditorDemo /> },
         { id: 'photo-editor', label: 'PhotoEditor', component: <PhotoEditorDemo /> },
     ],
+    hooks: [
+        { id: 'utility-hooks', label: 'Utility Hooks', component: <HooksDemo /> },
+    ],
     examples: [
         { id: 'ai-app-creator', label: 'AI App Creator', component: <AIAppCreateDemo /> },
         { id: 'signin-page', label: 'Sign-In Page', component: <ExampleSignInPage /> },
@@ -214,7 +222,7 @@ const demos = {
         { id: 'audio-player', label: 'Audio Player', component: <ExampleAudio /> },
         { id: 'photo-editor-example', label: 'Photo Editor', component: <ExamplePhotoEditor /> },
         { id: 'video-editor-example', label: 'Video Editor', component: <ExampleVideoEditor /> },
-        { id: 'guide-ru', label: 'Учебник', component: <ExampleGuideRu /> },
+        { id: 'guide-ru', label: 'Учебник', component: <GuideRu /> },
     ]
 };
 
@@ -259,6 +267,7 @@ const AppContent = () => {
                 <div style={{ flex: '1 1 0', minHeight: 0, overflowY: 'auto', paddingRight: isDesktopLayout ? '0.5rem' : undefined }}>
                     <Stack gap="1.5rem">
                         <SidebarNav title="Examples"><NavItems items={demos.examples} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
+                        <SidebarNav title="Hooks"><NavItems items={demos.hooks} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
                         <SidebarNav title="General"><NavItems items={demos.general} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
                         <SidebarNav title="Layout"><NavItems items={demos.layout} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>
                         <SidebarNav title="Forms & Input"><NavItems items={demos.forms} activeId={activeDemoId} onClick={handleNavClick} /></SidebarNav>

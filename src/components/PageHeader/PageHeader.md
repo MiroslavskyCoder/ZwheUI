@@ -21,7 +21,7 @@ const breadcrumbItems = [
 
 <PageHeader
   title="ZwheUI Project"
-  subtitle="Manage your component library settings."
+  subtitle="Manage your component library settings and tasks."
   breadcrumbs={breadcrumbItems}
   actions={
     <Button variant="primary">New Task</Button>

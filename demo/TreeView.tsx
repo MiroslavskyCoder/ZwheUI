@@ -1,10 +1,10 @@
-
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { 
     Sofa, Text, Stack, TreeView, TreeViewNodeData, Icon, Collapse, Card,
     useTreeItem, TreeItemProps,
     Button,
-    TreeViewHandle
+    TreeViewHandle,
+    Code
 } from '../src/components';
 // FIX: `useTheme` is not exported from `../src/components`. It should be imported from `../src/core`.
 import { useTheme } from '../src/core';
@@ -67,9 +67,14 @@ const CustomTreeItem: React.FC<TreeItemProps> = (props) => {
 
 export const TreeViewDemo = () => {
     const customTreeRef = useRef<TreeViewHandle>(null);
+    const [selectedFile, setSelectedFile] = useState<TreeViewNodeData | null>(null);
 
     const handleFocusClick = () => {
         customTreeRef.current?.focusItem('index.html');
+    };
+
+    const handleFileSelect = (node: TreeViewNodeData) => {
+        setSelectedFile(node);
     };
 
     return (
@@ -79,7 +84,7 @@ export const TreeViewDemo = () => {
                 <Text>A component for displaying hierarchical data. Now supports custom item rendering via the `item` prop and `useTreeItem` hook, plus single/multi-selection and programmatic focus.</Text>
                 
                 <Text weight="600">Custom Tree Item, Multi-Selection &amp; Programmatic Focus</Text>
-                <Text size="sm">This example uses a custom component to render each item in a file-explorer style. Use Ctrl/Cmd-click to select multiple items.</Text>
+                <Text size="sm">This example uses a custom component to render each item in a file-explorer style. Use Ctrl/Cmd-click to select multiple items. Clicking a file will display its info below.</Text>
                  <Stack direction="row" gap="1rem">
                     <Button onClick={handleFocusClick}>Focus 'index.html'</Button>
                 </Stack>
@@ -91,8 +96,21 @@ export const TreeViewDemo = () => {
                         groupTransition={Collapse}
                         selectionMode="multiple"
                         defaultExpandedIds={['root', 'src', 'public']}
+                        onFileSelect={handleFileSelect}
                     />
                 </Card>
+
+                {selectedFile && (
+                    <Card variant="glass">
+                        <Card.Body>
+                            <Stack gap="0.5rem">
+                                <Text weight="600">Selected File</Text>
+                                <Text size="sm">Name: <Code>{selectedFile.label}</Code></Text>
+                                <Text size="sm">ID: <Code>{selectedFile.id}</Code></Text>
+                            </Stack>
+                        </Card.Body>
+                    </Card>
+                )}
 
                 <Text weight="600" style={{ marginTop: '1rem' }}>Custom Icons &amp; Single Selection</Text>
                 <Text size="sm">This example uses the default item renderer but provides custom icons for expand, collapse, and end nodes. It also uses the `Collapse` component for animations.</Text>

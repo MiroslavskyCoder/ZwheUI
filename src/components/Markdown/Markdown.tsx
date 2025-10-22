@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -7,7 +7,7 @@ import { useStyles, useTheme } from '../../core';
 import { Link } from '../Link/Link';
 
 interface MarkdownProps {
-    children: string;
+  children: string;
 }
 
 export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
@@ -35,11 +35,11 @@ export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
             marginBottom: '1em',
         },
         '& code': {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            padding: '0.2em 0.4em',
-            borderRadius: '3px',
-            fontFamily: 'monospace',
-            fontSize: '85%',
+             backgroundColor: 'rgba(255, 255, 255, 0.1)',
+             padding: '0.2em 0.4em',
+             borderRadius: '3px',
+             fontFamily: 'monospace',
+             fontSize: '85%',
         },
         '& pre': {
             background: '#1e1e1e',
@@ -78,8 +78,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
         }
     });
 
-    const components = {
-        // @ts-ignore
+    const components: Components = {
         code({node, inline, className, children, ...props}) {
             const match = /language-(\w+)/.exec(className || '');
             return !inline && match ? (
@@ -97,15 +96,13 @@ export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
                 </code>
             );
         },
-        // @ts-ignore
         a: ({ href, children }) => <Link href={href} target="_blank" rel="noopener noreferrer">{children}</Link>
     };
 
     return (
         <div className={containerClass}>
-            <ReactMarkdown 
+            <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                // @ts-ignore
                 components={components}
             >
                 {children}

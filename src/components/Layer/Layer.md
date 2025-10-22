@@ -22,7 +22,4 @@ import { Layer, Card, Text } from './src/components';
         <Card>Top Layer</Card>
     </Layer>
 </div>
-\`\`\``]></content>
-  </change>
-</changes>
-```
+\`\`\``

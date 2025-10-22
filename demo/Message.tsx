@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Message, Stack, Text } from '../src/components';
 import { DemoSection } from './DemoSection';

@@ -15,16 +15,23 @@ An interactive component that displays a tooltip with data point details when th
 ## Usage
 
 ```tsx
-import { Charts, ChartLine, ChartTooltip } from './src/components';
+import { Charts, ChartTooltip, ChartAxis } from './src/components';
 
 const myData = [
   { day: 1, seriesA: 10, seriesB: 15 },
-  { day: 2, value: 15, seriesB: 20 },
+  { day: 2, seriesA: 15, seriesB: 20 },
 ];
 
-<Charts data={myData} xAccessor={d => d.day} yAccessor={d => d.seriesA}>
-    <ChartLine />
-    <ChartLine yAccessor={d => d.seriesB} color="#f59e0b" />
+<Charts 
+  dataset={myData} 
+  xAxis={[{ dataKey: 'day' }]}
+  series={[
+    { type: 'line', dataKey: 'seriesA', color: '#60a5fa' },
+    { type: 'line', dataKey: 'seriesB', color: '#f59e0b' },
+  ]}
+>
+    <ChartAxis dimension="x" />
+    <ChartAxis dimension="y" />
     <ChartTooltip series={[
         { key: 'a', label: 'Series A', color: '#60a5fa', accessor: d => d.seriesA },
         { key: 'b', label: 'Series B', color: '#f59e0b', accessor: d => d.seriesB },

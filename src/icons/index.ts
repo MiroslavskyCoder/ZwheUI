@@ -1,5 +1,7 @@
 
 
+
+
 export * from './HomeIcon';
 export * from './SettingsIcon';
 export * from './UserIcon';
@@ -70,4 +72,3 @@ export * from './FileIcon';
 export * from './FolderIcon';
 export * from './MenuIcon';
 export * from './MagicWandIcon';
-export * from './StarIcon';

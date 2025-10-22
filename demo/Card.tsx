@@ -1,117 +1,103 @@
-
-
-import React, { useState } from 'react';
-import { Card, Sofa, Text, Stack, Input, SegmentedControl, Checkbox, Textarea, Error } from '../src/components';
-import { useTheme } from '../src/core';
+import React from 'react';
+import { Card, Text } from '../src/components';
 import { DemoSection } from './DemoSection';
 
-const CardConfigurator: React.FC<{
-    title: string;
-    setTitle: (t: string) => void;
-    childrenText: string;
-    setChildrenText: (t: string) => void;
-    variant: 'default' | 'glass';
-    setVariant: (v: any) => void;
-}> = ({
-    title, setTitle, childrenText, setChildrenText, variant, setVariant
-}) => {
-    const { theme } = useTheme();
+const documentation = `# Card (Compound)
 
-    return (
-        <Stack gap="1.5rem">
-            <Input label="Title Prop" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter card title" />
-            
-            <Stack gap="4px">
-                <label htmlFor="card-children-input">
-                    <Text as="span" size={theme.typography.fontSizes.sm} weight={theme.typography.fontWeights.medium} color={theme.colors.textSecondary}>Children Prop (Text)</Text>
-                </label>
-                <Textarea id="card-children-input" value={childrenText} onChange={(e) => setChildrenText(e.target.value)} rows={3} />
-            </Stack>
+A versatile container component that is now composed of multiple sub-components for building flexible and structured layouts.
 
-            <Stack gap="4px">
-                 <Text as="span" size={theme.typography.fontSizes.sm} weight={theme.typography.fontWeights.medium} color={theme.colors.textSecondary}>Variant Prop</Text>
-                <SegmentedControl
-                    options={[{ label: 'Default', value: 'default' }, { label: 'Glass', value: 'glass' }]}
-                    value={variant}
-                    onChange={(val) => setVariant(val as 'default' | 'glass')}
-                />
-            </Stack>
-        </Stack>
-    );
-};
+## Components
 
-const documentation = `# Card
-
-A versatile container component that displays content in a distinct bordered box. It supports a default style and a \`glass\` variant for a blurred, transparent effect.
-
-## Props
-
-*   \`title\` (string, optional): The title to display at the top of the card.
-*   \`children\` (React.ReactNode): The content to be rendered inside the card.
-*   \`className\` (string, optional): Additional CSS class for custom styling.
-*   \`variant\` (enum: 'default' | 'glass', optional, default: 'default'): The visual style of the card. 'glass' applies a blur effect.
-*   \`onClick\` (function, optional): A callback function to execute when the card is clicked.
+*   **Card**: The main container.
+*   **Card.Header**: A top section with padding and a bottom border.
+*   **Card.Body**: The main content area with padding.
+*   **Card.Footer**: A bottom section with padding and a top border.
+*   **Card.Image**: An image component optimized for card layouts (e.g., full-bleed).
+*   **Card.Title**: A styled heading for the card.
+*   **Card.Subtitle**: Smaller, secondary text, often used with a title.
+*   **Card.Description**: Secondary text for descriptions.
+*   **Card.Text**: Generic paragraph text.
+*   **Card.Actions**: A flex container for action buttons, aligned to the end.
+*   **Card.Action**: A pre-styled button for use within \`Card.Actions\`.
+*   **Card.Item**: A generic container for custom layouts within a card.
 
 ## Usage
 
 \`\`\`tsx
-<Card variant="glass" title="Glass Card">
-  <p>Content with a blurred background effect.</p>
+<Card>
+    <Card.Image src="..." alt="Card Image" />
+    <Card.Header>
+        <Card.Title>Card Title</Card.Title>
+        <Card.Subtitle>Card Subtitle</Card.Subtitle>
+    </Card.Header>
+    <Card.Body>
+        <Card.Text>
+            This is the main content of the card.
+        </Card.Text>
+    </Card.Body>
+    <Card.Footer>
+        <Card.Actions>
+            <Card.Action>Cancel</Card.Action>
+            <Card.Action variant="primary">Confirm</Card.Action>
+        </Card.Actions>
+    </Card.Footer>
 </Card>
 \`\`\``;
 
-const fullSourceCode = `import React from 'react'
-import { useStyles } from '../../core/hooks/useStyles'
-import { useTheme } from '../../core/theme/ThemeProvider'
+const fullSourceCode = `import React from 'react';
+import { useStyles } from '../../core/hooks/useStyles';
+import { useTheme } from '../../core/theme/ThemeProvider';
+import { Text } from '../Text/Text';
+import { Image as ImageComponent, ImageProps } from '../Image/Image';
+import { Stack } from '../Stack/Stack';
+import { Button, ButtonProps } from '../Button';
 
-export interface CardProps {
-    title?: string
-    children: React.ReactNode
-    className?: string
-    variant?: 'default' | 'glass'
-    onClick?: (event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>) => void
-    style?: React.CSSProperties
+// Main Card Component
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+    children: React.ReactNode;
+    variant?: 'default' | 'glass';
+    onClick?: (event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
-export const Card: React.FC<CardProps> = ({
-    title,
-    children,
-    className = '',
-    variant = 'default',
-    onClick,
-    style
-}) => {
-    const { theme } = useTheme()
-    const createStyle = useStyles('card')
+const CardRoot: React.FC<CardProps> & {
+    Header: React.FC<React.HTMLAttributes<HTMLDivElement>>;
+    Body: React.FC<React.HTMLAttributes<HTMLDivElement>>;
+    Footer: React.FC<React.HTMLAttributes<HTMLDivElement>>;
+    Title: React.FC<React.ComponentProps<typeof Text<'h3'>>>;
+    Subtitle: React.FC<React.ComponentProps<typeof Text<'p'>>>;
+    Description: React.FC<React.ComponentProps<typeof Text<'p'>>>;
+    Text: React.FC<React.ComponentProps<typeof Text<'p'>>>;
+    Image: React.FC<ImageProps>;
+    Actions: React.FC<React.ComponentProps<typeof Stack>>;
+    Action: React.FC<ButtonProps>;
+    Item: React.FC<React.HTMLAttributes<HTMLDivElement>>;
+} = ({ children, className = '', variant = 'default', onClick, ...props }) => {
+    const { theme } = useTheme();
+    const createStyle = useStyles('card');
 
     const cardClass = createStyle({
-        padding: theme.spacing.md,
-        borderRadius: '6px',
-        backgroundColor: theme.colors.backgroundSecondary,
+        borderRadius: '8px',
+        backgroundColor: variant === 'glass' ? 'rgba(28, 28, 28, 0.75)' : theme.colors.backgroundSecondary,
         border: \`1px solid \${theme.colors.border}\`,
         height: '100%',
         transition: 'all 0.3s ease',
         cursor: onClick ? 'pointer' : 'default',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
         '@supports (backdrop-filter: none) or (-webkit-backdrop-filter: none)': {
-            backdropFilter: 'blur(16px)',
+            backdropFilter: variant === 'glass' ? 'blur(16px)' : undefined,
         },
-        '&:hover': {
+        '&:hover': onClick ? {
             transform: 'translateY(-4px)',
             borderColor: 'rgba(255, 255, 255, 0.25)',
             boxShadow: \`0 8px 24px rgba(0, 0, 0, 0.5)\`,
-        },
+        } : {},
         '&:focus-visible': onClick ? {
             outline: \`2px solid \${theme.colors.primary}\`,
             outlineOffset: '2px',
         } : {},
-    })
-
-    const titleClass = title && createStyle({
-        fontSize: theme.typography.fontSizes.base,
-        fontWeight: String(theme.typography.fontWeights.semibold),
-        marginBottom: theme.spacing.md,
-        color: theme.colors.text
-    })
+    });
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (onClick && (event.key === 'Enter' || event.key === ' ')) {
@@ -129,40 +115,140 @@ export const Card: React.FC<CardProps> = ({
     return (
         <div 
             className={\`\${cardClass} \${className}\`} 
-            style={style}
             onClick={onClick ? (e) => onClick(e) : undefined}
             {...interactiveProps}
+            {...props}
         >
-            {title && <h3 className={titleClass}>{title}</h3>}
             {children}
         </div>
-    )
-}`;
+    );
+};
+
+const CardHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => {
+    const { theme } = useTheme();
+    const createStyle = useStyles('card-header');
+    const headerClass = createStyle({
+        padding: theme.spacing.md,
+        borderBottom: \`1px solid \${theme.colors.border}\`,
+    });
+    return <div className={\`\${headerClass} \${className}\`} {...props} />;
+};
+CardHeader.displayName = 'Card.Header';
+
+const CardBody: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => {
+    const { theme } = useTheme();
+    const createStyle = useStyles('card-body');
+    const bodyClass = createStyle({
+        padding: theme.spacing.md,
+        flex: '1 1 auto',
+    });
+    return <div className={\`\${bodyClass} \${className}\`} {...props} />;
+};
+CardBody.displayName = 'Card.Body';
+
+const CardFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => {
+    const { theme } = useTheme();
+    const createStyle = useStyles('card-footer');
+    const footerClass = createStyle({
+        padding: theme.spacing.md,
+        borderTop: \`1px solid \${theme.colors.border}\`,
+        marginTop: 'auto',
+    });
+    return <div className={\`\${footerClass} \${className}\`} {...props} />;
+};
+CardFooter.displayName = 'Card.Footer';
+
+const CardTitle: React.FC<React.ComponentProps<typeof Text<'h3'>>> = (props) => {
+    const { theme } = useTheme();
+    return <Text as="h3" size={theme.typography.fontSizes.lg} weight={theme.typography.fontWeights.semibold} {...props} />;
+};
+CardTitle.displayName = 'Card.Title';
+
+const CardSubtitle: React.FC<React.ComponentProps<typeof Text<'p'>>> = ({style, ...props}) => {
+    const { theme } = useTheme();
+    return <Text as="p" size={theme.typography.fontSizes.sm} color={theme.colors.textSecondary} style={{marginTop: '0.25rem', ...style}} {...props} />;
+};
+CardSubtitle.displayName = 'Card.Subtitle';
+
+const CardDescription: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => {
+    const { theme } = useTheme();
+    return <Text as="p" size={theme.typography.fontSizes.base} color={theme.colors.textSecondary} {...props} />;
+};
+CardDescription.displayName = 'Card.Description';
+
+const CardText: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => {
+    return <Text as="p" {...props} />;
+};
+CardText.displayName = 'Card.Text';
+
+const CardImage: React.FC<ImageProps> = ({ className, ...props }) => {
+    return <ImageComponent className={className} {...props} />;
+};
+CardImage.displayName = 'Card.Image';
+
+const CardActions: React.FC<React.ComponentProps<typeof Stack>> = ({ className, ...props }) => {
+    return <Stack direction="row" justify="end" gap="0.5rem" className={className} {...props} />;
+};
+CardActions.displayName = 'Card.Actions';
+
+const CardAction: React.FC<ButtonProps> = (props) => {
+    return <Button variant="secondary" {...props} />;
+};
+CardAction.displayName = 'Card.Action';
+
+const CardItem: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props) => {
+    return <div {...props} />;
+};
+CardItem.displayName = 'Card.Item';
+
+CardRoot.Header = CardHeader;
+CardRoot.Body = CardBody;
+CardRoot.Footer = CardFooter;
+CardRoot.Title = CardTitle;
+CardRoot.Subtitle = CardSubtitle;
+CardRoot.Description = CardDescription;
+CardRoot.Text = CardText;
+CardRoot.Image = CardImage;
+CardRoot.Actions = CardActions;
+CardRoot.Action = CardAction;
+CardRoot.Item = CardItem;
+
+export const Card = CardRoot;
+export default Card;`;
 
 
-export const CardDemo = () => {
-    const [title, setTitle] = useState('Configurable Card');
-    const [childrenText, setChildrenText] = useState('This is the content of the card. You can edit it using the controls in the Props panel.');
-    const [variant, setVariant] = useState<'default' | 'glass'>('default');
-    
-    const code = `<Card title="${title}" variant="${variant}">
-    <Text>${childrenText}</Text>
+const initialCode = `<Card style={{ maxWidth: '350px' }}>
+    <Card.Image 
+        src="https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&cs=tinysrgb&w=400" 
+        alt="A beautiful landscape" 
+    />
+    <Card.Header>
+        <Card.Title>Mountain Getaway</Card.Title>
+        <Card.Subtitle>Explore the serene alps.</Card.Subtitle>
+    </Card.Header>
+    <Card.Body>
+        <Card.Text>
+            Discover breathtaking views and peaceful trails. An unforgettable adventure awaits you in the heart of nature.
+        </Card.Text>
+    </Card.Body>
+    <Card.Footer>
+        <Card.Actions>
+            <Card.Action>Learn More</Card.Action>
+            <Card.Action variant="primary">Book Now</Card.Action>
+        </Card.Actions>
+    </Card.Footer>
 </Card>`;
 
+export const CardDemo = () => {
     return (
         <DemoSection
             title="Card"
-            description="A flexible content container. Use the controls to configure the card in real-time."
-            initialCode={code}
+            description="A flexible content container, now built with compound components for more structured layouts."
+            initialCode={initialCode}
             propControls={
-                <CardConfigurator
-                    title={title}
-                    setTitle={setTitle}
-                    childrenText={childrenText}
-                    setChildrenText={setChildrenText}
-                    variant={variant}
-                    setVariant={setVariant}
-                />
+                <Text color="textSecondary">
+                    The Card component is now composed of sub-components. See the "Editable Code" and "Documentation" panels for examples of how to use them.
+                </Text>
             }
             documentation={documentation}
             fullSourceCode={fullSourceCode}

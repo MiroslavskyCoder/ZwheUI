@@ -15,7 +15,7 @@ export const GridDemo = () => (
           <Grid.Item><Card><Card.Body><Text>Item 4</Text></Card.Body></Card></Grid.Item>
       </Grid>
       
-      <Text weight="600" style={{marginTop: '1rem'}}>Fixed 4-Column Grid with Spanning</Text>
+       <Text weight="600" style={{marginTop: '1rem'}}>Fixed 4-Column Grid with Spanning</Text>
       <Grid columns={4} gap="1rem">
           <Grid.Item colSpan={2}><Card><Card.Body><Text>Item A (colSpan=2)</Text></Card.Body></Card></Grid.Item>
           <Grid.Item><Card><Card.Body><Text>Item B</Text></Card.Body></Card></Grid.Item>

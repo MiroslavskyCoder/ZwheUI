@@ -1,5 +1,3 @@
-
-
 import React, { useState, Children, isValidElement, cloneElement, useContext } from 'react';
 import { useStyles, useTheme } from '../../core';
 import { Flex } from '../Flex/Flex';
@@ -13,7 +11,6 @@ interface CarouselContextType {
 }
 const CarouselContext = React.createContext<CarouselContextType | null>(null);
 const useCarousel = () => {
-    // FIX: useContext was not defined. It is now imported from React.
     const context = useContext(CarouselContext);
     if (!context) throw new Error('Carousel components must be used within a Carousel provider.');
     return context;
@@ -28,7 +25,6 @@ export const Carousel: React.FC<{ children: React.ReactNode, className?: string 
 } = ({ children, className }) => {
     const validChildren = Children.toArray(children).filter(isValidElement);
     const [activeIndex, setActiveIndex] = useState(0);
-    // FIX: Safely find the container and count its children to determine the number of slides.
     const containerChild = validChildren.find(c => (c.type as any).displayName === 'Carousel.Container');
     const totalSlides = containerChild ? Children.count((containerChild as React.ReactElement<any>).props.children) : 0;
     
@@ -68,7 +64,6 @@ const CarouselContainer: React.FC<{ children: React.ReactNode }> = ({ children }
     );
 };
 CarouselContainer.displayName = 'Carousel.Container';
-// FIX: Attach sub-component to the main Carousel component.
 Carousel.Container = CarouselContainer;
 
 // Prev Button
@@ -85,7 +80,6 @@ const CarouselPrevious: React.FC = () => {
     );
 };
 CarouselPrevious.displayName = 'Carousel.Previous';
-// FIX: Attach sub-component to the main Carousel component.
 Carousel.Previous = CarouselPrevious;
 
 // Next Button
@@ -102,7 +96,6 @@ const CarouselNext: React.FC = () => {
     );
 };
 CarouselNext.displayName = 'Carousel.Next';
-// FIX: Attach sub-component to the main Carousel component.
 Carousel.Next = CarouselNext;
 
 // Dots
@@ -139,5 +132,4 @@ const CarouselDots: React.FC = () => {
     );
 };
 CarouselDots.displayName = 'Carousel.Dots';
-// FIX: Attach sub-component to the main Carousel component.
 Carousel.Dots = CarouselDots;

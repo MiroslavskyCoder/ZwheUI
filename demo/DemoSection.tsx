@@ -1,10 +1,7 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { 
     Sofa, Stack, Text, Accordion, AccordionItem, AccordionTrigger, AccordionContent, 
-    CodeEditor, Grid,
-    Markdown
+    CodeEditor, Grid
 } from '../src/components';
 import { CodePreview } from '../src/components/Code/CodePreview';
 import { useTheme } from '../src/core';
@@ -58,10 +55,12 @@ export const DemoSection: React.FC<DemoSectionProps> = ({
                                     </Stack>
                                 </AccordionContent>
                             </AccordionItem>
-                            <AccordionItem value="docs">
+                             <AccordionItem value="docs">
                                 <AccordionTrigger><Text weight="600">Documentation</Text></AccordionTrigger>
                                 <AccordionContent>
-                                    <Markdown>{documentation}</Markdown>
+                                     <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '13px', color: theme.colors.textSecondary, lineHeight: '1.5', paddingTop: '1rem' }}>
+                                        {documentation}
+                                    </pre>
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
@@ -84,9 +83,9 @@ export const DemoSection: React.FC<DemoSectionProps> = ({
                                 </Sofa>
                             )}
 
-                            <Sofa title="Full Component Source">
+                             <Sofa title="Full Component Source">
                                 <div style={{ height: '300px', overflow: 'auto' }}>
-                                    <CodeEditor value={fullSourceCode} onChange={() => {}} showLineNumbers/>
+                                     <CodeEditor value={fullSourceCode} onChange={() => {}} showLineNumbers />
                                 </div>
                             </Sofa>
 

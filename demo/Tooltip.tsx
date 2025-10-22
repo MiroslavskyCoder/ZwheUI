@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tooltip, Text, Stack, Button } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -61,7 +60,7 @@ export const TooltipDemo = () => {
                     </Tooltip>
                 </Stack>
             }
-            propControls={<Text color="textSecondary">The main prop, `label`, is demonstrated in the preview.</Text>}
+            propControls={<Text color="textSecondary">The main prop, \`label\`, is demonstrated in the preview.</Text>}
             documentation={documentation}
             fullSourceCode={sourceCode}
         />

@@ -62,8 +62,8 @@ export const FileUpload: React.FC<FileUploadProps> = (props) => {
 
     return (
         <div /* dropzone props */ >
-            <input type="file" /* ... */ />
-            {fileName ? (
+             <input type="file" /* ... */ />
+             {fileName ? (
                 <Stack>
                     {!disableFileName && <Text>Selected: {fileName}</Text>}
                     <Text size="12px" color="textSecondary">...</Text>
@@ -103,7 +103,7 @@ export const FileUploadDemo = () => {
                 </Stack>
             }
             propControls={
-                <Stack gap="1rem">
+                 <Stack gap="1rem">
                     <Text as="label" size="sm" weight="medium" color="textSecondary">Type Prop</Text>
                     <SegmentedControl 
                         value={type}

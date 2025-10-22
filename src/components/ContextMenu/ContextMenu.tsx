@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useClickOutside } from '../../core/hooks/useInteractions';
@@ -76,9 +75,6 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, onClose, posit
             style={{ top: position.y, left: position.x }}
         >
             {items.map((item, index) => {
-                // FIX: Use a more robust type guard ('label' in item) to correctly discriminate between
-                // action items and separators. This resolves TypeScript errors where properties like
-                // 'label' or 'onClick' were being accessed on the separator type.
                 if ('label' in item) {
                     const handleItemClick = () => {
                         item.onClick?.();

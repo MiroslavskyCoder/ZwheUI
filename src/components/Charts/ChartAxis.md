@@ -11,11 +11,14 @@ A component that renders an X or Y axis with ticks, labels, and a baseline. It m
 ## Usage
 
 ```tsx
-import { Charts, ChartLine, ChartAxis } from './src/components';
+import { Charts, ChartAxis } from './src/components';
 
-<Charts data={myData} xAccessor={d => d.x} yAccessor={d => d.y}>
+<Charts
+  dataset={myData}
+  xAxis={[{ dataKey: 'x' }]}
+  series={[{ type: 'line', dataKey: 'y' }]}
+>
   <ChartAxis dimension="x" label="Day" />
   <ChartAxis dimension="y" label="Value" numberOfTicks={10} />
-  <ChartLine />
 </Charts>
 ```

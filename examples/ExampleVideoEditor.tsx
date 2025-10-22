@@ -4,7 +4,7 @@ import {
     Sofa, Stack, Text, Button, Grid, Slider,
     GraphicsProvider, GraphicsNodeEditorView, useGraphicsContext,
     NodeData, ConnectionData, FileUpload, useToast, Icon,
-    Card, Spinner
+    GZoom, GMenu, Card, Spinner
 } from '../src/components';
 import { 
     brightnessContrastNodeType, 
@@ -18,8 +18,6 @@ import { useTheme } from '../src/core';
 import { PlayIcon, PauseIcon } from '../src/icons';
 import { GoogleGenAI, Type } from "@google/genai";
 import { processGraph } from '../src/components/GraphicsNodeEditor/graphProcessor';
-import { GZoom } from '../src/components/GraphicsNodeEditor/plugins/GZoom';
-import { GMenu } from '../src/components/GraphicsNodeEditor/plugins/GMenu';
 
 // --- Node Types for Video Editor ---
 const videoSourceNodeType: Omit<NodeData, 'id' | 'position'> = {
@@ -93,7 +91,7 @@ const PropertiesPanel = ({ onAutoGrade, isGrading }) => {
         <Card title="Effects & Properties">
             <Stack gap="1rem">
                 <Text size="sm" color="textSecondary">Build your effect chain below. Right-click the grid to add new nodes.</Text>
-                <Stack direction="row" gap="1rem">
+                 <Stack direction="row" gap="1rem">
                     <Button onClick={processGraph} variant="primary">Apply Effects to Current Frame</Button>
                     <Button onClick={onAutoGrade} variant="secondary" disabled={isGrading}>
                         {isGrading ? <Spinner size={20}/> : "AI Auto Grade"}

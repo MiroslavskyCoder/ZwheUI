@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { Text, Stack, Textarea } from '../src/components';
 import { DemoSection } from './DemoSection';
@@ -41,7 +39,7 @@ export const CodePreviewDemo = () => {
             description="A component that renders live React components from an XML-like string. It's the engine for the demo previews."
             initialCode={code}
             propControls={
-                <Textarea value={code} onChange={e => setCode(e.target.value)} rows={8} style={{fontFamily: 'monospace'}} />
+                 <Textarea value={code} onChange={e => setCode(e.target.value)} rows={8} style={{fontFamily: 'monospace'}} />
             }
             documentation={documentation}
             fullSourceCode={sourceCode}

@@ -1,5 +1,3 @@
-
-
 import React, { useState, createContext, useContext } from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
@@ -38,7 +36,6 @@ export const AccordionItem: React.FC<{ children: React.ReactNode; value: string;
         },
     });
 
-    // FIX: Add a type assertion to the child element in `cloneElement` to correctly pass down the `value` prop without TypeScript errors.
     return <div className={`${itemClass} ${className}`}>{React.Children.map(children, child => React.isValidElement(child) ? React.cloneElement(child as React.ReactElement<any>, { value }) : child)}</div>;
 };
 

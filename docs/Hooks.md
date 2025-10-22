@@ -1,169 +1,184 @@
 # Utility Hooks
 
-ZwheUI includes several utility hooks that abstract common patterns for interactions, browser APIs, and performance optimizations. These hooks are used internally by many components but are also exported for you to use in your own application logic.
+ZwheUI includes several utility hooks that abstract common patterns for timers, state management, browser APIs, and component lifecycles. These hooks are used internally by many components but are also exported for you to use in your own application logic.
 
-## Interaction Hooks
+---
 
-### `useClickOutside`
+### `useToggle`
+A simple hook for managing boolean state.
 
-This hook triggers a callback when a click event occurs outside of a specified DOM element. It's essential for closing dropdowns, modals, or popovers when the user clicks away.
+- **`useToggle(initialState)`**: `initialState` defaults to `false`.
+- **Returns**: `[boolean, () => void]` - A tuple with the current state and a function to toggle it.
 
--   **`useClickOutside<T>(callback)`**
-    -   `T` (generic): The type of the DOM element (e.g., `HTMLDivElement`). Defaults to `HTMLElement`.
-    -   `callback` (function): The function to call when an outside click is detected.
-
-**Returns:**
--   A `RefObject` to attach to the DOM element you want to monitor.
-
-#### Usage
-
+**Usage:**
 ```tsx
-import { useClickOutside } from 'zwheui';
-import { useState, useRef } from 'react';
-
-const Dropdown = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  // The ref returned by the hook should be attached to the dropdown container.
-  const dropdownRef = useClickOutside<HTMLDivElement>(() => {
-    setIsOpen(false);
-  });
-
-  return (
-    <div ref={dropdownRef}>
-      <button onClick={() => setIsOpen(true)}>Open</button>
-      {isOpen && (
-        <ul>
-          <li>Item 1</li>
-          <li>Item 2</li>
-        </ul>
-      )}
-    </div>
-  );
-};
+const [isOn, toggle] = useToggle(false);
+return <Button onClick={toggle}>{isOn ? 'ON' : 'OFF'}</Button>;
 ```
 
-### `useHover`
+---
 
-A simple hook to track whether the mouse is currently hovering over an element.
+### `useTimeout`
+A declarative, lifecycle-aware `setTimeout`.
 
-**Returns:**
--   `[ref, isHovered]`: A tuple containing the `RefObject` to attach to your element and a boolean `isHovered` state.
+- **`useTimeout(callback, delay)`**: The timeout is cleared automatically on unmount. If `delay` is `null`, the timeout is paused.
 
-#### Usage
-
+**Usage:**
 ```tsx
-import { useHover } from 'zwheui';
-
-const HoverableComponent = () => {
-  const [hoverRef, isHovered] = useHover();
-
-  return (
-    <div ref={hoverRef}>
-      {isHovered ? 'You are hovering over me!' : 'Hover over me.'}
-    </div>
-  );
-};
+const [visible, setVisible] = useState(true);
+// The message will hide after 3 seconds.
+useTimeout(() => setVisible(false), 3000);
+return visible ? <p>I will disappear soon!</p> : null;
 ```
 
-## Browser API Hooks
+---
 
-### `useLocalStorage`
+### `useInterval`
+A declarative, lifecycle-aware `setInterval`.
 
-A hook that syncs a React state value with the browser's `localStorage`. It's a convenient way to persist user settings or other data across sessions.
+- **`useInterval(callback, delay)`**: The interval is cleared on unmount. If `delay` is `null`, it's paused.
 
--   **`useLocalStorage<T>(key, initialValue)`**
-    -   `key` (string): The key to use in `localStorage`.
-    -   `initialValue` (T): The value to use if nothing is found in `localStorage`.
-
-**Returns:**
--   `[storedValue, setValue]`: A state-like tuple. The `setValue` function updates both the React state and `localStorage`.
-
-#### Usage
-
+**Usage:**
 ```tsx
-import { useLocalStorage, useTheme } from 'zwheui';
-
-const ThemePreferenceSaver = () => {
-  const { mode, switchTheme } = useTheme();
-  
-  // Persist the theme mode in localStorage.
-  const [savedMode, setSavedMode] = useLocalStorage('theme-mode', 'dark');
-
-  // When the global theme changes, update localStorage.
-  useEffect(() => {
-    setSavedMode(mode);
-  }, [mode, setSavedMode]);
-
-  // When the component mounts, apply the saved theme.
-  useEffect(() => {
-    switchTheme(savedMode);
-  }, []); // Empty dependency array ensures this runs only once on mount
-
-  return null; // This is a logic-only component
-};
+const [count, setCount] = useState(0);
+// The count will increment every second.
+useInterval(() => setCount(c => c + 1), 1000);
+return <p>Timer: {count}</p>;
 ```
 
-### `useMediaQuery`
+---
 
-A hook to subscribe to a CSS media query and get a boolean state indicating whether it matches.
+### `useUpdateEffect`
+A `useEffect` that runs only on updates, skipping the initial render.
 
--   **`useMediaQuery(query)`**
-    -   `query` (string): The media query string (e.g., `'(min-width: 768px)'`).
+- **`useUpdateEffect(effect, deps)`**: API is identical to `useEffect`.
 
-#### Usage
-
+**Usage:**
 ```tsx
-import { useMediaQuery } from 'zwheui';
-
-const ResponsiveComponent = () => {
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
-
-  return (
-    <div>
-      {isDesktop ? 'Showing desktop view' : 'Showing mobile view'}
-    </div>
-  );
-};
+// This toast will only appear when `count` changes, not on the initial render.
+useUpdateEffect(() => {
+  addToast({ title: `Count changed to ${count}` });
+}, [count]);
 ```
 
-## Performance Hooks
+---
 
-### `useDebounce`
+### `useCopyToClipboard`
+Provides a function to copy text to the clipboard.
 
-This hook debounces a value, meaning it only updates its returned value after a specified delay has passed without the source value changing. This is extremely useful for performance-intensive operations that shouldn't run on every keystroke, like API calls from a search input.
+- **Returns**: `[copiedText, (text: string) => Promise<boolean>]` - A tuple with the last successfully copied text and the copy function.
 
--   **`useDebounce<T>(value, delay)`**
-    -   `value` (T): The source value to debounce (e.g., from a state).
-    -   `delay` (number): The debounce delay in milliseconds.
-
-#### Usage
-
+**Usage:**
 ```tsx
-import { useDebounce, Search } from 'zwheui';
-import { useState, useEffect } from 'react';
+const [copiedText, copy] = useCopyToClipboard();
+const handleCopy = () => copy('Hello from clipboard!');
+return <Button onClick={handleCopy}>Copy Text</Button>;
+```
 
-const SearchComponent = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  // The debouncedSearchTerm will only update 500ms after the user stops typing.
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+---
 
-  useEffect(() => {
-    // This effect runs only when debouncedSearchTerm changes,
-    // preventing an API call on every keystroke.
-    if (debouncedSearchTerm) {
-      console.log(`Searching for: ${debouncedSearchTerm}`);
-      // fetch(`/api/search?q=${debouncedSearchTerm}`);
-    }
-  }, [debouncedSearchTerm]);
+### `useEventListener`
+Declaratively attaches an event listener to `window`, `document`, or a specific element.
 
-  return (
-    <Search 
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      placeholder="Search..."
-    />
-  );
-};
+- **`useEventListener(eventName, handler, element)`**: `element` defaults to `window`.
+
+**Usage:**
+```tsx
+const [key, setKey] = useState('');
+useEventListener('keydown', (e: KeyboardEvent) => {
+  setKey(e.key);
+});
+return <p>Last key pressed: {key}</p>;
+```
+
+---
+
+### `useWindowSize`
+Tracks the width and height of the browser window.
+
+- **Returns**: `{ width: number, height: number }`
+
+**Usage:**
+```tsx
+const { width, height } = useWindowSize();
+return <p>Window: {width}x{height}</p>;
+```
+
+---
+
+### `useGeolocation`
+Tracks the user's geographical position.
+
+- **Returns**: A state object with `loading`, `latitude`, `longitude`, `error`, etc.
+- **Note**: Requires the `geolocation` permission in `metadata.json`.
+
+**Usage:**
+```tsx
+const { loading, latitude, longitude, error } = useGeolocation();
+if (loading) return <p>Loading location...</p>;
+if (error) return <p>Error: {error}</p>;
+return <p>Lat: {latitude}, Lon: {longitude}</p>;
+```
+
+---
+
+### `useOnlineStatus`
+Tracks the browser's online/offline status.
+
+- **Returns**: `boolean`
+
+**Usage:**
+```tsx
+const isOnline = useOnlineStatus();
+return <p>Network status: {isOnline ? 'Online' : 'Offline'}</p>;
+```
+
+---
+
+### `useDocumentTitle`
+Sets the document's title (`<title>` tag).
+
+- **`useDocumentTitle(title)`**
+
+**Usage:**
+```tsx
+useDocumentTitle('My Awesome Page');
+```
+
+---
+
+### `useFavicon`
+Sets the page's favicon.
+
+- **`useFavicon(href)`**
+
+**Usage:**
+```tsx
+useFavicon('https://my-site.com/favicon.ico');
+```
+
+---
+
+### `useScript`
+Dynamically loads an external script and tracks its status.
+
+- **`useScript(src)`**
+- **Returns**: A status string: `'idle' | 'loading' | 'ready' | 'error'`.
+
+**Usage:**
+```tsx
+const status = useScript('https://maps.googleapis.com/maps/api/js');
+return <p>Google Maps script status: {status}</p>;
+```
+
+---
+
+### `useIsomorphicLayoutEffect`
+A hook that uses `useLayoutEffect` on the client and `useEffect` on the server to prevent SSR warnings. Useful for library authors.
+
+**Usage:**
+```tsx
+useIsomorphicLayoutEffect(() => {
+  // This will run synchronously on the client but as a normal effect on the server.
+}, []);
 ```

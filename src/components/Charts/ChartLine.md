@@ -1,21 +1,25 @@
 # ChartLine
 
-A chart component that renders a line connecting data points. It must be used as a child of the `Charts` component.
+A chart component that renders a line connecting data points. It is now automatically rendered by the parent `Charts` component when a series with `type: 'line'` is defined. You generally do not need to use this component directly.
 
-## Props
+## Customization
 
-*   `color` (string, optional): The color of the line. Defaults to the theme's primary color.
-*   `strokeWidth` (number, optional, default: 2): The thickness of the line.
-*   `yAccessor` (function, optional): A specific y-accessor for this line, useful for multi-series charts. If not provided, it uses the `yAccessor` from the parent `Charts` context.
-
-## Usage
+You can customize the line's appearance via the `series` prop on the `Charts` component.
 
 ```tsx
-import { Charts, ChartLine, ChartAxis } from './src/components';
+import { Charts, ChartAxis } from './src/components';
 
-<Charts data={myData} xAccessor={d => d.x} yAccessor={d => d.y}>
+<Charts
+  dataset={myData}
+  xAxis={[{ dataKey: 'x' }]}
+  series={[{ 
+    type: 'line', 
+    dataKey: 'y',
+    color: '#f59e0b',    // Custom color
+    strokeWidth: 3      // Custom thickness
+  }]}
+>
   <ChartAxis dimension="x" />
   <ChartAxis dimension="y" />
-  <ChartLine color="#f59e0b" strokeWidth={3} />
 </Charts>
 ```

@@ -1,5 +1,3 @@
-
-
 import React, { useState, useMemo, useCallback, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
 import { useStyles, useTheme } from '../../core';
 import { Icon } from '../Icon/Icon';
@@ -98,8 +96,7 @@ const NodeRenderer: React.FC<{ nodeId: string; level: number }> = ({ nodeId, lev
         <>
             <Item {...itemProps} />
             {itemProps.isExpandable && node.children && (
-                // @ts-ignore
-                <TransitionWrapper {...(TransitionComponent && { in: itemProps.isExpanded })}>
+                 <TransitionWrapper {...(TransitionComponent && { in: itemProps.isExpanded })}>
                     <div role="group">
                         {(TransitionComponent || itemProps.isExpanded) && node.children.map(child => (
                             <NodeRenderer key={child.id} nodeId={child.id} level={level + 1} />
@@ -126,6 +123,7 @@ interface TreeViewProps {
     defaultExpandedIds?: string[];
     onSelectionChange?: (ids: string[]) => void;
     onExpansionChange?: (ids: string[]) => void;
+    onFileSelect?: (node: TreeViewNodeData) => void;
     
     expandIcon?: React.ReactNode;
     collapseIcon?: React.ReactNode;
@@ -156,6 +154,7 @@ export const TreeView = forwardRef<TreeViewHandle, TreeViewProps>(({
     defaultExpandedIds = [],
     onSelectionChange,
     onExpansionChange,
+    onFileSelect,
     item,
     ...rest // icon and transition props
 }, ref) => {
@@ -198,6 +197,15 @@ export const TreeView = forwardRef<TreeViewHandle, TreeViewProps>(({
     }, []);
 
     const toggleSelect = useCallback((event: React.MouseEvent, id: string) => {
+        const node = nodesById.get(id);
+        if (!node) return;
+
+        // If it's a "file" (leaf node), trigger the callback
+        const isFile = !node.children || node.children.length === 0;
+        if (isFile && onFileSelect) {
+            onFileSelect(node);
+        }
+
         const isMultiSelect = selectionMode === 'multiple' && (event.ctrlKey || event.metaKey);
         
         setSelectedIds(prev => {
@@ -211,7 +219,7 @@ export const TreeView = forwardRef<TreeViewHandle, TreeViewProps>(({
             return newSet;
         });
 
-    }, [selectionMode]);
+    }, [selectionMode, onFileSelect, nodesById]);
 
     const contextValue: TreeViewContextType = {
         expandedIds,

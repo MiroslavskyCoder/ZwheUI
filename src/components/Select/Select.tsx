@@ -78,7 +78,7 @@ export const Select: React.FC<SelectProps> = ({
             backgroundColor: theme.colors.primary,
             color: '#fff',
         },
-        '&[data-selected="true"]': {
+         '&[data-selected="true"]': {
             fontWeight: '500',
         },
     })
@@ -91,25 +91,25 @@ export const Select: React.FC<SelectProps> = ({
     }
 
     return (
-        <Popper isOpen={isOpen} setIsOpen={setIsOpen}>
-                <PopperTrigger>
-                    <button className={triggerClass} disabled={disabled}>
-                        {selectedOption?.label}
-                    </button>
-                </PopperTrigger>
-                <PopperContent className={dropdownClass}>
-                    {options.map((option) => (
-                        <div
-                            key={option.value}
-                            className={optionClass}
-                            onClick={() => handleSelect(option.value)}
-                            data-selected={option.value === value}
-                        >
-                            {option.label}
-                        </div>
-                    ))}
-                </PopperContent>
-        </Popper>
+       <Popper isOpen={isOpen} setIsOpen={setIsOpen}>
+            <PopperTrigger>
+                 <button className={triggerClass} disabled={disabled}>
+                    {selectedOption?.label}
+                </button>
+            </PopperTrigger>
+            <PopperContent className={dropdownClass}>
+                 {options.map((option) => (
+                    <div
+                        key={option.value}
+                        className={optionClass}
+                        onClick={() => handleSelect(option.value)}
+                        data-selected={option.value === value}
+                    >
+                        {option.label}
+                    </div>
+                ))}
+            </PopperContent>
+       </Popper>
     )
 }
 

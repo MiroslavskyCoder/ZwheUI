@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Text, Stack, Command, Button, Icon, useToast } from '../src/components';
 import { HomeIcon, SettingsIcon, UserIcon } from '../src/icons';

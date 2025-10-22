@@ -13,7 +13,6 @@ interface DialogAction extends ButtonProps {
 export interface DialogProps {
     isOpen: boolean;
     onClose: () => void;
-    // FIX: Make title optional to accommodate dialogs without a visible title, like the Command component.
     title?: string;
     children: React.ReactNode;
     actions?: DialogAction[];

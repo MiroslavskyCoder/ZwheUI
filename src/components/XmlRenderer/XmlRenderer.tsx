@@ -134,8 +134,6 @@ export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components: custo
 
     try {
         const parser = new DOMParser()
-        // FIX: Escape standalone ampersands to prevent XML parsing errors.
-        // This regex replaces '&' unless it's part of a valid XML/HTML entity.
         const sanitizedXml = xml.replace(/&(?![a-zA-Z0-9#]+;)/g, '&amp;');
         const doc = parser.parseFromString(`<root>${sanitizedXml}</root>`, 'text/xml')
 
