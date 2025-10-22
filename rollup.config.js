@@ -4,15 +4,36 @@ import postcss from 'rollup-plugin-postcss';
 import babel from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'; 
-import typescript from 'rollup-plugin-typescript2';
+import typescript from 'rollup-plugin-typescript2'; 
 
 import { globSync } from 'glob';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx'];
+const plugins = [
+  peerDepsExternal(),
+  resolve({ extensions }),
+  commonjs(),
+  typescript({
+    tsconfig: 'tsconfig.build.json',
+    clean: true,
+  }),
+  babel({
+    extensions,
+    babelHelpers: 'bundled',
+    exclude: 'node_modules/**',
+  }),
+  postcss({
+    config: {
+      path: './postcss.config.js',
+    },
+    extract: 'styles.css',
+    minimize: true,
+  }) 
+]
 
-export default {
+export default [{
   input: Object.fromEntries(
 		globSync('src/**/*.{ts,tsx}').map(file => [
 			// This removes `src/` as well as the file extension from each
@@ -39,6 +60,12 @@ export default {
       preserveModules: true,
       entryFileNames: '[name].es.js',
     },
+  ],
+  plugins: plugins,
+  external: ['react', 'react-dom', 'react-router-dom'],
+}, {
+  input: 'src/index.ts',
+  output: [
     {
       dir: 'dist',
       format: 'umd',
@@ -53,28 +80,8 @@ export default {
       preserveModules: true,
       entryFileNames: '[name].umd.min.js',
       plugins: [terser()],
-    },
+    }
   ],
-  plugins: [
-    peerDepsExternal(),
-    resolve({ extensions }),
-    commonjs(),
-    typescript({
-      tsconfig: 'tsconfig.build.json',
-      clean: true,
-    }),
-    babel({
-      extensions,
-      babelHelpers: 'bundled',
-      exclude: 'node_modules/**',
-    }),
-    postcss({
-      config: {
-        path: './postcss.config.js',
-      },
-      extract: 'styles.css',
-      minimize: true,
-    }) 
-  ],
+  plugins: plugins,
   external: ['react', 'react-dom', 'react-router-dom'],
-};
+}];
