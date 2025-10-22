@@ -231,7 +231,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             {fileName ? (
                 <Stack>
                     {!disableFileName && <Text>Selected: {fileName}</Text>}
-                     <Text size="12px" color={theme.colors.textSecondary}>Click or drop another file to replace</Text>
+                    <Text size="12px" color={theme.colors.textSecondary}>Click or drop another file to replace</Text>
                 </Stack>
             ) : (
                 <Stack>
