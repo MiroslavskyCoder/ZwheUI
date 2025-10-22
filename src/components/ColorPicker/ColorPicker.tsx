@@ -165,7 +165,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange, class
             <div className={swatchClass} />
             <Stack gap={theme.spacing.md}>
                 {availableOptions.length > 1 && (
-                    <SegmentedControl
+                     <SegmentedControl
                         value={colorModel}
                         onChange={(val) => setColorModel(val as ColorModel)}
                         options={availableOptions}

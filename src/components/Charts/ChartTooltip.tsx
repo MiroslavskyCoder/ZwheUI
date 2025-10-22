@@ -1,8 +1,10 @@
 
+
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useCharts } from './ChartsHook';
-import { Tooltip } from '../Tooltip/Tooltip';
+// FIX: Changed import from Tooltip to TooltipBubble to allow for direct styling and positioning.
+import { TooltipBubble } from '../Tooltip/TooltipBubble';
 import { useTheme } from '../../core/theme/ThemeProvider';
 
 interface TooltipSeries {
@@ -105,7 +107,8 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
                     })}
                     
                     {createPortal(
-                        <Tooltip style={{
+                        // FIX: Use TooltipBubble instead of Tooltip as it accepts a style prop for positioning.
+                        <TooltipBubble style={{
                             top: hoveredData.y,
                             left: hoveredData.x,
                             transform: `translate(${hoveredData.x > window.innerWidth / 2 ? '-110%' : '10%'}, -50%)`,
@@ -122,7 +125,7 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
                                     </React.Fragment>
                                 ))}
                            </div>
-                        </Tooltip>,
+                        </TooltipBubble>,
                         document.body
                     )}
                 </>

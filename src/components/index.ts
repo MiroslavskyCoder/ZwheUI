@@ -60,6 +60,9 @@ export * from './Footer/Footer';
 export * from './FormControl/FormControl';
 export * from './GraphicsNodeEditor/GraphicsContext';
 export * from './GraphicsNodeEditor/GraphicsNodeEditor';
+// FIX: Export GraphicsNodeEditor plugins to make them available to other parts of the application.
+export * from './GraphicsNodeEditor/plugins/GMenu';
+export * from './GraphicsNodeEditor/plugins/GZoom';
 export * from './Grid/Grid';
 export * from './Header/Header';
 export * from './HoverCard/HoverCard';

@@ -86,7 +86,7 @@ function parseAttributes(node: Element) {
                 attrs.style = a.value;
             }
         } else {
-            if (a.value === 'true') {
+             if (a.value === 'true') {
                 attrs[a.name] = true;
             } else if (a.value === 'false') {
                 attrs[a.name] = false;

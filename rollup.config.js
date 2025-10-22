@@ -4,9 +4,13 @@ import postcss from 'rollup-plugin-postcss';
 import babel from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'; 
+import typescript from 'rollup-plugin-typescript2';
+
 import { globSync } from 'glob';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+const extensions = ['.ts', '.tsx', '.js', '.jsx'];
 
 export default {
   input: Object.fromEntries(
@@ -55,8 +59,7 @@ export default {
       },
       extract: 'styles.css',
       minimize: true,
-    }),
-    terser(),
+    }) 
   ],
   external: ['react', 'react-dom', 'react-router-dom'],
 };

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
@@ -5,6 +6,7 @@ import { Container } from '../Container/Container';
 
 interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
     children: React.ReactNode;
+    // FIX: Add height prop to allow for flexible height adjustments.
     height?: string;
 }
 

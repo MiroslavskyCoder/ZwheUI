@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { Box } from '../Box/Box';
 import { Text } from '../Text/Text';
 import { TextInput } from '../TextInput/TextInput';
-import { ButtonGroup, IconButton } from '..';
+import { ButtonGroup } from '../ButtonGroup/ButtonGroup';
+import { IconButton } from '../IconButton/IconButton';
 import { Flex } from '../Flex/Flex';
 // FIX: Import TimesIcon to replace local CloseIcon definition for consistency.
 import { TimesIcon } from '../../icons';

@@ -15,7 +15,7 @@ export interface OAuthProviderConfig {
     userinfo: {
         url: string;
     };
-    profile: (profile: any) => { id: string, name?: string | null, email?: string | null, image?: string | null };
+    profile: (profile: any) => { id: string, name?: string, email?: string, image?: string };
 }
 
 export function OAuthProvider(config: OAuthProviderConfig) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NodeData } from './GraphicsContext';
 import { FileUpload, Slider, Text, Stack } from '..';
+import { saturationNodeType, vignetteMaskNodeType } from '../../effects';
 
 // --- Helper function to work with ImageData ---
 const createImageData = (width: number, height: number): ImageData => {
@@ -79,10 +80,8 @@ const BrightnessContrastComponent: React.FC<{ data: NodeData; onUpdateData: (d: 
     return (
         <div style={{ padding: '8px', width: '200px' }}>
             <Stack>
-                {/* FIX: Type '"label"' is not assignable to type 'AllowedTags'. */}
                 <Text size="12px" as="span">Brightness ({brightness})</Text>
                 <Slider min={-100} max={100} value={brightness} onChange={v => onUpdateData({ brightness: v })} />
-                {/* FIX: Type '"label"' is not assignable to type 'AllowedTags'. */}
                 <Text size="12px" as="span">Contrast ({contrast})</Text>
                 <Slider min={-100} max={100} value={contrast} onChange={v => onUpdateData({ contrast: v })} />
             </Stack>
@@ -217,4 +216,6 @@ export const creatableImageNodeTypes = {
     'Invert Colors': invertNodeType,
     'Sepia': sepiaNodeType,
     'Brightness / Contrast': brightnessContrastNodeType,
+    'Saturation': saturationNodeType,
+    'Vignette Mask': vignetteMaskNodeType,
 };

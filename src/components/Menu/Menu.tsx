@@ -57,7 +57,6 @@ export const MenuButton: React.FC<MenuButtonProps> = ({ children, className = ''
     return (
         <button
             {...props}
-            // @ts-ignore
             ref={context.buttonRef}
             className={className}
             onClick={() => setIsOpen(!isOpen)}
@@ -78,9 +77,9 @@ export interface MenuItemsProps {
 
 export const MenuItems: React.FC<MenuItemsProps> = ({ children, className = '' }) => {
     const context = useContext(MenuContext)
-    if (!context) throw new Error('MenuItems must be used within a Menu');
+    if (!context) throw new Error('MenuItems must be used within a Menu')
 
-    const { isOpen, setIsOpen, buttonRef, itemsRef } = context;
+    const { isOpen, setIsOpen, buttonRef, itemsRef } = context
 
     // Set focus on the first item when the menu opens
     useEffect(() => {
@@ -133,7 +132,6 @@ export const MenuItems: React.FC<MenuItemsProps> = ({ children, className = '' }
 
     return (
         <div
-            // @ts-ignore
             ref={itemsRef}
             className={className}
             role="menu"

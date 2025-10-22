@@ -1,5 +1,8 @@
 import React from 'react';
-import { Stack, Center, Text, Icon } from '..';
+import { Stack } from '../Stack/Stack';
+import { Center } from '../Center/Center';
+import { Text } from '../Text/Text';
+import { Icon } from '../Icon/Icon';
 import { useTheme } from '../../core';
 
 interface EmptyStateProps {

@@ -2,10 +2,8 @@
 import React, { useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useClickOutside } from '../../core/hooks/useInteractions';
-import { useStyles, useTheme } from '../../core';
+import { useStyles } from '../../core';
 
-// FIX: Changed to a discriminated union type to properly distinguish between action items and separators.
-// A separator does not need a label, while an action item does.
 export type ContextMenuItem =
     | {
           isSeparator?: false;
@@ -25,39 +23,36 @@ interface ContextMenuProps {
 }
 
 export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, onClose, position, items }) => {
-    const { theme } = useTheme();
-    const createStyle = useStyles('context-menu');
     const menuRef = useClickOutside<HTMLDivElement>(onClose);
+    const createStyle = useStyles('context-menu');
 
+    // Styles inspired by user's Tailwind classes
     const containerClass = createStyle({
         position: 'fixed',
-        backgroundColor: theme.colors.backgroundSecondary,
-        borderRadius: '6px',
-        border: `1px solid ${theme.colors.border}`,
-        boxShadow: `0 4px 12px rgba(0,0,0,0.5)`,
+        backgroundColor: '#171717', // bg-neutral-900
+        borderRadius: '6px', // rounded-md
+        border: `1px solid #404040`, // border-neutral-700
+        boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', // shadow-lg
         minWidth: '180px',
         zIndex: 100,
         overflow: 'hidden',
-        padding: '4px',
-        '@supports (backdrop-filter: none) or (-webkit-backdrop-filter: none)': {
-            backdropFilter: 'blur(16px)',
-        },
+        padding: '8px', // p-2
     });
 
     const itemClass = createStyle({
+        display: 'block',
         width: '100%',
-        padding: '8px 12px',
+        padding: '8px 16px', // py-2 px-4
         border: 'none',
         backgroundColor: 'transparent',
         textAlign: 'left',
         cursor: 'pointer',
-        color: theme.colors.textSecondary,
-        transition: 'all 0.2s ease',
+        color: '#e5e5e5', // text-neutral-200
+        transition: 'background-color 0.2s ease',
         borderRadius: '4px',
-        fontSize: '14px',
+        fontSize: '14px', // text-sm
         '&:hover:not(:disabled)': {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            color: theme.colors.text,
+            backgroundColor: '#262626', // hover:bg-neutral-800
         },
         '&:disabled': {
             opacity: 0.5,
@@ -68,12 +63,12 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, onClose, posit
     const dividerClass = createStyle({
         height: '1px',
         border: 'none',
-        backgroundColor: theme.colors.border,
-        margin: '4px 0',
+        backgroundColor: '#404040', // border-neutral-700
+        margin: '8px 0', // my-2
     });
 
     if (!isOpen) return null;
-
+    
     return createPortal(
         <div
             ref={menuRef}
@@ -81,15 +76,19 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, onClose, posit
             style={{ top: position.y, left: position.x }}
         >
             {items.map((item, index) => {
-                // FIX: Use an if/else block with the `in` operator to properly narrow the type of `item`.
-                // Checking for the 'label' property is a robust way to discriminate because it's required on action items
-                // and absent from separator items, resolving the type errors.
+                // FIX: Use a more robust type guard ('label' in item) to correctly discriminate between
+                // action items and separators. This resolves TypeScript errors where properties like
+                // 'label' or 'onClick' were being accessed on the separator type.
                 if ('label' in item) {
+                    const handleItemClick = () => {
+                        item.onClick?.();
+                        onClose(); // Close menu after item click
+                    };
                     return (
                         <button
                             key={item.label}
                             className={itemClass}
-                            onClick={item.onClick}
+                            onClick={handleItemClick}
                             disabled={item.disabled}
                         >
                             {item.label}

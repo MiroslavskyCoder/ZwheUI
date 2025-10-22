@@ -1,5 +1,8 @@
 import React from 'react';
-import { Stack, Text, Breadcrumbs, Divider, BreadcrumbItem } from '..';
+import { Stack } from '../Stack/Stack';
+import { Text } from '../Text/Text';
+import { Breadcrumbs, BreadcrumbItem } from '../Breadcrumbs/Breadcrumbs';
+import { Divider } from '../Divider/Divider';
 import { useTheme } from '../../core';
 
 interface PageHeaderProps {
