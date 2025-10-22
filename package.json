@@ -1,6 +1,6 @@
 {
-  "name": "@miroslavskycoder/zwheui",
-  "version": "1.0.3", 
+  "name": "zwheui",
+  "version": "1.0.3-R1",
   "author": {
     "name": "Miroslavsky Coder",
     "email": "programmer_js@vk.com",
@@ -9,7 +9,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MiroslavskyCoder/ZwheUI"
+    "url": "git+https://github.com/MiroslavskyCoder/ZwheUI.git"
   },
   "homepage": "https://zwheui-docs.netlify.app/",
   "bugs": {
@@ -26,6 +26,12 @@
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "style": "dist/styles.css",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.cjs"
+    }
+  },
   "scripts": {
     "dev": "webpack serve --mode development",
     "build": "rollup -c --bundleConfigAsCjs",

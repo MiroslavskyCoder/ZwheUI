@@ -39,6 +39,21 @@ export default {
       preserveModules: true,
       entryFileNames: '[name].es.js',
     },
+    {
+      dir: 'dist',
+      format: 'umd',
+      name: 'ZWHEUI',
+      preserveModules: true,
+      entryFileNames: '[name].umd.js',
+    },
+    {
+      dir: 'dist',
+      format: 'umd',
+      name: 'ZWHEUI',
+      preserveModules: true,
+      entryFileNames: '[name].umd.min.js',
+      plugins: [terser()],
+    },
   ],
   plugins: [
     peerDepsExternal(),
