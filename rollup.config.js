@@ -1,9 +1,9 @@
 import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import typescript from 'rollup-plugin-typescript2';
+import commonjs from '@rollup/plugin-commonjs'; 
 import postcss from 'rollup-plugin-postcss';
+import babel from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';  
+import peerDepsExternal from 'rollup-plugin-peer-deps-external'; 
 import { globSync } from 'glob';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -38,12 +38,16 @@ export default {
   ],
   plugins: [
     peerDepsExternal(),
-    resolve(),
+    resolve({ extensions }),
     commonjs(),
     typescript({
       tsconfig: 'tsconfig.build.json',
-      useTsconfigDeclarationDir: true,
       clean: true,
+    }),
+    babel({
+      extensions,
+      babelHelpers: 'bundled',
+      exclude: 'node_modules/**',
     }),
     postcss({
       config: {

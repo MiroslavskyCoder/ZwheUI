@@ -16,6 +16,7 @@
     "demo",
     "examples",
     "temp",
-    "src/**/*.md"
+    "src/**/*.md",
+    "src/components/Code/SyntaxHighlighter.tsx"
   ]
 }

@@ -5,6 +5,4 @@ export * from './core'
 export * from './components' 
 
 export * from "./icons";
-
-// Styles
-import './styles.css'
+ 

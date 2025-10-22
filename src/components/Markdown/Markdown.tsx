@@ -80,6 +80,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
     });
 
     const components = {
+        // @ts-ignore
         code({node, inline, className, children, ...props}) {
             const match = /language-(\w+)/.exec(className || '');
             return !inline && match ? (
@@ -92,6 +93,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
                 </code>
             );
         },
+        // @ts-ignore
         a: ({ href, children }) => <Link href={href} target="_blank" rel="noopener noreferrer">{children}</Link>
     };
 
@@ -99,6 +101,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
         <div className={containerClass}>
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
+                // @ts-ignore
                 components={components}
             >
                 {children}
