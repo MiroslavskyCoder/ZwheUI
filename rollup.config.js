@@ -3,23 +3,37 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss';
 import terser from '@rollup/plugin-terser';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-
-const packageJson = require('./package.json');
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';  
+import { globSync } from 'glob';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export default {
-  input: 'src/index.ts',
+  input: Object.fromEntries(
+		globSync('src/**/*.{ts,tsx}').map(file => [
+			// This removes `src/` as well as the file extension from each
+			// file, so e.g. src/nested/foo.js becomes nested/foo
+			path.relative(
+				'src',
+				file.slice(0, file.length - path.extname(file).length)
+			),
+			// This expands the relative paths to absolute paths, so e.g.
+			// src/nested/foo becomes /project/src/nested/foo.js
+			fileURLToPath(new URL(file, import.meta.url))
+		])
+	),
   output: [
     {
-      file: packageJson.main,
+      dir: 'dist',
       format: 'cjs',
-      sourcemap: true,
-      exports: 'named',
+      preserveModules: true, 
+      entryFileNames: '[name].cjs.js',
     },
     {
-      file: packageJson.module,
-      format: 'esm',
-      sourcemap: true,
+      dir: 'dist',
+      format: 'es',
+      preserveModules: true,
+      entryFileNames: '[name].es.js',
     },
   ],
   plugins: [
