@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Text, Stack, Input, SegmentedControl } from '../src/components';
-import { useTheme } from '../../core/theme/ThemeProvider';
+import { useTheme } from '../src/core/theme/ThemeProvider';
 import { DemoSection } from './DemoSection';
 
 const TextConfigurator: React.FC<{

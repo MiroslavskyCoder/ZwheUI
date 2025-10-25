@@ -10,7 +10,7 @@ export * from './Audio/AudioContext';
 export * from './Audio/AudioControls';
 export * from './Audio/AudioDuration';
 export * from './Audio/AudioFile';
-export * from './Audio/AudioFilters';
+export * from './Audio/AudioEffectsPanel';
 export * from './Audio/AudioTime';
 export * from './Audio/AudioView';
 export * from './Audio/AudioVisualizer';

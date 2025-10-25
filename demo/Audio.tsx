@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-    Audio, AudioView, AudioFile, AudioControls, AudioFilters, AudioVisualizer,
+    Audio, AudioView, AudioFile, AudioControls, AudioEffectsPanel, AudioVisualizer,
     Sofa, Text, Stack, FileUpload
 } from '../src/components';
 
@@ -21,7 +21,7 @@ export const AudioDemo = () => {
             setAudioSrc(URL.createObjectURL(file));
             setFileType(file.type);
         } else {
-             if (audioSrc && audioSrc.startsWith('blob:')) {
+            if (audioSrc && audioSrc.startsWith('blob:')) {
                 URL.revokeObjectURL(audioSrc);
             }
             setAudioSrc(null);
@@ -55,7 +55,8 @@ export const AudioDemo = () => {
                 </AudioView>
                 <AudioVisualizer />
                 <AudioControls />
-                <AudioFilters />
+                {/* FIX: Replaced AudioFilters with AudioEffectsPanel as the component was renamed. */}
+                <AudioEffectsPanel />
             </Audio>
           )}
         </Stack>

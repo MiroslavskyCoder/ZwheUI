@@ -8,6 +8,18 @@ export interface EQBand {
     label?: string;
 }
 
+// State for individual real-time effects
+export interface EffectOptions {
+    [key: string]: any;
+}
+
+export interface EffectsState {
+    [effectName: string]: {
+        enabled: boolean;
+        options: EffectOptions;
+    };
+}
+
 interface AudioContextType {
     audioRef: React.RefObject<HTMLAudioElement>;
     isPlaying: boolean;
@@ -18,6 +30,10 @@ interface AudioContextType {
     
     eqBands: EQBand[];
     setEqBands: React.Dispatch<React.SetStateAction<EQBand[]>>;
+    
+    effectsState: EffectsState;
+    setEffectsState: React.Dispatch<React.SetStateAction<EffectsState>>;
+
     analyserNode: AnalyserNode | null;
     isGraphReady: boolean;
 }
