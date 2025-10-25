@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext } from 'react';
 
 export interface EQBand {
@@ -6,6 +5,7 @@ export interface EQBand {
     gain: number;
     q: number;
     type: BiquadFilterType;
+    label?: string;
 }
 
 interface AudioContextType {

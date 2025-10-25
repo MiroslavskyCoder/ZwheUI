@@ -69,15 +69,13 @@ export default [{
     {
       dir: 'dist',
       format: 'umd',
-      name: 'ZWHEUI',
-      preserveModules: true,
+      name: 'ZWHEUI', 
       entryFileNames: '[name].umd.js',
     },
     {
       dir: 'dist',
       format: 'umd',
-      name: 'ZWHEUI',
-      preserveModules: true,
+      name: 'ZWHEUI', 
       entryFileNames: '[name].umd.min.js',
       plugins: [terser()],
     }

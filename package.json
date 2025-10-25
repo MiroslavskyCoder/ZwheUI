@@ -1,6 +1,6 @@
 {
   "name": "zwheui",
-  "version": "1.0.3-R1",
+  "version": "1.0.4-1",
   "author": {
     "name": "Miroslavsky Coder",
     "email": "programmer_js@vk.com",
@@ -29,7 +29,7 @@
   "exports": {
     ".": {
       "import": "./dist/index.esm.js",
-      "require": "./dist/index.cjs.cjs"
+      "require": "./dist/index.umd.js"
     }
   },
   "scripts": {

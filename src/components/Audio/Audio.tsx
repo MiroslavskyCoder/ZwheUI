@@ -3,9 +3,9 @@ import React, { useRef, useState, useEffect } from 'react';
 import { AudioContext, EQBand } from './AudioContext';
 
 const defaultEqBands: EQBand[] = [
-  { freq: 100, gain: 0, q: 1, type: 'lowshelf' }, // Bass
-  { freq: 1000, gain: 0, q: 1, type: 'peaking' }, // Mid
-  { freq: 10000, gain: 0, q: 1, type: 'highshelf' }, // Treble
+  { label: 'Bass Boost', freq: 100, gain: 0, q: 1, type: 'lowshelf' }, // Bass
+  { label: 'Mid', freq: 1000, gain: 0, q: 1, type: 'peaking' }, // Mid
+  { label: 'Treble', freq: 10000, gain: 0, q: 1, type: 'highshelf' }, // Treble
 ];
 
 export const Audio: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className }) => {
