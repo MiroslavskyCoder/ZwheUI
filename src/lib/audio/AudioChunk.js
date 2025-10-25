@@ -1,4 +1,4 @@
-import Bufferish from './bufferish.js';
+import { Bufferish } from './bufferish.js';
 
 class AudioChunk {
     constructor(buffer, format) {
