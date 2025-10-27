@@ -48,7 +48,7 @@ const AIAppCreate = () => {
         setIsLoading(true);
         setGeneratedCode('');
         try {
-            const ai = new GoogleGenAI({ apiKey: "AIzaSyBARuxcvDM4rf0mhggtKxMQ3i0q1IONFrg" });
+            const ai = new GoogleGenAI({ apiKey: "" });
             const fullPrompt = constructGeminiPrompt(prompt);
             
             const response = await ai.models.generateContent({
