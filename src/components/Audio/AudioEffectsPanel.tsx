@@ -144,6 +144,12 @@ const effectParams: Record<string, ParamConfig[]> = {
         { key: 'depth', label: 'Depth', min: 0.001, max: 0.01, step: 0.001 },
         { key: 'mix', label: 'Mix', min: 0, max: 1, step: 0.05 },
     ],
+    compressor: [
+        { key: 'threshold', label: 'Threshold (dB)', min: -60, max: 0, step: 1 },
+        { key: 'ratio', label: 'Ratio', min: 1, max: 20, step: 1 },
+        { key: 'attack', label: 'Attack (s)', min: 0.001, max: 0.1, step: 0.001 },
+        { key: 'release', label: 'Release (s)', min: 0.01, max: 1, step: 0.01 },
+    ],
     delay: [
         { key: 'delayTime', label: 'Time (s)', min: 0, max: 1, step: 0.05 },
         { key: 'feedback', label: 'Feedback', min: 0, max: 0.9, step: 0.05 },
@@ -161,7 +167,7 @@ const effectParams: Record<string, ParamConfig[]> = {
         { key: 'mix', label: 'Mix', min: 0, max: 1, step: 0.05 },
     ],
     pitchShifter: [
-        { key: 'shift', label: 'Shift', min: 0.5, max: 2, step: 0.05 },
+        { key: 'shift', label: 'Shift (semitones)', min: -20, max: 20, step: 1 },
     ],
     eqJs: [
         { key: 'lowGain', label: 'Low Gain', min: 0, max: 2, step: 0.1 },

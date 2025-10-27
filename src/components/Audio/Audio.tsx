@@ -15,10 +15,11 @@ const defaultEqBands: EQBand[] = [
 const defaultEffectsState: EffectsState = {
     bassBoost: { enabled: false, options: { gain: 6, frequency: 100 } },
     chorus: { enabled: false, options: { rate: 1.5, depth: 0.002, mix: 0.7 } },
+    compressor: { enabled: false, options: { threshold: -24, ratio: 4, attack: 0.003, release: 0.25 } },
     delay: { enabled: false, options: { delayTime: 0.5, feedback: 0.4, mix: 0.5 } },
     phaser: { enabled: false, options: { rate: 0.5, depth: 0.8, feedback: 0.7, mix: 0.5 } },
     reverb: { enabled: false, options: { roomSize: 0.8, damping: 0.5, mix: 0.33 } },
-    pitchShifter: { enabled: false, options: { shift: 1.0 } },
+    pitchShifter: { enabled: false, options: { shift: 0 } },
     eqJs: { enabled: false, options: { lowGain: 1.0, midGain: 1.0, highGain: 1.0 } },
     hq: { enabled: false, options: { clarity: 0.5 } },
     curveSmartEQ: { enabled: false, options: { curvePoints: [{f: 100, g: 0}, {f: 1000, g: 0}, {f: 5000, g: 0}] } },

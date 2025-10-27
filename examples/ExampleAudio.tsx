@@ -1,9 +1,7 @@
-
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, ReactNode } from 'react';
 import { 
     Audio, AudioFile, Text, Sofa, Stack, AudioView, AudioControls, AudioVisualizer, 
     AudioEffectsPanel, FileUpload, Checkbox, Button, Spinner, useToast, Slider,
-    // FIX: Imported missing Accordion components.
     Accordion,
     AccordionItem,
     AccordionTrigger,
@@ -14,7 +12,7 @@ import {
 import AudioChunk from '../src/lib/audio/AudioChunk.js';
 import AudioMultiProcessor from '../src/lib/audio/AudioMultiProcessor.js';
 import { Bufferish } from '../src/lib/audio/bufferish.js';
-import { BassBoost, Chorus, Reverb, Delay } from '../src/lib/audio/effects';
+import { BassBoost, Chorus, Reverb, Delay, Compressor, Phaser, PitchShifter } from '../src/lib/audio/effects';
 
 
 // --- Helper functions for offline processing ---
@@ -56,6 +54,30 @@ function toAudioBuffer(audioChunk: any, audioCtx: AudioContext): AudioBuffer {
     return audioBuffer;
 }
 
+const OfflineEffectControl: React.FC<{
+    title: string;
+    value: string;
+    isEnabled: boolean;
+    onToggle: (enabled: boolean) => void;
+    children: ReactNode;
+}> = ({ title, value, isEnabled, onToggle, children }) => (
+    <AccordionItem value={value}>
+        <AccordionTrigger>
+            <Stack direction="row" align="center" gap="0.75rem">
+                <Checkbox 
+                    label={title} 
+                    checked={isEnabled} 
+                    onClick={e => e.stopPropagation()} 
+                    onChange={e => onToggle(e.target.checked)} 
+                />
+            </Stack>
+        </AccordionTrigger>
+        <AccordionContent>
+            {isEnabled ? children : <Text size="sm" color="textSecondary" style={{padding: '0.5rem 0'}}>Enable this effect to see its options.</Text>}
+        </AccordionContent>
+    </AccordionItem>
+);
+
 
 const OfflineEffectsDemo = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -64,6 +86,9 @@ const OfflineEffectsDemo = () => {
         chorus: { enabled: false, rate: 1.0, depth: 0.003, mix: 0.6 },
         reverb: { enabled: false, roomSize: 0.5, damping: 0.5, mix: 0.3 },
         delay: { enabled: false, delayTime: 0.3, feedback: 0.4, mix: 0.4 },
+        compressor: { enabled: false, threshold: -24, ratio: 4, attack: 0.003, release: 0.25 },
+        phaser: { enabled: false, rate: 0.5, depth: 0.8, feedback: 0.7, mix: 0.5 },
+        pitchShifter: { enabled: false, shift: 0 },
     });
     const [audioFile, setAudioFile] = useState<File | null>(null);
     const audioCtxRef = useRef<AudioContext | null>(null);
@@ -96,8 +121,11 @@ const OfflineEffectsDemo = () => {
             const processor = new AudioMultiProcessor({ trace: console.log });
             if (effects.bassBoost.enabled) processor.addEffect(new BassBoost(effects.bassBoost));
             if (effects.chorus.enabled) processor.addEffect(new Chorus(effects.chorus));
-            if (effects.reverb.enabled) processor.addEffect(new Reverb(effects.reverb));
+            if (effects.compressor.enabled) processor.addEffect(new Compressor(effects.compressor));
+            if (effects.phaser.enabled) processor.addEffect(new Phaser(effects.phaser));
+            if (effects.pitchShifter.enabled) processor.addEffect(new PitchShifter(effects.pitchShifter, { sampleRate: audioBuffer.sampleRate }));
             if (effects.delay.enabled) processor.addEffect(new Delay(effects.delay));
+            if (effects.reverb.enabled) processor.addEffect(new Reverb(effects.reverb));
             
             const processedChunk = processor.process(audioChunk);
             const processedAudioBuffer = toAudioBuffer(processedChunk, audioCtx);
@@ -115,31 +143,47 @@ const OfflineEffectsDemo = () => {
             setIsLoading(false);
         }
     };
+    
+    const setEffectEnabled = (name: keyof typeof effects, enabled: boolean) => {
+        setEffects(p => ({ ...p, [name]: {...p[name], enabled } }));
+    };
+    
+    const setEffectOption = (name: keyof typeof effects, option: string, value: number) => {
+        setEffects(p => ({ ...p, [name]: {...p[name], [option]: value } }));
+    };
 
     return (
         <Sofa>
             <Stack gap="1.5rem">
                 <Text as="h3" size="1.25rem" weight="600">Offline Effects Demo</Text>
-                <Text>Upload a file, configure effects, and click "Apply & Play" to hear the result. This uses non-realtime processing on the entire file.</Text>
+                <Text>Upload a file, configure a full effects chain, and click "Apply & Play" to hear the result. This processes the entire file at once.</Text>
                 <FileUpload onFileSelect={setAudioFile} />
                 
                 <Accordion defaultValue="bassBoost">
-                    <AccordionItem value="bassBoost">
-                        <AccordionTrigger><Checkbox label="Bass Boost" checked={effects.bassBoost.enabled} onClick={e => e.stopPropagation()} onChange={e => setEffects(p => ({...p, bassBoost: {...p.bassBoost, enabled: e.target.checked}}))} /></AccordionTrigger>
-                        <AccordionContent><Stack><Text size="sm">Gain</Text><Slider value={effects.bassBoost.gain} onChange={v => setEffects(p => ({...p, bassBoost: {...p.bassBoost, gain: v}}))} min={0} max={24} step={1} showValue/></Stack></AccordionContent>
-                    </AccordionItem>
-                     <AccordionItem value="chorus">
-                        <AccordionTrigger><Checkbox label="Chorus" checked={effects.chorus.enabled} onClick={e => e.stopPropagation()} onChange={e => setEffects(p => ({...p, chorus: {...p.chorus, enabled: e.target.checked}}))} /></AccordionTrigger>
-                        <AccordionContent><Stack><Text size="sm">Mix</Text><Slider value={effects.chorus.mix} onChange={v => setEffects(p => ({...p, chorus: {...p.chorus, mix: v}}))} min={0} max={1} step={0.1} showValue/></Stack></AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="reverb">
-                        <AccordionTrigger><Checkbox label="Reverb" checked={effects.reverb.enabled} onClick={e => e.stopPropagation()} onChange={e => setEffects(p => ({...p, reverb: {...p.reverb, enabled: e.target.checked}}))} /></AccordionTrigger>
-                        <AccordionContent><Stack><Text size="sm">Mix</Text><Slider value={effects.reverb.mix} onChange={v => setEffects(p => ({...p, reverb: {...p.reverb, mix: v}}))} min={0} max={1} step={0.1} showValue/></Stack></AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="delay">
-                        <AccordionTrigger><Checkbox label="Delay" checked={effects.delay.enabled} onClick={e => e.stopPropagation()} onChange={e => setEffects(p => ({...p, delay: {...p.delay, enabled: e.target.checked}}))} /></AccordionTrigger>
-                        <AccordionContent><Stack><Text size="sm">Mix</Text><Slider value={effects.delay.mix} onChange={v => setEffects(p => ({...p, delay: {...p.delay, mix: v}}))} min={0} max={1} step={0.1} showValue/></Stack></AccordionContent>
-                    </AccordionItem>
+                    <OfflineEffectControl title="Bass Boost" value="bassBoost" isEnabled={effects.bassBoost.enabled} onToggle={e => setEffectEnabled('bassBoost', e)}>
+                        <Stack><Text size="sm">Gain</Text><Slider value={effects.bassBoost.gain} onChange={v => setEffectOption('bassBoost', 'gain', v)} min={0} max={24} step={1} showValue/></Stack>
+                    </OfflineEffectControl>
+                     <OfflineEffectControl title="Chorus" value="chorus" isEnabled={effects.chorus.enabled} onToggle={e => setEffectEnabled('chorus', e)}>
+                        <Stack><Text size="sm">Mix</Text><Slider value={effects.chorus.mix} onChange={v => setEffectOption('chorus', 'mix', v)} min={0} max={1} step={0.1} showValue/></Stack>
+                    </OfflineEffectControl>
+                    <OfflineEffectControl title="Compressor" value="compressor" isEnabled={effects.compressor.enabled} onToggle={e => setEffectEnabled('compressor', e)}>
+                        <Stack gap="1rem">
+                            <Stack><Text size="sm">Threshold (dB)</Text><Slider value={effects.compressor.threshold} onChange={v => setEffectOption('compressor', 'threshold', v)} min={-60} max={0} step={1} showValue/></Stack>
+                            <Stack><Text size="sm">Ratio</Text><Slider value={effects.compressor.ratio} onChange={v => setEffectOption('compressor', 'ratio', v)} min={1} max={20} step={1} showValue/></Stack>
+                        </Stack>
+                    </OfflineEffectControl>
+                     <OfflineEffectControl title="Phaser" value="phaser" isEnabled={effects.phaser.enabled} onToggle={e => setEffectEnabled('phaser', e)}>
+                        <Stack><Text size="sm">Mix</Text><Slider value={effects.phaser.mix} onChange={v => setEffectOption('phaser', 'mix', v)} min={0} max={1} step={0.1} showValue/></Stack>
+                    </OfflineEffectControl>
+                    <OfflineEffectControl title="Pitch Shifter" value="pitchShifter" isEnabled={effects.pitchShifter.enabled} onToggle={e => setEffectEnabled('pitchShifter', e)}>
+                        <Stack><Text size="sm">Shift (semitones)</Text><Slider value={effects.pitchShifter.shift} onChange={v => setEffectOption('pitchShifter', 'shift', v)} min={-20} max={20} step={1} showValue/></Stack>
+                    </OfflineEffectControl>
+                    <OfflineEffectControl title="Delay" value="delay" isEnabled={effects.delay.enabled} onToggle={e => setEffectEnabled('delay', e)}>
+                        <Stack><Text size="sm">Mix</Text><Slider value={effects.delay.mix} onChange={v => setEffectOption('delay', 'mix', v)} min={0} max={1} step={0.1} showValue/></Stack>
+                    </OfflineEffectControl>
+                    <OfflineEffectControl title="Reverb" value="reverb" isEnabled={effects.reverb.enabled} onToggle={e => setEffectEnabled('reverb', e)}>
+                        <Stack><Text size="sm">Mix</Text><Slider value={effects.reverb.mix} onChange={v => setEffectOption('reverb', 'mix', v)} min={0} max={1} step={0.1} showValue/></Stack>
+                    </OfflineEffectControl>
                 </Accordion>
 
                 <Button onClick={handleProcessAndPlay} disabled={isLoading || !audioFile} style={{alignSelf: 'start'}}>

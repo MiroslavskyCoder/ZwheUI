@@ -2,6 +2,8 @@
 
 
 
+
+
 export * from './HomeIcon';
 export * from './SettingsIcon';
 export * from './UserIcon';
@@ -72,3 +74,8 @@ export * from './FileIcon';
 export * from './FolderIcon';
 export * from './MenuIcon';
 export * from './MagicWandIcon';
+export * from './SpeedIcon';
+export * from './LayersIcon';
+export * from './BombIcon';
+export * from './GunIcon';
+export * from './LightbulbIcon';
