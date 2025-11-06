@@ -9,11 +9,15 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "esnext", // Для использования с Rollup
+    "moduleResolution": "bundler", // Или "node"
     "resolveJsonModule": true,
     "isolatedModules": false,
-    "noEmit": true,
+    "noEmit": false, // Важно: мы хотим, чтобы TS генерировал JS и TS
+    "outDir": "dist", // Указывает, куда помещать скомпилированные файлы
+    "rootDir": "src", // Указывает, где находятся исходные файлы
+    "declaration": true, // Генерировать .d.ts файлы
+    "declarationDir": "dist", // Куда помещать .d.ts файлы (часто совпадает с outDir)
     "jsx": "react-jsx"
   },
   "include": ["src", "demo", "examples"]
