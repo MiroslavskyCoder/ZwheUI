@@ -1,6 +1,6 @@
 {
   "name": "zwheui",
-  "version": "1.0.4-6.5",
+  "version": "1.0.7",
   "author": {
     "name": "Miroslavsky Coder",
     "email": "programmer_js@vk.com",
@@ -23,14 +23,26 @@
   ],
   "description": "A showcase of a modern, reusable, and aesthetically pleasing React component library built with TypeScript and Tailwind CSS.",
   "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "style": "dist/styles.css",
   "exports": {
     ".": {
-      "import": "./dist/index.esm.js",
-      "require": "./dist/index.umd.js"
-    }
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js", 
+      "types": "./dist/index.d.ts" 
+    }, 
+    "./icons": {
+      "import": "./dist/icons/index.es.js",
+      "require": "./dist/icons/index.cjs.js",
+      "types": "./dist/icons/index.d.ts" 
+    },
+    "./components": {
+      "import": "./dist/components/index.es.js",
+      "require": "./dist/components/index.cjs.js",
+      "types": "./dist/components/index.d.ts" 
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "webpack serve --mode development",
