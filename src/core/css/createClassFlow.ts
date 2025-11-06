@@ -4,7 +4,6 @@ import { CSSProperties, StyleDefinition, StyleOptions, Theme } from './types'
 
 let styleSheet: HTMLStyleElement | null = null
 const cache = new Map<string, string>()
-let counter = 0
 
 const hashCode = (str: string): string => {
     let hash = 0
@@ -17,7 +16,10 @@ const hashCode = (str: string): string => {
 }
 
 const createStyleSheet = () => {
-    if (!styleSheet && typeof document !== 'undefined') {
+    if (typeof document === 'undefined') {
+        return null;
+    }
+    if (!styleSheet) {
         styleSheet = document.createElement('style')
         styleSheet.setAttribute('data-zwheui', '')
         document.head.appendChild(styleSheet)
@@ -112,18 +114,16 @@ export const createClassFlow = (
     theme?: Theme
 ): string => {
     const { prefix = 'zw', cache: useCache = true } = options;
-    const styleStr = JSON.stringify(styles);
-    
-    if (useCache && cache.has(styleStr)) {
-        return cache.get(styleStr)!;
+    // Key must be unique to style object AND theme object to support theme switching and SSR.
+    const styleStr = JSON.stringify({ styles, theme });
+    const className = `${prefix}-${hashCode(styleStr)}`;
+
+    // If this className has been processed before, just return it.
+    // On the server, the cache is per-request. On the client, it's global for the session.
+    if (useCache && cache.has(className)) {
+        return className;
     }
 
-    const sheet = createStyleSheet();
-    if (!sheet) return '';
-
-    counter++;
-    const className = `${prefix}-${hashCode(styleStr)}-${counter}`;
-    
     const baseStyles: CSSProperties = {};
     const nestedRules: string[] = [];
     const keyframesRules: string[] = [];
@@ -163,7 +163,7 @@ export const createClassFlow = (
 
     // Handle the special top-level @media property for backward compatibility
     if (styles['@media']) {
-        Object.entries(styles['@media']).forEach(([query, props]) => {
+         Object.entries(styles['@media']).forEach(([query, props]) => {
             const parsedQuery = parseMediaQuery(query, theme);
             cssRules += `\n@media ${parsedQuery} { .${className} { ${objectToCssString(props as CSSProperties, theme)} } }`
         })
@@ -174,11 +174,16 @@ export const createClassFlow = (
         cssRules += `\n${keyframesRules.join('\n')}`;
     }
 
-
-    sheet.textContent += `\n${cssRules}`;
+    // Only attempt to get/create a stylesheet and inject rules on the client side.
+    // On the server, this will be null and the function will just return the className.
+    const sheet = createStyleSheet();
+    if (sheet) {
+        sheet.textContent += `\n${cssRules}`;
+    }
     
+    // Cache the className to indicate it has been processed for this session.
     if (useCache) {
-        cache.set(styleStr, className);
+        cache.set(className, className);
     }
 
     return className;
@@ -191,7 +196,6 @@ export const clearStyles = () => {
         styleSheet = null
     }
     cache.clear()
-    counter = 0
 }
 
 export const combineClasses = (...classes: (string | undefined | false)[]): string => {

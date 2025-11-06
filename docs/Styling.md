@@ -82,13 +82,14 @@ const containerClass = createStyle({
 
 ## How It Works (`createClassFlow`)
 
-Under the hood, `useStyles` calls a function named `createClassFlow`. This function:
-1.  Takes a style object.
-2.  Serializes the object into a string and generates a unique hash.
-3.  Checks a cache to see if this exact style object has been processed before. If so, it returns the cached class name.
-4.  If not cached, it generates a new unique class name.
-5.  Parses the style object, converting it into a valid CSS string (including handling pseudo-selectors and media queries).
-6.  Injects the new CSS rule into a single `<style data-zwheui>` tag in the document's `<head>`.
-7.  Caches the class name against the style object hash and returns the class name.
+Under the hood, `useStyles` calls a function named `createClassFlow` which is now compatible with Server-Side Rendering (SSR).
 
-This approach provides the benefits of scoped styles with good performance by caching aggressively and minimizing DOM manipulations.
+1.  Takes a style object and the current theme.
+2.  Serializes both into a string to generate a unique, deterministic hash. The class name is derived from this hash (e.g., `zw-a1b2c3d4`).
+3.  Checks a cache to see if this class name has already been processed in the current session. If so, it returns the cached class name immediately.
+4.  If not cached, it generates the full CSS rule string from the style object, resolving any theme values.
+5.  **On the client**, it injects the new CSS rule into a single `<style data-zwheui>` tag in the document's `<head>`.
+6.  **On the server**, it does *not* inject any CSS. It only generates and returns the deterministic class name. This allows the server-rendered HTML to match the client, preventing hydration errors. The client is responsible for injecting the styles on first load.
+7.  Caches the class name to prevent re-injection and returns it.
+
+This approach provides the benefits of scoped styles and SSR compatibility with good performance by caching aggressively and minimizing DOM manipulations.
