@@ -18,8 +18,7 @@ export function AWSCognito(options: { clientId: string, clientSecret: string, is
         profile: (profile) => ({
             id: profile.sub,
             name: profile.username,
-            email: profile.email,
-            image: null,
+            email: profile.email 
         }),
     });
 }

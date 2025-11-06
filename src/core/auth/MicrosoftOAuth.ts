@@ -20,8 +20,7 @@ export function Microsoft(options: { clientId: string, clientSecret: string, ten
         profile: (profile) => ({
             id: profile.sub,
             name: profile.name,
-            email: profile.email,
-            image: null,
+            email: profile.email, 
         }),
     });
 }

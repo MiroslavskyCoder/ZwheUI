@@ -34,7 +34,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
         }, toast.duration);
         
         const removeTimer = setTimeout(() => {
-             onDismiss(toast.id);
+            onDismiss(toast.id);
         }, toast.duration! + 300); // Wait for fade out animation to complete
 
         return () => {
@@ -63,7 +63,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
         gap: theme.spacing.md,
         width: '360px',
         maxWidth: '90vw',
-         '@supports (backdrop-filter: none) or (-webkit-backdrop-filter: none)': {
+        '@supports (backdrop-filter: none) or (-webkit-backdrop-filter: none)': {
             backdropFilter: 'blur(16px)',
         },
     });

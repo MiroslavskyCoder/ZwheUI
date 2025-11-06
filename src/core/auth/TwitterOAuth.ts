@@ -18,8 +18,7 @@ export function Twitter(options: { clientId: string, clientSecret: string }) {
         userinfo: { url: 'https://api.twitter.com/2/users/me' },
         profile: (profile) => ({
             id: profile.data.id,
-            name: profile.data.name,
-            email: null,
+            name: profile.data.name, 
             image: profile.data.profile_image_url,
         }),
     });
