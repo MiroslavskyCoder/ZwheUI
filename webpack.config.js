@@ -24,7 +24,7 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         use: [
-          {
+          { 
             loader: 'babel-loader',
             options: {
               presets: [

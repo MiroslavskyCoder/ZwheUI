@@ -12,8 +12,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(({ c
     const isDark = theme.colors.background.startsWith('#1');
 
     const baseClasses = createStyle({
-        display: 'block',
-        width: '100%',
+        display: 'block', 
         backgroundColor: theme.colors.backgroundSecondary,
         border: `1px solid ${theme.colors.border}`,
         borderRadius: '0.375rem',
