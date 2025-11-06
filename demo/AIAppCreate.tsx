@@ -19,7 +19,29 @@ const AIAppCreate = () => {
     const [prompt, setPrompt] = useState('A simple login form with a title "Welcome Back", an email input, a password input, and a primary "Sign In" button. Put it inside a Card.');
     const [generatedCode, setGeneratedCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [iframeKey, setIframeKey] = useState(0);  
+    const [iframeKey, setIframeKey] = useState(0);
+    const [isKeySelected, setIsKeySelected] = useState(false);
+
+    useEffect(() => {
+        const checkApiKey = async () => {
+            if ((window as any).aistudio) {
+                const hasKey = await (window as any).aistudio.hasSelectedApiKey();
+                setIsKeySelected(hasKey);
+            }
+        };
+        checkApiKey();
+    }, []);
+
+    const handleSelectKey = async () => {
+        if ((window as any).aistudio) {
+            await (window as any).aistudio.openSelectKey();
+            // Assume selection is successful to avoid race conditions
+            setIsKeySelected(true);
+        } else {
+             addToast({ title: 'Error', description: 'AI Studio context not found.', variant: 'error' });
+        }
+    };
+
 
     const availableComponents = "Alert, Avatar, Badge, Blockquote, Button, Card, Card.Header, Card.Body, Card.Footer, Card.Title, Card.Subtitle, Card.Text, Card.Image, Card.Actions, Card.Action, Center, Checkbox, Code, Container, Divider, Flex, Grid, Grid.Item, Header, Header.Left, Header.Right, Icon, IconButton, Image, Input, Kbd, Layer, Link, List, ListItem, ListItemText, Markdown, Message, PageHeader, PinInput, Progress, RadioGroup, RadioGroupItem, Rating, Search, Select, Sidebar, SidebarNav, SidebarNavItem, Skeleton, Slider, Sofa, Spinner, Stack, Stat, Switch, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Tabs, TabList, Tab, TabPanels, TabPanel, Tag, Text, Textarea, TextInput, Timeline, TimelineItem, TimelineConnector, TimelineDot, TimelineContent, Tooltip";
 
@@ -48,7 +70,7 @@ const AIAppCreate = () => {
         setIsLoading(true);
         setGeneratedCode('');
         try {
-            const ai = new GoogleGenAI({ apiKey: "" });
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             const fullPrompt = constructGeminiPrompt(prompt);
             
             const response = await ai.models.generateContent({
@@ -67,7 +89,8 @@ const AIAppCreate = () => {
                     title: 'API Key Error',
                     description: 'The selected API key appears to be invalid. Please select a valid key.',
                     variant: 'error',
-                }); 
+                });
+                setIsKeySelected(false); // Reset key state to prompt user again
             } else {
                 addToast({
                     title: 'Generation Failed',
@@ -158,19 +181,31 @@ const AIAppCreate = () => {
                 <Text color="textSecondary">Describe a user interface, and the AI will generate the code using ZwheUI components. Right-click the preview to inspect elements.</Text>
 
                 <Grid minItemWidth='400px' gap="1.5rem" style={{alignItems: 'start'}}>
-                    <Grid.Item colSpan={2}> 
-                        <Stack>
-                            <Textarea
-                                value={prompt}
-                                onChange={e => setPrompt(e.target.value)}
-                                rows={5}
-                                placeholder="e.g., A pricing page with three cards in a row..."
-                            />
-                            <Button onClick={handleGenerate} disabled={isLoading} style={{alignSelf: 'start'}}>
-                                {isLoading ? <Spinner size={20} /> : <Icon as={MagicWandIcon} size={16} />}
-                                <span>Generate UI</span>
-                            </Button>
-                        </Stack> 
+                    <Grid.Item colSpan={2}>
+                        {!isKeySelected ? (
+                             <Card variant="glass">
+                                <Card.Body>
+                                    <Stack gap="1rem" align="center">
+                                        <Text weight="600">API Key Required</Text>
+                                        <Text color="textSecondary" style={{textAlign: 'center'}}>Please select your Gemini API Key to enable UI generation.</Text>
+                                        <Button onClick={handleSelectKey}>Select API Key</Button>
+                                    </Stack>
+                                </Card.Body>
+                            </Card>
+                        ) : (
+                            <Stack>
+                                <Textarea
+                                    value={prompt}
+                                    onChange={e => setPrompt(e.target.value)}
+                                    rows={5}
+                                    placeholder="e.g., A pricing page with three cards in a row..."
+                                />
+                                <Button onClick={handleGenerate} disabled={isLoading || !isKeySelected} style={{alignSelf: 'start'}}>
+                                    {isLoading ? <Spinner size={20} /> : <Icon as={MagicWandIcon} size={16} />}
+                                    <span>Generate UI</span>
+                                </Button>
+                            </Stack>
+                        )}
                     </Grid.Item>
                     
                     <Grid.Item colSpan={2}>
@@ -183,13 +218,13 @@ const AIAppCreate = () => {
 
                     <Grid.Item colSpan={2}>
                         <Sofa title="Real Live Preview (in an iframe)">
-                            <div style={{
+                             <div style={{
                                 height: '400px',
                                 border: `1px solid ${theme.colors.border}`,
                                 borderRadius: '8px',
                                 background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAADFJREFUOE9jZGBgEGHAD97/B4MhgKIM1ALOBMD2/4E4/L8fBoMAJgA2AAYDAwBxFgXRAO63AAAAAElFTkSuQmCC) repeat',
                                 position: 'relative'
-                            }}>
+                             }}>
                                 <iframe
                                     key={iframeKey} // Force re-render on code change
                                     srcDoc={iframeSrcDoc}

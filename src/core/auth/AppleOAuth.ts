@@ -17,8 +17,7 @@ export function Apple(options: { clientId: string, clientSecret: string }) {
         profile: (profile) => ({
             id: profile.sub,
             name: profile.name,
-            email: profile.email,
-            image: null,
+            email: profile.email 
         }),
     });
 }

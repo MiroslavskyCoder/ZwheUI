@@ -132,7 +132,7 @@ export const MenuItems: React.FC<MenuItemsProps> = ({ children, className = '' }
     if (!isOpen) return null
 
     return (
-        <div
+        <div 
             // @ts-ignore
             ref={itemsRef}
             className={className}

@@ -16,9 +16,7 @@ export function Instagram(options: { clientId: string, clientSecret: string }) {
         userinfo: { url: 'https://graph.instagram.com/me?fields=id,username' },
         profile: (profile) => ({
             id: profile.id,
-            name: profile.username,
-            email: null,
-            image: null,
+            name: profile.username 
         }),
     });
 }

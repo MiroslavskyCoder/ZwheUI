@@ -1,178 +1,81 @@
 import React, { useState } from 'react';
-import { ColorPicker, Text, Stack, Checkbox } from '../src/components';
+import { ColorPicker, Text, Stack, Button, Box } from '../src/components';
 import { DemoSection } from './DemoSection';
-
-type ColorModel = 'HEX' | 'HSL' | 'LAB';
-
-const ColorPickerConfigurator: React.FC<{
-    disabledModels: ColorModel[];
-    setDisabledModels: (models: ColorModel[]) => void;
-}> = ({ disabledModels, setDisabledModels }) => {
-
-    const handleCheckboxChange = (model: ColorModel, isChecked: boolean) => {
-        setDisabledModels(
-            isChecked 
-                ? [...disabledModels, model] 
-                : disabledModels.filter(m => m !== model)
-        );
-    };
-
-    return (
-        <Stack gap="1rem">
-            <Text weight="500">Disable Color Models</Text>
-            <Checkbox 
-                label="HEX / RGB"
-                checked={disabledModels.includes('HEX')}
-                onChange={(e) => handleCheckboxChange('HEX', e.target.checked)}
-            />
-            <Checkbox 
-                label="HSL"
-                checked={disabledModels.includes('HSL')}
-                onChange={(e) => handleCheckboxChange('HSL', e.target.checked)}
-            />
-            <Checkbox 
-                label="LAB"
-                checked={disabledModels.includes('LAB')}
-                onChange={(e) => handleCheckboxChange('LAB', e.target.checked)}
-            />
-        </Stack>
-    );
-};
-
 
 const documentation = `# Color Picker
 
-An interactive component for selecting a color. It displays a color swatch and allows editing in different color models: HEX/RGB, HSL, and CIELAB.
+A professional-grade, interactive component for color selection, inspired by tools in graphics software. It now features a draggable panel with a visual color wheel and saturation/value box.
+
+## Features
+*   **Draggable Interface**: The picker is a floating panel that can be moved around the screen.
+*   **Visual Picker**: An interactive hue wheel and saturation/value square for intuitive color selection.
+*   **Color Models**: Supports real-time conversion and input for HEX, RGB, HSL, HSV, CMYK, LAB, and XYZ.
+*   **Color Harmonies**: Visual indicators on the hue wheel show complementary, triadic, and other color schemes.
+*   **Comparison Swatches**: Displays the new color selection against the original color.
 
 ## Props
-
-*   \`value\` (string, required): The currently selected color as a hex string (e.g., \`#RRGGBB\`).
-*   \`onChange\` (function, required): A callback function triggered when the color value changes. It receives the new hex color string as an argument.
-*   \`className\` (string, optional): Additional CSS classes for the container.
-*   \`disableColorModel\` (array, optional): An array of color model strings ('HEX', 'HSL', 'LAB') to disable and hide from the control.
+*   \`value\` (string, required): The color as a hex string (e.g., \`#RRGGBB\`).
+*   \`onChange\` (function, required): Callback triggered when the color changes.
+*   \`isOpen\` (boolean, required): Controls the visibility of the picker panel.
+*   \`onClose\` (function, required): Callback to close the panel.
 
 ## Usage
-
 \`\`\`tsx
-import { ColorPicker } from './src/components';
+import { ColorPicker, Button } from './src/components';
 import { useState } from 'react';
 
 const [color, setColor] = useState('#60a5fa');
+const [isPickerOpen, setIsPickerOpen] = useState(false);
 
-// Disable the LAB color model
-<ColorPicker 
-  value={color} 
-  onChange={setColor} 
-  disableColorModel={['LAB']}
-/>
+<>
+    <Button onClick={() => setIsPickerOpen(true)}>Show Picker</Button>
+    <ColorPicker 
+        value={color} 
+        onChange={setColor} 
+        isOpen={isPickerOpen}
+        onClose={() => setIsPickerOpen(false)}
+    />
+</>
 \`\`\``;
 
-const fullSourceCode = `import React, { useState, useMemo, useEffect } from 'react';
-import { useStyles } from '../../core/hooks/useStyles';
-import { useTheme } from '../../core/theme/ThemeProvider';
-import { Slider } from '../Slider/Slider';
-import { Stack } from '../Stack/Stack';
-import { Text } from '../Text/Text';
-import { parseColor, rgbToHsl, hslToRgb, rgbToLab, labToRgb, rgbToHex } from '../../core/color/utils';
-import { SegmentedControl } from '../SegmentedControl/SegmentedControl';
-
-type ColorModel = 'HEX' | 'HSL' | 'LAB';
-
-interface ColorPickerProps {
-    value: string; // hex color string e.g. #RRGGBB
-    onChange: (color: string) => void;
-    className?: string;
-    disableColorModel?: ColorModel[];
-}
-
-const allColorModels: { label: string, value: ColorModel }[] = [
-    { label: 'HEX', value: 'HEX' },
-    { label: 'HSL', value: 'HSL' },
-    { label: 'LAB', value: 'LAB' },
-];
-
-export const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange, className = '', disableColorModel = [] }) => {
-    const { theme } = useTheme();
-    const createStyle = useStyles('color-picker');
-
-    const availableOptions = useMemo(() => 
-        allColorModels.filter(model => !disableColorModel.includes(model.value)),
-        [disableColorModel]
-    );
-
-    const [colorModel, setColorModel] = useState<ColorModel>(availableOptions[0]?.value || 'HEX');
-    
-    useEffect(() => {
-        // If the current color model is disabled, switch to the first available one.
-        if (disableColorModel.includes(colorModel) && availableOptions.length > 0) {
-            setColorModel(availableOptions[0].value);
-        }
-    }, [disableColorModel, colorModel, availableOptions]);
-
-
-    const [r, g, b] = useMemo(() => {
-        try {
-            return parseColor(value);
-        } catch {
-            return [0, 0, 0];
-        }
-    }, [value]);
-
-    const { h, s, l } = useMemo(() => rgbToHsl(r, g, b), [r, g, b]);
-    const { L, a, b: b_lab } = useMemo(() => rgbToLab(r, g, b), [r, g, b]);
-    
-    // ... (handler functions and rendering logic) ...
-    
-    return (
-        <div className={\`\${containerClass} \${className}\`}>
-            <div className={swatchClass} />
-            <Stack gap={theme.spacing.md}>
-                {availableOptions.length > 1 && (
-                     <SegmentedControl
-                        value={colorModel}
-                        onChange={(val) => setColorModel(val as ColorModel)}
-                        options={availableOptions}
-                    />
-                )}
-                {colorModel === 'HEX' && renderRgbSliders()}
-                {colorModel === 'HSL' && renderHslSliders()}
-                {colorModel === 'LAB' && renderLabSliders()}
-            </Stack>
-        </div>
-    );
-};
-`;
 
 export const ColorPickerDemo = () => {
     const [color, setColor] = useState('#60a5fa');
-    const [disabledModels, setDisabledModels] = useState<ColorModel[]>([]);
+    const [isPickerOpen, setIsPickerOpen] = useState(true);
     
-    const disabledPropString = disabledModels.length > 0 
-        ? ` disableColorModel={[${disabledModels.map(m => `'${m}'`).join(', ')}]}` 
-        : '';
-        
-    const code = `<ColorPicker value="${color}"${disabledPropString} />`;
-
     return (
-        <DemoSection
-            title="Color Picker"
-            description="An interactive component for selecting a color using HEX/RGB, HSL, or LAB color models."
-            initialCode={code}
-            livePreview={
+        // FIX: The ColorPicker component is a floating panel and should not be a direct child of DemoSection.
+        <>
+            <DemoSection
+                title="Color Picker"
+                description="A professional-grade, draggable color picker with a visual wheel and support for multiple color models."
+                livePreview={
+                    <Stack align="center" gap="1rem">
+                        <Text>The Color Picker is now a floating panel.</Text>
+                        <Stack direction="row" align="center" gap="1rem">
+                            <Button onClick={() => setIsPickerOpen(true)}>
+                                {isPickerOpen ? 'Picker is Open' : 'Show Color Picker'}
+                            </Button>
+                            <Box style={{width: '40px', height: '40px', backgroundColor: color, borderRadius: '8px', border: '1px solid #fff'}} />
+                        </Stack>
+                    </Stack>
+                }
+                propControls={
+                    <Text color="textSecondary">
+                        The new Color Picker is a fully interactive, self-contained component. Use the button in the 'Live Preview' to toggle its visibility.
+                    </Text>
+                }
+                documentation={documentation}
+                fullSourceCode={`// The component is too large to display here. Please see the source file.`}
+            />
+            {isPickerOpen && (
                 <ColorPicker 
                     value={color} 
                     onChange={setColor} 
-                    disableColorModel={disabledModels} 
+                    isOpen={isPickerOpen}
+                    onClose={() => setIsPickerOpen(false)}
                 />
-            }
-            propControls={
-                <ColorPickerConfigurator 
-                    disabledModels={disabledModels} 
-                    setDisabledModels={setDisabledModels}
-                />
-            }
-            documentation={documentation}
-            fullSourceCode={fullSourceCode}
-        />
+            )}
+        </>
     );
 };

@@ -1,9 +1,3 @@
-
-
-
-
-
-
 export * from './HomeIcon';
 export * from './SettingsIcon';
 export * from './UserIcon';
@@ -79,3 +73,4 @@ export * from './LayersIcon';
 export * from './BombIcon';
 export * from './GunIcon';
 export * from './LightbulbIcon';
+export * from './TriangleIcon';

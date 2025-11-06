@@ -72,51 +72,88 @@ const defaultMap: ComponentMap = {
     foreignObject: 'foreignObject' 
 }
 
+/**
+ * A forgiving attribute parser that attempts to convert attribute values
+ * to their correct JavaScript types (boolean, number, object, array).
+ * It supports JSON-formatted strings for complex types.
+ */
 function parseAttributes(node: Element) {
     const attrs: { [k: string]: any } = {}
     for (let i = 0; i < node.attributes.length; i++) {
-        const a = node.attributes[i]
-        if (a.name === 'style') {
+        const attr = node.attributes[i];
+        const name = attr.name;
+        const value = attr.value;
+
+        // Don't try to parse empty strings into something else
+        if (value === '') {
+            attrs[name] = value;
+            continue;
+        }
+        
+        // 1. Check for explicit booleans
+        if (value === 'true') {
+            attrs[name] = true;
+            continue;
+        }
+        if (value === 'false') {
+            attrs[name] = false;
+            continue;
+        }
+        
+        // 2. Check for numbers
+        // This check ensures "123" is a number but "123px" is not, and it avoids empty or whitespace-only strings.
+        if (!isNaN(Number(value)) && isFinite(Number(value)) && value.trim() !== '') {
+            attrs[name] = Number(value);
+            continue;
+        }
+
+        // 3. Check for JSON objects or arrays
+        const trimmedValue = value.trim();
+        if ((trimmedValue.startsWith('{') && trimmedValue.endsWith('}')) || (trimmedValue.startsWith('[') && trimmedValue.endsWith(']'))) {
             try {
-                // Attempt to parse the style attribute as JSON
-                attrs.style = JSON.parse(a.value);
+                attrs[name] = JSON.parse(trimmedValue);
+                continue;
             } catch (e) {
-                console.error("Failed to parse style attribute JSON:", a.value, e);
-                // Fallback to treating it as a string if parsing fails
-                attrs.style = a.value;
-            }
-        } else {
-             if (a.value === 'true') {
-                attrs[a.name] = true;
-            } else if (a.value === 'false') {
-                attrs[a.name] = false;
-            } else {
-                attrs[a.name] = a.value
+                // Not valid JSON, fall through to treat as a plain string.
             }
         }
+        
+        // 4. Fallback to string
+        attrs[name] = value;
     }
-    return attrs
+    return attrs;
 }
+
 
 function nodeToElement(node: Node, map: ComponentMap): React.ReactNode {
     if (node.nodeType === Node.TEXT_NODE) {
-        return node.textContent
+        // Ignore whitespace-only text nodes between elements, which the HTML parser creates
+        if (node.textContent?.trim() === '') {
+            return null;
+        }
+        return node.textContent;
     }
 
-    if (node.nodeType !== Node.ELEMENT_NODE) return null
+    if (node.nodeType !== Node.ELEMENT_NODE) return null;
 
-    const el = node as Element
-    const tag = el.tagName
-    const Comp = map[tag] || map[tag.toLowerCase()] || 'div';
-    const props = parseAttributes(el)
+    const el = node as Element;
+    // DOMParser with text/html lowercases all tags.
+    const tag = el.tagName.toLowerCase();
+    
+    // Find the component in the map. Case-insensitive search to be more robust.
+    const mapKey = Object.keys(map).find(k => k.toLowerCase() === tag);
+    const Comp = mapKey ? map[mapKey] : tag; // Fallback to the tag name itself for standard HTML
+
+    const props = parseAttributes(el);
 
     const children = Array.from(el.childNodes).map((childNode, index) => {
         const childElement = nodeToElement(childNode, map);
+        // Assign a key for React's reconciliation algorithm
         if (React.isValidElement(childElement)) {
             return React.cloneElement(childElement, { key: index });
         }
         return childElement;
-    }).filter(child => child != null);
+    }).filter(child => child !== null);
 
     if (children.length > 0) {
         return React.createElement(Comp as any, props, ...children);
@@ -125,6 +162,8 @@ function nodeToElement(node: Node, map: ComponentMap): React.ReactNode {
 }  
 
 export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components: customComponents = {} }) => {
+    // The component map needs to be case-insensitive for lookup, but React components are PascalCase.
+    // The keys will be lowercased later during lookup.
     const map = { ...defaultMap, ...icons, ...customComponents }
 
     if (typeof window === 'undefined' || typeof window.DOMParser === 'undefined') {
@@ -134,17 +173,17 @@ export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components: custo
 
     try {
         const parser = new DOMParser()
-        const sanitizedXml = xml.replace(/&(?![a-zA-Z0-9#]+;)/g, '&amp;');
-        const doc = parser.parseFromString(`<root>${sanitizedXml}</root>`, 'text/xml')
+        // Use 'text/html' parser which is more lenient and handles entities like '&' automatically.
+        const doc = parser.parseFromString(xml, 'text/html');
 
-        // Check for parsing errors
-        const parseError = doc.querySelector('parsererror');
-        if (parseError) {
-            console.error('XML parsing error:', parseError.textContent);
+        // Check for parsing errors reported by some browsers in the body
+        if (doc.body.firstChild?.nodeName === 'PARSERERROR') {
+            console.error('XML parsing error:', doc.body.textContent);
             return <div style={{ color: 'red', fontFamily: 'monospace' }}>XML Parsing Error. Check console for details.</div>;
         }
 
-        const result = Array.from(doc.documentElement.childNodes).map((n, index) => {
+        // The HTML parser creates a full document, our content will be in the body.
+        const result = Array.from(doc.body.childNodes).map((n, index) => {
             const el = nodeToElement(n, map);
             if (React.isValidElement(el)) {
                 return React.cloneElement(el, { key: index });
@@ -159,4 +198,4 @@ export const XmlRenderer: React.FC<XmlRendererProps> = ({ xml, components: custo
     }
 }
 
-export default XmlRenderer
+export default XmlRenderer;

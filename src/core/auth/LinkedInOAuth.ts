@@ -16,9 +16,7 @@ export function LinkedIn(options: { clientId: string, clientSecret: string }) {
         userinfo: { url: 'https://api.linkedin.com/v2/me' }, // Basic profile
         profile: (profile) => ({
             id: profile.id,
-            name: `${profile.firstName.localized.en_US} ${profile.lastName.localized.en_US}`,
-            email: null, // Email requires a separate API call
-            image: null,
+            name: `${profile.firstName.localized.en_US} ${profile.lastName.localized.en_US}` 
         }),
     });
 }

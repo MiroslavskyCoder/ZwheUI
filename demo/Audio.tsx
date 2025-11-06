@@ -21,7 +21,7 @@ export const AudioDemo = () => {
             setAudioSrc(URL.createObjectURL(file));
             setFileType(file.type);
         } else {
-            if (audioSrc && audioSrc.startsWith('blob:')) {
+             if (audioSrc && audioSrc.startsWith('blob:')) {
                 URL.revokeObjectURL(audioSrc);
             }
             setAudioSrc(null);
