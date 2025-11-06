@@ -2,9 +2,6 @@
 import React, { useState } from 'react';
 import { 
     FormControl, 
-    FormLabel, 
-    FormHelperText, 
-    FormErrorMessage, 
     Input, 
     Text, 
     Stack,
@@ -26,20 +23,21 @@ A set of components that provides context to form inputs for building accessible
 ## Components
 
 *   **FormControl**: The main wrapper that provides context (\`id\`, \`isInvalid\`, \`isDisabled\`) to its children.
-*   **FormLabel**: A \`<label>\` that is automatically associated with the input via the context \`id\`.
-*   **FormHelperText**: Text displayed below the input to provide additional guidance.
-*   **FormErrorMessage**: An error message that is only rendered when \`isInvalid\` is true on \`FormControl\`.
+*   **FormControl.Label**: A \`<label>\` that is automatically associated with the input via the context \`id\`.
+*   **FormControl.HelperText**: Text displayed below the input to provide additional guidance.
+*   **FormControl.Message**: A generic message for supplementary information.
+*   **FormControl.ErrorMessage**: An error message that is only rendered when \`isInvalid\` is true on \`FormControl\`.
 
 ## Usage
 
 \`\`\`tsx
-import { FormControl, FormLabel, FormHelperText, FormErrorMessage, TextInput } from './src/components';
+import { FormControl, TextInput } from './src/components';
 
 <FormControl isInvalid={isError}>
-  <FormLabel>Email Address</FormLabel>
+  <FormControl.Label>Email Address</FormControl.Label>
   <TextInput type="email" />
-  <FormHelperText>We'll never share your email.</FormHelperText>
-  <FormErrorMessage>Your email is invalid.</FormErrorMessage>
+  <FormControl.HelperText>We'll never share your email.</FormControl.HelperText>
+  <FormControl.ErrorMessage>Your email is invalid.</FormControl.ErrorMessage>
 </FormControl>
 \`\`\``;
 
@@ -62,66 +60,26 @@ interface FormControlProps extends React.ComponentProps<typeof Box<'div'>> {
     isDisabled?: boolean;
 }
 
-export const FormControl: React.FC<FormControlProps> = ({ isInvalid, isDisabled, ...props }) => {
-    const id = useId();
-    const context = { id, isInvalid, isDisabled };
-    
-    const createStyle = useStyles('form-control');
-    const formControlClass = createStyle({
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.25rem',
-    });
-
-    return (
-        <FormControlContext.Provider value={context}>
-            <Box className={formControlClass} {...props} />
-        </FormControlContext.Provider>
-    );
+const FormControlRoot: React.FC<FormControlProps> & {
+    Label: React.FC<React.ComponentProps<typeof Text<'label'>>>;
+    HelperText: React.FC<React.ComponentProps<typeof Text<'p'>>>;
+    ErrorMessage: React.FC<React.ComponentProps<typeof Text<'p'>>>;
+    Message: React.FC<React.ComponentProps<typeof Text<'p'>>>;
+} = ({ isInvalid, isDisabled, ...props }) => {
+    // ...
 };
 
-export const FormLabel: React.FC<React.ComponentProps<typeof Text<'label'>>> = (props) => {
-    const context = useFormControl();
-    const { theme } = useTheme();
-    return (
-        <Text 
-            as="label"
-            htmlFor={context?.id}
-            size={theme.typography.fontSizes.sm}
-            weight={theme.typography.fontWeights.medium}
-            color={theme.colors.textSecondary}
-            {...props}
-        />
-    );
-};
+const Label: React.FC<React.ComponentProps<typeof Text<'label'>>> = (props) => { /* ... */ };
+const HelperText: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => { /* ... */ };
+const ErrorMessage: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => { /* ... */ };
+const Message: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => { /* ... */ };
 
-export const FormHelperText: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => {
-    const context = useFormControl();
-    const { theme } = useTheme();
-    return (
-        <Text 
-            size={theme.typography.fontSizes.sm}
-            color={theme.colors.textSecondary}
-            id={context ? \`\${context.id}-helper-text\` : undefined}
-            {...props}
-        />
-    );
-};
+FormControlRoot.Label = Label;
+FormControlRoot.HelperText = HelperText;
+FormControlRoot.ErrorMessage = ErrorMessage;
+FormControlRoot.Message = Message;
 
-export const FormErrorMessage: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => {
-    const context = useFormControl();
-    if (!context?.isInvalid) return null;
-    
-    return (
-        <Text
-            color="#f87171" // red-400
-            size="0.875rem"
-            id={context ? \`\${context.id}-error-message\` : undefined}
-            aria-live="polite"
-            {...props}
-        />
-    );
-};`;
+export const FormControl = FormControlRoot;`;
 
 export const FormControlDemo = () => {
     const [isInvalid, setIsInvalid] = useState(false);
@@ -132,10 +90,11 @@ export const FormControlDemo = () => {
             description="A group of components for building accessible and structured forms."
             livePreview={
                 <FormControl isInvalid={isInvalid} style={{width: '300px'}}>
-                    <FormLabel>Email Address</FormLabel>
+                    <FormControl.Label>Email Address</FormControl.Label>
                     <Input placeholder="you@example.com" />
-                    <FormHelperText>We'll never share your email.</FormHelperText>
-                    <FormErrorMessage>This email address is not valid.</FormErrorMessage>
+                    <FormControl.HelperText>We'll never share your email.</FormControl.HelperText>
+                    <FormControl.Message>This is a generic message text.</FormControl.Message>
+                    <FormControl.ErrorMessage>This email address is not valid.</FormControl.ErrorMessage>
                 </FormControl>
             }
             propControls={<FormControlConfigurator isInvalid={isInvalid} setIsInvalid={setIsInvalid} />}

@@ -18,7 +18,12 @@ interface FormControlProps extends React.ComponentProps<typeof Box<'div'>> {
     isDisabled?: boolean;
 }
 
-export const FormControl: React.FC<FormControlProps> = ({ isInvalid, isDisabled, ...props }) => {
+const FormControlRoot: React.FC<FormControlProps> & {
+    Label: React.FC<React.ComponentProps<typeof Text<'label'>>>;
+    HelperText: React.FC<React.ComponentProps<typeof Text<'p'>>>;
+    ErrorMessage: React.FC<React.ComponentProps<typeof Text<'p'>>>;
+    Message: React.FC<React.ComponentProps<typeof Text<'p'>>>;
+} = ({ isInvalid, isDisabled, ...props }) => {
     const id = useId();
     const context = { id, isInvalid, isDisabled };
     
@@ -36,7 +41,7 @@ export const FormControl: React.FC<FormControlProps> = ({ isInvalid, isDisabled,
     );
 };
 
-export const FormLabel: React.FC<React.ComponentProps<typeof Text<'label'>>> = (props) => {
+const Label: React.FC<React.ComponentProps<typeof Text<'label'>>> = (props) => {
     const context = useFormControl();
     const { theme } = useTheme();
     return (
@@ -50,8 +55,9 @@ export const FormLabel: React.FC<React.ComponentProps<typeof Text<'label'>>> = (
         />
     );
 };
+Label.displayName = 'FormControl.Label';
 
-export const FormHelperText: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => {
+const HelperText: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => {
     const context = useFormControl();
     const { theme } = useTheme();
     return (
@@ -63,8 +69,9 @@ export const FormHelperText: React.FC<React.ComponentProps<typeof Text<'p'>>> = 
         />
     );
 };
+HelperText.displayName = 'FormControl.HelperText';
 
-export const FormErrorMessage: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => {
+const ErrorMessage: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => {
     const context = useFormControl();
     if (!context?.isInvalid) return null;
     
@@ -78,3 +85,26 @@ export const FormErrorMessage: React.FC<React.ComponentProps<typeof Text<'p'>>> 
         />
     );
 };
+ErrorMessage.displayName = 'FormControl.ErrorMessage';
+
+const Message: React.FC<React.ComponentProps<typeof Text<'p'>>> = (props) => {
+    const context = useFormControl();
+    const { theme } = useTheme();
+    return (
+        <Text
+            size={theme.typography.fontSizes.sm}
+            color={theme.colors.textSecondary}
+            id={context ? `${context.id}-message` : undefined}
+            {...props}
+        />
+    );
+};
+Message.displayName = 'FormControl.Message';
+
+
+FormControlRoot.Label = Label;
+FormControlRoot.HelperText = HelperText;
+FormControlRoot.ErrorMessage = ErrorMessage;
+FormControlRoot.Message = Message;
+
+export const FormControl = FormControlRoot;
