@@ -39,6 +39,11 @@ export interface ConnectionData {
     type?: 'curved' | 'straight';
 }
 
+export interface FastMakeNode {
+    type: string;
+    data?: Record<string, any>;
+}
+
 export interface GraphicsContextType {
     nodes: NodeData[];
     setNodes: React.Dispatch<React.SetStateAction<NodeData[]>>;
@@ -71,6 +76,11 @@ export interface GraphicsContextType {
     
     creatableNodeTypes: Record<string, Omit<NodeData, 'id' | 'position'>>;
     newCreateNode: (label: string, nodeTemplate: Omit<NodeData, 'id' | 'position'>) => void;
+
+    // New additions for plugins
+    fastMake: (config: FastMakeNode[], startPosition: Position) => void;
+    isContentBlurred: boolean;
+    setIsContentBlurred: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const GraphicsContext = createContext<GraphicsContextType | null>(null);

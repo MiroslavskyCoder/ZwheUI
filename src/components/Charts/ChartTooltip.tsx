@@ -34,7 +34,10 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
         if (!dataset || dataset.length === 0) return;
 
         const { left } = event.currentTarget.getBoundingClientRect();
-        const mouseX = event.clientX - left - dimensions.marginLeft;
+        // The `left` from getBoundingClientRect on the rect already includes the parent SVG's
+        // position and the <g> transform's marginLeft. We just need to subtract it from
+        // the viewport-relative clientX to get the mouse position relative to the bounded area.
+        const mouseX = event.clientX - left;
 
         const hoveredXValue = xScale.invert(mouseX);
         
@@ -105,6 +108,7 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
                     
                     {createPortal(
                         <TooltipBubble style={{
+                            position: 'fixed',
                             top: hoveredData.y,
                             left: hoveredData.x,
                             transform: `translate(${hoveredData.x > window.innerWidth / 2 ? '-110%' : '10%'}, -50%)`,
@@ -115,7 +119,7 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
                            <div style={{ display: 'grid', gridTemplateColumns: 'auto auto auto', gap: '0.25rem 1rem', alignItems: 'center' }}>
                                 {series.map(({ key, label, color, accessor }) => (
                                     <React.Fragment key={key}>
-                                        <div style={{ width: '10-px', height: '10px', backgroundColor: color, borderRadius: '50%' }} />
+                                        <div style={{ width: '10px', height: '10px', backgroundColor: color, borderRadius: '50%' }} />
                                         <span style={{ color: theme.colors.textSecondary }}>{label}:</span>
                                         <span style={{ fontWeight: '500', textAlign: 'right' }}>{formatY(accessor(hoveredData.point))}</span>
                                     </React.Fragment>

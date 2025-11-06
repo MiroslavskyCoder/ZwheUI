@@ -78,3 +78,53 @@ export const useDebounce = <T,>(value: T, delay: number) => {
 
     return debouncedValue
 }
+
+export const useDraggable = (
+    elementRef: React.RefObject<HTMLElement>,
+    handleRef: React.RefObject<HTMLElement>,
+    initialPosition?: { x: number; y: number }
+) => {
+    const dragInfo = useRef<{ startX: number, startY: number, startLeft: number, startTop: number }>();
+
+    useEffect(() => {
+        const element = elementRef.current;
+        const handle = handleRef.current;
+        if (!element || !handle) return;
+        
+        if (initialPosition) {
+            element.style.left = `${initialPosition.x}px`;
+            element.style.top = `${initialPosition.y}px`;
+        }
+
+        const onMouseDown = (e: MouseEvent) => {
+            dragInfo.current = {
+                startX: e.clientX,
+                startY: e.clientY,
+                startLeft: element.offsetLeft,
+                startTop: element.offsetTop,
+            };
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        };
+
+        const onMouseMove = (moveEvent: MouseEvent) => {
+            if (!dragInfo.current) return;
+            const newX = dragInfo.current.startLeft + moveEvent.clientX - dragInfo.current.startX;
+            const newY = dragInfo.current.startTop + moveEvent.clientY - dragInfo.current.startY;
+            element.style.left = `${newX}px`;
+            element.style.top = `${newY}px`;
+        };
+
+        const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        };
+
+        handle.addEventListener('mousedown', onMouseDown);
+        return () => {
+            handle.removeEventListener('mousedown', onMouseDown);
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        };
+    }, [elementRef, handleRef, initialPosition]);
+};

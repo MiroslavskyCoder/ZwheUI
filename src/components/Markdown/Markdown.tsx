@@ -79,12 +79,10 @@ export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
     });
 
     const components: Components = {
-        // @ts-ignore
         code({node, inline, className, children, ...props}) {
             const match = /language-(\w+)/.exec(className || '');
             return !inline && match ? (
                 <SyntaxHighlighter
-                    // @ts-ignore
                     style={vscDarkPlus}
                     language={match[1]}
                     PreTag="div"

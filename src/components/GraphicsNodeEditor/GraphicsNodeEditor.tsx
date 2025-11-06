@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
-import { GraphicsContext, NodeData, ConnectionData, Position, useGraphicsContext } from './GraphicsContext';
+import { GraphicsContext, NodeData, ConnectionData, Position, useGraphicsContext, FastMakeNode } from './GraphicsContext';
 import { Node } from './Node';
 import { Connection } from './Connection';
 import { useStyles, useTheme } from '../../core';
@@ -35,6 +35,7 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections, c
     const [socketRelativePositions, setSocketRelativePositions] = useState<Record<string, Record<string, Position>>>({});
     const { addToast } = useToast();
     const [creatableNodeTypes, setCreatableNodeTypes] = useState(initialCreatableNodeTypes);
+    const [isContentBlurred, setIsContentBlurred] = useState(false);
 
     const newCreateNode = useCallback((label: string, nodeTemplate: Omit<NodeData, 'id' | 'position'>) => {
         setCreatableNodeTypes(prev => ({ ...prev, [label]: nodeTemplate }));
@@ -78,15 +79,58 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections, c
         return nodesRef.current;
     }, []);
 
-    const createNode = useCallback((nodeData: Omit<NodeData, 'id'>) => {
+    const createNode = useCallback((nodeData: Omit<NodeData, 'id'>): NodeData => {
         const newNode: NodeData = {
             ...nodeData,
             id: `node_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-            // Ensure data is a copy to prevent reference issues
             data: { ...(nodeData.data || {}) },
         };
         setNodes(prev => [...prev, newNode]);
+        return newNode;
     }, [setNodes]);
+
+    const fastMake = useCallback((config: FastMakeNode[], startPosition: Position) => {
+        let currentX = startPosition.x;
+        let lastNode: NodeData | null = null;
+        const newNodes: NodeData[] = [];
+        const newConnections: ConnectionData[] = [];
+
+        for (const nodeConfig of config) {
+            const template = creatableNodeTypes[nodeConfig.type];
+            if (!template) {
+                console.error(`[fastMake] Node type "${nodeConfig.type}" not found in creatableNodeTypes.`);
+                continue;
+            }
+
+            const newNode = createNode({
+                ...template,
+                data: nodeConfig.data || template.data,
+                position: { x: currentX, y: startPosition.y }
+            });
+            newNodes.push(newNode);
+            
+            if (lastNode && lastNode.outputs.length > 0 && newNode.inputs.length > 0) {
+                const sourceSocket = lastNode.outputs[0];
+                const targetSocket = newNode.inputs[0];
+
+                const newConnection: ConnectionData = {
+                    id: `conn_fast_${lastNode.id}_${newNode.id}`,
+                    sourceNodeId: lastNode.id,
+                    sourceSocketId: sourceSocket.id,
+                    targetNodeId: newNode.id,
+                    targetSocketId: targetSocket.id,
+                };
+                newConnections.push(newConnection);
+            }
+            
+            lastNode = newNode;
+            currentX += 300; // Spacing between nodes
+        }
+        
+        setConnections(prev => [...prev, ...newConnections]);
+        
+    }, [creatableNodeTypes, createNode, setConnections]);
+
 
     const updateNode = useCallback((nodeId: string, data: Partial<Omit<NodeData, 'id'>>) => {
         setNodes(prev => prev.map(n => (n.id === nodeId ? { ...n, ...data } : n)));
@@ -130,9 +174,7 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections, c
                 id: `conn_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
                 sourceNodeId,
                 sourceSocketId,
-                // @ts-ignore
                 targetNodeId: bestTarget.targetNodeId,
-                // @ts-ignore
                 targetSocketId: bestTarget.targetSocketId,
                 type: 'curved',
             };
@@ -260,6 +302,9 @@ export const GraphicsProvider = ({ children, initialNodes, initialConnections, c
         registerSocketPositions,
         creatableNodeTypes,
         newCreateNode,
+        fastMake,
+        isContentBlurred,
+        setIsContentBlurred
     };
 
     return <GraphicsContext.Provider value={contextValue}>{children}</GraphicsContext.Provider>;

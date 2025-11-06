@@ -51,7 +51,6 @@ export const Rating: React.FC<RatingProps> = ({
         height: sizes[size],
         position: 'relative',
         transition: 'all 0.2s ease',
-        pointerEvents: 'none', // Clicks are handled by the container
         '&::before': {
             content: '"★"',
             position: 'absolute',

@@ -96,8 +96,7 @@ const NodeRenderer: React.FC<{ nodeId: string; level: number }> = ({ nodeId, lev
         <>
             <Item {...itemProps} />
             {itemProps.isExpandable && node.children && (
-                // @ts-ignore
-                <TransitionWrapper {...(TransitionComponent && { in: itemProps.isExpanded })}>
+                 <TransitionWrapper {...(TransitionComponent && { in: itemProps.isExpanded })}>
                     <div role="group">
                         {(TransitionComponent || itemProps.isExpanded) && node.children.map(child => (
                             <NodeRenderer key={child.id} nodeId={child.id} level={level + 1} />

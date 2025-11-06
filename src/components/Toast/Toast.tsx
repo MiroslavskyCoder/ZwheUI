@@ -1,8 +1,6 @@
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
-import { useFade } from '../../core/hooks/useAnimation';
 import { ToastData } from './useToast';
 import { Text } from '../Text/Text';
 import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from '../../icons';
@@ -22,23 +20,29 @@ const icons = {
 export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('toast');
-    const { isRendered, isVisible, show, hide } = useFade(false);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        show();
-        const timer = setTimeout(() => {
-            hide();
+        // Use requestAnimationFrame to ensure the component is mounted with initial styles
+        // (opacity: 0, transform: translateX(20px)) before transitioning to the visible state.
+        const showRaf = requestAnimationFrame(() => {
+            setIsVisible(true);
+        });
+
+        const hideTimer = setTimeout(() => {
+            setIsVisible(false);
         }, toast.duration);
         
         const removeTimer = setTimeout(() => {
              onDismiss(toast.id);
-        }, toast.duration! + 300); // Wait for fade out animation
+        }, toast.duration! + 300); // Wait for fade out animation to complete
 
         return () => {
-            clearTimeout(timer);
+            cancelAnimationFrame(showRaf);
+            clearTimeout(hideTimer);
             clearTimeout(removeTimer);
         };
-    }, [toast, onDismiss, show, hide]);
+    }, [toast, onDismiss]);
 
     const variantColors = {
         info: theme.colors.primary,
@@ -73,8 +77,6 @@ export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
         alignItems: 'center',
         justifyContent: 'center',
     });
-
-    if (!isRendered) return null;
 
     const IconComponent = icons[toast.variant!];
 
