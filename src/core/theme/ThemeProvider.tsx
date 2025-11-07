@@ -1,5 +1,6 @@
 
-import React, { createContext, useContext } from 'react'
+
+import React, { createContext, useContext, useEffect } from 'react'
 import { Theme } from '../css/types'
 import { ThemeMode, useThemeSwitch } from '../hooks/useThemeSwitch'
 
@@ -30,6 +31,23 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, theme: c
     // If theme and mode are provided as props, they take precedence (controlled mode).
     const finalTheme = controlledTheme || currentTheme;
     const finalMode = controlledMode || mode;
+    
+    useEffect(() => {
+        // Update the html tag's background color when the theme changes.
+        if (document.documentElement) {
+            document.documentElement.style.backgroundColor = finalTheme.colors.background;
+            // Add a transition for smooth color changes
+            document.documentElement.style.transition = 'background-color 0.3s ease';
+        }
+        
+        // Cleanup function to remove the style if the provider unmounts
+        return () => {
+            if (document.documentElement) {
+                document.documentElement.style.backgroundColor = '';
+                document.documentElement.style.transition = '';
+            }
+        };
+    }, [finalTheme.colors.background]); // Re-run effect only when background color changes
     
     // When controlled, the switch functions from the hook might cause confusion.
     // However, allowing them enables switching away from a controlled theme, which could be a feature.
