@@ -72,8 +72,7 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
             aria-label={label}
             {...props}
         >
-            <Icon as={icon} size={sizes[size].icon} />
-// @ts-ignore
+            <Icon as={icon} size={sizes[size].icon} /> 
         </button>
     );
 };
