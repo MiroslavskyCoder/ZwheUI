@@ -1,6 +1,6 @@
 {
   "name": "zwheui",
-  "version": "1.0.7-2.11",
+  "version": "1.0.7-2.12",
   "author": {
     "name": "Miroslavsky Coder",
     "email": "programmer_js@vk.com",
@@ -41,6 +41,11 @@
       "import": "./dist/components/index.es.js",
       "require": "./dist/components/index.cjs.js",
       "types": "./dist/components/index.d.ts" 
+    },
+    "./hooks": { 
+      "import": "./dist/core/hooks/index.es.js",
+      "require": "./dist/core/hooks/index.cjs.js",
+      "types": "./dist/core/hooks/index.d.ts" 
     },
     "./package.json": "./package.json"
   },
