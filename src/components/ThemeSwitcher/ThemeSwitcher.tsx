@@ -1,5 +1,5 @@
+
 import React, { useState, useEffect } from 'react';
-// FIX: `defaultTheme` and `Theme` are not exported from `..`. They should be imported from the core library.
 import { Card } from '../Card/Card';
 import { Input } from '../Input/Input';
 import { Stack } from '../Stack/Stack';
@@ -26,10 +26,11 @@ export const ThemeSwitcher: React.FC = () => {
     // Effect to update the global custom theme when debounced values change
     useEffect(() => {
         if (mode === 'custom') {
+            // Use defaultTheme as the base to prevent re-render loops from theme dependency.
             const newCustomTheme: Theme = {
-                ...theme, // Inherit all properties from the current theme
+                ...defaultTheme, // Base all properties on the stable default theme
                 colors: {
-                    ...theme.colors, // Inherit all colors
+                    ...defaultTheme.colors, // Inherit all default colors
                     primary: debouncedPrimary,
                     background: debouncedBackground,
                     text: debouncedText,
@@ -37,7 +38,7 @@ export const ThemeSwitcher: React.FC = () => {
             };
             setCustomTheme(newCustomTheme);
         }
-    }, [debouncedPrimary, debouncedBackground, debouncedText, mode]);
+    }, [debouncedPrimary, debouncedBackground, debouncedText, mode, setCustomTheme]); // Removed `theme` dependency
     
     // Effect to sync local input state when the global theme/mode changes externally
     useEffect(() => {

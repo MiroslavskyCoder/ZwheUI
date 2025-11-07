@@ -1,8 +1,6 @@
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
-import { useFade } from '../../core/hooks/useAnimation';
 import { SnackbarData } from './useSnackbar';
 import { Text } from '../Text/Text';
 import { Button } from '../Button';
@@ -15,24 +13,32 @@ interface SnackbarProps {
 export const Snackbar: React.FC<SnackbarProps> = ({ snackbar, onDismiss }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('snackbar');
-    const { isRendered, isVisible, show, hide } = useFade(false, 200);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        show();
+        // Animate in after component has mounted
+        const showTimer = requestAnimationFrame(() => {
+            setIsVisible(true);
+        });
+
         const duration = snackbar.duration || 5000;
-        const timer = setTimeout(() => {
-            hide();
+        
+        // Timer to start the hide animation
+        const hideTimer = setTimeout(() => {
+            setIsVisible(false);
         }, duration);
         
+        // Timer to unmount the component after the hide animation is complete
         const removeTimer = setTimeout(() => {
              onDismiss(snackbar.id);
-        }, duration + 300); // Wait for fade out animation
+        }, duration + 300); // 300ms for the exit animation
 
         return () => {
-            clearTimeout(timer);
+            cancelAnimationFrame(showTimer);
+            clearTimeout(hideTimer);
             clearTimeout(removeTimer);
         };
-    }, [snackbar, onDismiss, show, hide]);
+    }, [snackbar, onDismiss]);
 
     const containerClass = createStyle({
         backgroundColor: '#323232',
@@ -58,13 +64,11 @@ export const Snackbar: React.FC<SnackbarProps> = ({ snackbar, onDismiss }) => {
         }
     });
 
-    if (!isRendered) return null;
-
     const handleActionClick = () => {
         snackbar.action?.onClick();
-        hide();
-        // Immediately start dismiss process on action click
-        setTimeout(() => onDismiss(snackbar.id), 200);
+        setIsVisible(false);
+        // Immediately start dismiss process on action click, waiting for animation
+        setTimeout(() => onDismiss(snackbar.id), 300);
     };
 
     return (
@@ -72,7 +76,7 @@ export const Snackbar: React.FC<SnackbarProps> = ({ snackbar, onDismiss }) => {
             className={containerClass} 
             style={{ 
                 opacity: isVisible ? 1 : 0, 
-                transition: 'opacity 0.2s, transform 0.2s',
+                transition: 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
             }}
             role="alert"
