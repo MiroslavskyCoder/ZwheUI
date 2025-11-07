@@ -19,8 +19,8 @@ export const PageHeader: React.FC<PageHeaderProps> = ({ title, subtitle, breadcr
             {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
             <Stack direction="row" justify="space-between" align="center">
                 <Stack gap="0.25rem">
-                    <Text as="h1" size="1.875rem" weight="700">{title}</Text>
-                    {subtitle && <Text color={theme.colors.textSecondary}>{subtitle}</Text>}
+                    <Text as="h1" size="1.875rem" weight="700" style={{ margin: 0 }}>{title}</Text>
+                    {subtitle && <Text color={theme.colors.textSecondary} style={{ margin: 0 }}>{subtitle}</Text>}
                 </Stack>
                 {actions && <Stack direction="row" gap="1rem">{actions}</Stack>}
             </Stack>
