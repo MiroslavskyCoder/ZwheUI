@@ -49,37 +49,56 @@ export const ToggleButtonGroup: ToggleButtonGroupFC = ({ children, value, onChan
     const { theme } = useTheme();
     const createStyle = useStyles('toggle-button-group');
 
-    const containerClass = createStyle({
-        display: 'inline-flex',
-        flexWrap: 'wrap',
-        borderRadius: '8px',
-        overflow: 'hidden',
-        border: `1px solid ${theme.colors.border}`,
-        maxWidth: maxWidth,
-    });
-
     const childrenArray = React.Children.toArray(children);
+    const isSplitByMax = maxSplit && maxSplit > 0;
+
     const hasCustomDividers = childrenArray.some(
         (child) => React.isValidElement(child) && child.type === ToggleButtonDivider
     );
 
-    let content: React.ReactNode = childrenArray;
+    let content: React.ReactNode;
 
-    if (maxSplit && maxSplit > 0) {
-        const newChildren: React.ReactNode[] = [];
+    if (isSplitByMax) {
+        // If using maxSplit, we create distinct visual rows.
+        const rows: React.ReactNode[][] = [];
         const buttonsOnly = childrenArray.filter(
             (c) => React.isValidElement(c) && c.type !== ToggleButtonDivider
         );
 
-        buttonsOnly.forEach((child, index) => {
-            newChildren.push(child);
-            if ((index + 1) % maxSplit === 0 && index < buttonsOnly.length - 1) {
-                newChildren.push(<div key={`wrap-${index}`} style={{ flexBasis: '100%', height: 0 }} aria-hidden="true" />);
-            }
+        for (let i = 0; i < buttonsOnly.length; i += maxSplit!) {
+            rows.push(buttonsOnly.slice(i, i + maxSplit!));
+        }
+
+        const rowContainerClass = createStyle({
+            display: 'inline-flex',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            border: `1px solid ${theme.colors.border}`,
         });
-        content = newChildren;
+        
+        content = rows.map((row, index) => (
+            <div key={index} className={rowContainerClass}>
+                {row}
+            </div>
+        ));
+    } else {
+        content = childrenArray;
     }
 
+    const containerClass = createStyle({
+        display: isSplitByMax ? 'flex' : 'inline-flex',
+        flexDirection: isSplitByMax ? 'column' : 'row',
+        alignItems: isSplitByMax ? 'center' : 'stretch',
+        gap: isSplitByMax ? '8px' : '0',
+        flexWrap: 'wrap', // for maxWidth behavior
+        
+        // If not splitting by maxSplit, apply the single-group container styles
+        borderRadius: !isSplitByMax ? '8px' : '0',
+        overflow: !isSplitByMax ? 'hidden' : 'visible',
+        border: !isSplitByMax ? `1px solid ${theme.colors.border}` : 'none',
+        maxWidth: maxWidth,
+    });
+    
     const contextValue = { value, onChange, type, hasCustomDividers };
 
     return (
