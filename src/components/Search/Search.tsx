@@ -29,6 +29,7 @@ export const Search: React.FC<SearchProps> = ({ className = '', ...props }) => {
         transform: 'translateY(-50%)',
         color: theme.colors.textSecondary,
         pointerEvents: 'none',
+        zIndex: 1,
     });
     
     const inputClass = createStyle({
