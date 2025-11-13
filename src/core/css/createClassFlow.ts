@@ -1,23 +1,24 @@
-
-
 import { CSSProperties, StyleDefinition, StyleOptions, Theme } from './types'
 
 let styleSheet: HTMLStyleElement | null = null
+// Cache for generated class names to avoid re-injecting styles
 const cache = new Map<string, string>()
 
+// Simple hash function to generate a unique ID from a string
 const hashCode = (str: string): string => {
     let hash = 0
     for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i)
         hash = ((hash << 5) - hash) + char
-        hash = hash & hash
+        hash = hash & hash // Convert to 32bit integer
     }
     return Math.abs(hash).toString(36)
 }
 
+// Creates or reuses a single <style> tag in the document's head for all generated styles
 const createStyleSheet = () => {
     if (typeof document === 'undefined') {
-        return null;
+        return null; // Don't do anything on the server
     }
     if (!styleSheet) {
         styleSheet = document.createElement('style')
@@ -27,7 +28,7 @@ const createStyleSheet = () => {
     return styleSheet
 }
 
-// --- Theme Value Resolution ---
+// --- Theme Value Resolution Helpers ---
 
 const propertyToThemeScaleMap: Record<string, keyof Theme> = {
   borderRadius: 'radii',
@@ -37,13 +38,11 @@ const valueFunctionsToThemeScaleMap: Record<string, keyof Theme> = {
   blur: 'blur',
 };
 
-
 const resolveValue = (key: string, value: any, theme?: Theme): any => {
     if (!theme || typeof value !== 'string') {
         return value;
     }
 
-    // Direct key lookup (e.g., borderRadius: 'lg')
     const directScaleKey = (propertyToThemeScaleMap as any)[key];
     if (directScaleKey) {
         const scale = (theme as any)[directScaleKey];
@@ -52,7 +51,6 @@ const resolveValue = (key: string, value: any, theme?: Theme): any => {
         }
     }
 
-    // Functional value lookup (e.g., backdropFilter: 'blur(md)')
     const functionalRegex = /(\w+)\((.+)\)/;
     const match = value.match(functionalRegex);
 
@@ -70,43 +68,67 @@ const resolveValue = (key: string, value: any, theme?: Theme): any => {
     return value;
 }
 
+const toKebabCase = (str: string) => str.replace(/([A-Z])/g, '-$1').toLowerCase();
 
-const objectToCssString = (styleObject: CSSProperties, theme?: Theme): string => {
+// This function converts a style object of simple key-value pairs into a CSS string.
+const toCssPropertiesString = (styleObject: CSSProperties, theme?: Theme): string => {
     return Object.entries(styleObject)
         .map(([key, value]) => {
-            if (typeof value === 'object' && value !== null) {
-                return ''; // This function should not handle nested rules; they are parsed by the main function.
-            }
-            if (value === undefined) return '';
-
+            if (typeof value === 'object' || value === undefined) return '';
             const resolvedValue = resolveValue(key, value, theme);
-            const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+            const cssKey = toKebabCase(key);
             return `${cssKey}: ${resolvedValue};`;
         })
         .filter(Boolean)
         .join(' ');
 };
 
-const toKebabCase = (str: string) => str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+// This is the new recursive parser.
+const generateCssRecursively = (
+    selector: string,
+    styles: CSSProperties,
+    theme?: Theme
+): string => {
+    const baseStyles: CSSProperties = {};
+    const nestedRules: string[] = [];
 
-const parseMediaQuery = (query: string, theme?: Theme): string => {
-    if (!theme?.breakpoints) {
-        return query;
+    // Separate base properties from nested rules
+    for (const [key, value] of Object.entries(styles)) {
+        if (typeof value === 'object' && value !== null) {
+            if (key.startsWith('@media')) {
+                const mediaCss = generateCssRecursively(selector, value as CSSProperties, theme);
+                if (mediaCss) {
+                    nestedRules.push(`${key} { ${mediaCss} }`);
+                }
+            } else {
+                // Handle nested selectors like '&:hover' or '& > child'
+                const newSelector = key.includes('&') 
+                    ? key.replace(/&/g, selector)
+                    : `${selector} ${key}`;
+                
+                const nestedCss = generateCssRecursively(newSelector, value as CSSProperties, theme);
+                if (nestedCss) {
+                    nestedRules.push(nestedCss);
+                }
+            }
+        } else if (value !== undefined) {
+            baseStyles[key] = value;
+        }
     }
 
-    // Regex to find things like (property: 'breakpointKey') or (property: breakpointKey)
-    const sassLikeQueryRegex = /\(\s*([a-zA-Z-]+)\s*:\s*['"]?(\w+)['"]?\s*\)/g;
+    let css = '';
+    const baseCssString = toCssPropertiesString(baseStyles, theme);
 
-    return query.replace(sassLikeQueryRegex, (match, property, key) => {
-        const breakpointValue = theme.breakpoints[key];
-        if (breakpointValue) {
-            const cssProperty = toKebabCase(property);
-            return `(${cssProperty}: ${breakpointValue})`;
-        }
-        return match; // Return original if breakpoint key not found
-    });
+    if (baseCssString) {
+        css += `${selector} { ${baseCssString} }`;
+    }
+
+    if (nestedRules.length > 0) {
+        css += (css ? '\n' : '') + nestedRules.join('\n');
+    }
+
+    return css;
 };
-
 
 export const createClassFlow = (
     styles: StyleDefinition,
@@ -114,70 +136,42 @@ export const createClassFlow = (
     theme?: Theme
 ): string => {
     const { prefix = 'zw', cache: useCache = true } = options;
-    // Key must be unique to style object AND theme object to support theme switching and SSR.
+    // Key must be unique to style object AND theme object to support theme switching.
     const styleStr = JSON.stringify({ styles, theme });
     const className = `${prefix}-${hashCode(styleStr)}`;
 
     // If this className has been processed before, just return it.
-    // On the server, the cache is per-request. On the client, it's global for the session.
     if (useCache && cache.has(className)) {
         return className;
     }
 
-    const baseStyles: CSSProperties = {};
-    const nestedRules: string[] = [];
     const keyframesRules: string[] = [];
+    const mainStyles: StyleDefinition = {};
 
-    // Separate base properties from nested/at-rules
+    // Separate @keyframes rules, as they are top-level and not tied to a selector
     for (const [key, value] of Object.entries(styles)) {
-        if (key === '@media' || value === undefined) {
-            continue; // Handle the special '@media' object separately for backward compatibility
-        }
-
-        if (typeof value === 'object' && value !== null) {
-            if (key.startsWith('&')) {
-                // Handle pseudo-selectors and nested selectors
-                const selector = key.replace(/&/g, `.${className}`);
-                nestedRules.push(`${selector} { ${objectToCssString(value as CSSProperties, theme)} }`);
-            } else if (key.startsWith('@keyframes')) {
-                // Handle keyframes
-                const keyframeContent = Object.entries(value)
-                    .map(([frame, frameStyles]) => `${frame} { ${objectToCssString(frameStyles as CSSProperties, theme)} }`)
-                    .join(' ');
-                keyframesRules.push(`${key} { ${keyframeContent} }`);
-            } else if (key.startsWith('@')) {
-                // Handle other at-rules like @supports or direct @media queries
-                nestedRules.push(`${key} { .${className} { ${objectToCssString(value as CSSProperties, theme)} } }`);
-            }
+        if (key.startsWith('@keyframes')) {
+            const keyframeContent = Object.entries(value as CSSProperties)
+                .map(([frame, frameStyles]) => `${frame} { ${toCssPropertiesString(frameStyles as CSSProperties, theme)} }`)
+                .join(' ');
+            keyframesRules.push(`${key} { ${keyframeContent} }`);
         } else {
-            baseStyles[key] = value as string | number;
+            mainStyles[key] = value;
         }
     }
 
-    let cssRules = `.${className} { ${objectToCssString(baseStyles, theme)} }`;
+    // Generate the main CSS rules, including nested selectors and media queries
+    let cssRules = generateCssRecursively(`.${className}`, mainStyles, theme);
     
-    // Process nested pseudo-selectors and at-rules
-    if (nestedRules.length > 0) {
-        cssRules += `\n${nestedRules.join('\n')}`;
-    }
-
-    // Handle the special top-level @media property for backward compatibility
-    if (styles['@media']) {
-         Object.entries(styles['@media']).forEach(([query, props]) => {
-            const parsedQuery = parseMediaQuery(query, theme);
-            cssRules += `\n@media ${parsedQuery} { .${className} { ${objectToCssString(props as CSSProperties, theme)} } }`
-        })
-    }
-    
-    // Keyframes are always top-level rules
+    // Prepend keyframes if any exist
     if (keyframesRules.length > 0) {
-        cssRules += `\n${keyframesRules.join('\n')}`;
+        cssRules = keyframesRules.join('\n') + (cssRules ? `\n${cssRules}` : '');
     }
 
-    // Only attempt to get/create a stylesheet and inject rules on the client side.
-    // On the server, this will be null and the function will just return the className.
+    // On the client side, inject the generated CSS into the stylesheet.
     const sheet = createStyleSheet();
-    if (sheet) {
+    if (sheet && cssRules) {
+        // Appending to textContent is faster than insertRule for multiple rules
         sheet.textContent += `\n${cssRules}`;
     }
     
@@ -189,15 +183,16 @@ export const createClassFlow = (
     return className;
 };
 
-
+// This function is still useful for clearing styles, e.g., in tests
 export const clearStyles = () => {
     if (styleSheet) {
-        styleSheet.remove()
-        styleSheet = null
+        styleSheet.remove();
+        styleSheet = null;
     }
-    cache.clear()
+    cache.clear();
 }
 
+// This function is useful for combining class names safely
 export const combineClasses = (...classes: (string | undefined | false)[]): string => {
-    return classes.filter(Boolean).join(' ')
+    return classes.filter(Boolean).join(' ');
 }
