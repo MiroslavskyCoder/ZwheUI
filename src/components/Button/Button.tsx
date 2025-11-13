@@ -41,8 +41,8 @@ export const Button: React.FC<ButtonProps> = ({ variant = 'primary', className =
       color: isDark ? '#172554' : '#fff', // Use dark text on light blue, white text on dark blue
       '&:hover:not(:disabled)': {
         filter: isDark ? 'brightness(1.2)' : 'brightness(0.9)',
-      },
-       '&:focus-visible': {
+      },  
+       '&:focus-visible': { 
         boxShadow: `0 0 0 2px ${theme.colors.background}, 0 0 0 4px ${theme.colors.primary}`
       },
     }),
