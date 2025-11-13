@@ -4,7 +4,7 @@ import { useAudio } from './AudioContext';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { Stack } from '../Stack/Stack';
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 import { Slider } from '../Slider/Slider';
 import { AudioTime } from './AudioTime';
 import { AudioDuration } from './AudioDuration';

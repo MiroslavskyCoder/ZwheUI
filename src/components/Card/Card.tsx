@@ -4,7 +4,7 @@ import { useTheme } from '../../core/theme/ThemeProvider';
 import { Text } from '../Text/Text';
 import { Image as ImageComponent, ImageProps } from '../Image/Image';
 import { Stack } from '../Stack/Stack';
-import { Button, ButtonProps } from '../Button';
+import { Button, ButtonProps } from '../Button/Button';
 
 // Main Card Component
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {

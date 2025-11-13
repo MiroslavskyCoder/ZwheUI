@@ -4,7 +4,7 @@ import { Checkbox } from '../Checkbox/Checkbox';
 import { Pagination } from '../Pagination/Pagination';
 import { Search } from '../Search/Search';
 import { Stack } from '../Stack/Stack';
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 import { Text } from '../Text/Text';
 import { Icon } from '../Icon/Icon';
 import { Card } from '../Card/Card';

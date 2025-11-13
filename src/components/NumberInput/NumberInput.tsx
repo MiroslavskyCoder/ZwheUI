@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput } from '../TextInput/TextInput';
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 import { Stack } from '../Stack/Stack';
 import { useStyles } from '../../core/hooks/useStyles';
 

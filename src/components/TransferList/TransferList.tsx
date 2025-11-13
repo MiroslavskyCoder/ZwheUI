@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../Card/Card';
 import { List, ListItem } from '../List/List';
 import { Checkbox } from '../Checkbox/Checkbox';
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 import { Stack } from '../Stack/Stack';
 import { Text } from '../Text/Text';
 import { useTheme } from '../../core';

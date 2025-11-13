@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button, ButtonProps } from '../Button';
+import { Button, ButtonProps } from '../Button/Button';
 import { Icon } from '../Icon/Icon';
 import { useStyles } from '../../core';
 

@@ -22,7 +22,7 @@ export * from './Badge/Badge';
 export * from './Blockquote/Blockquote';
 export * from './Box/Box';
 export * from './Breadcrumbs/Breadcrumbs';
-export * from './Button';
+export * from './Button/Button';
 export * from './ButtonGroup/ButtonGroup';
 export * from './Calendar/Calendar';
 export * from './Card/Card';

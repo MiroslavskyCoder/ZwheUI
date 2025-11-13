@@ -3,7 +3,7 @@ import { useStyles, useTheme, useBreakpoint } from '../../core';
 import { Container } from '../Container/Container';
 import { Stack } from '../Stack/Stack';
 import { Link } from '../Link/Link';
-import { Button, ButtonProps } from '../Button';
+import { Button, ButtonProps } from '../Button/Button';
 import { Dropdown, DropdownTrigger, DropdownContent, DropdownItem } from '../Dropdown/Dropdown';
 import { IconButton } from '../IconButton/IconButton';
 import { MenuIcon } from '../../icons';

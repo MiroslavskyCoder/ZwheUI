@@ -3,7 +3,7 @@ import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { SnackbarData } from './useSnackbar';
 import { Text } from '../Text/Text';
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 
 interface SnackbarProps {
     snackbar: SnackbarData;

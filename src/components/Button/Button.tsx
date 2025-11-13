@@ -1,6 +1,6 @@
 import React from 'react'
-import { useStyles } from '../core/hooks/useStyles';
-import { useTheme } from '../core/theme/ThemeProvider';
+import { useStyles } from '../../core/hooks/useStyles';
+import { useTheme } from '../../core/theme/ThemeProvider';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'accent'

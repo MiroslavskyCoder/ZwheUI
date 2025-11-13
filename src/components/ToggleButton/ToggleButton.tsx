@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 
 interface ToggleButtonGroupContextType {
     value: string | string[] | null;

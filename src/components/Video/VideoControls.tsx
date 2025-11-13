@@ -3,7 +3,7 @@ import { useVideo } from './VideoContext';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 import { Stack } from '../Stack/Stack';
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 import { Slider } from '../Slider/Slider';
 import { VideoTime } from './VideoTime';
 import { VideoDuration } from './VideoDuration';

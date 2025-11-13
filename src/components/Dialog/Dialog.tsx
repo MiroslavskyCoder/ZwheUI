@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from '../Modal/Modal';
 import { Text } from '../Text/Text';
 import { Stack } from '../Stack/Stack';
-import { Button, ButtonProps } from '../Button';
+import { Button, ButtonProps } from '../Button/Button';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
 
