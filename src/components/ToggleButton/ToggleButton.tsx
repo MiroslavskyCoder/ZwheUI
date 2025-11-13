@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 
 const ToggleButtonDivider: React.FC = () => {
     const { theme } = useTheme();
@@ -72,6 +72,7 @@ export const ToggleButtonGroup: ToggleButtonGroupFC = ({ children, value, onChan
     }
 
     return (
+        // @ts-ignore
         <ToggleButtonGroupContext.Provider value={{ value, onChange, type, hasCustomDividers }}>
             <div className={`${containerClass} ${className}`} role={type === 'single' ? 'radiogroup' : 'group'}>
                 {content}
