@@ -1,8 +1,28 @@
 import { CSSProperties, StyleDefinition, StyleOptions, Theme } from './types'
 
-let styleSheet: HTMLStyleElement | null = null
-// Cache for generated class names to avoid re-injecting styles
-const cache = new Map<string, string>()
+let styleSheet: HTMLStyleElement | null = null;
+// Cache now stores the generated class name and its corresponding CSS rules.
+const cache = new Map<string, { className: string, cssRules: string }>();
+
+// --- For SSR ---
+// A registry to hold unique CSS rules generated on the server for a single render pass.
+let ssrStyleRegistry: Set<string> = new Set();
+
+/**
+ * Retrieves all unique CSS rules generated during a server-side render.
+ * @returns A single string containing all CSS rules.
+ */
+export const getSsrStyles = (): string => {
+    return Array.from(ssrStyleRegistry).join('\n');
+};
+
+/**
+ * Clears the server-side style registry. Should be called before each server render.
+ */
+export const clearSsrStyles = (): void => {
+    ssrStyleRegistry.clear();
+};
+// ---
 
 // Simple hash function to generate a unique ID from a string
 const hashCode = (str: string): string => {
@@ -18,7 +38,7 @@ const hashCode = (str: string): string => {
 // Creates or reuses a single <style> tag in the document's head for all generated styles
 const createStyleSheet = () => {
     if (typeof document === 'undefined') {
-        return null; // Don't do anything on the server
+        return null; // On server, we use the registry, not a stylesheet element.
     }
     if (!styleSheet) {
         styleSheet = document.createElement('style')
@@ -138,13 +158,18 @@ export const createClassFlow = (
     const { prefix = 'zw', cache: useCache = true } = options;
     // Key must be unique to style object AND theme object to support theme switching.
     const styleStr = JSON.stringify({ styles, theme });
-    const className = `${prefix}-${hashCode(styleStr)}`;
-
-    // If this className has been processed before, just return it.
-    if (useCache && cache.has(className)) {
-        return className;
+    
+    // If this style has been processed before, retrieve it from the cache.
+    if (useCache && cache.has(styleStr)) {
+        const cached = cache.get(styleStr)!;
+        // If on the server, ensure the cached CSS rule is added to the current render's registry.
+        if (typeof document === 'undefined' && cached.cssRules) {
+            ssrStyleRegistry.add(cached.cssRules);
+        }
+        return cached.className;
     }
 
+    const className = `${prefix}-${hashCode(styleStr)}`;
     const keyframesRules: string[] = [];
     const mainStyles: StyleDefinition = {};
 
@@ -168,16 +193,22 @@ export const createClassFlow = (
         cssRules = keyframesRules.join('\n') + (cssRules ? `\n${cssRules}` : '');
     }
 
-    // On the client side, inject the generated CSS into the stylesheet.
-    const sheet = createStyleSheet();
-    if (sheet && cssRules) {
-        // Appending to textContent is faster than insertRule for multiple rules
-        sheet.textContent += `\n${cssRules}`;
+    if (cssRules) {
+        if (typeof document === 'undefined') {
+            // SSR: Add rule to the registry.
+            ssrStyleRegistry.add(cssRules);
+        } else {
+            // Client-side: inject into <style> tag.
+            const sheet = createStyleSheet();
+            if (sheet && !sheet.textContent?.includes(cssRules)) {
+                sheet.textContent += `\n${cssRules}`;
+            }
+        }
     }
     
-    // Cache the className to indicate it has been processed for this session.
+    // Cache the className and its rules to prevent re-processing.
     if (useCache) {
-        cache.set(className, className);
+        cache.set(styleStr, { className, cssRules: cssRules || '' });
     }
 
     return className;
@@ -190,6 +221,7 @@ export const clearStyles = () => {
         styleSheet = null;
     }
     cache.clear();
+    clearSsrStyles();
 }
 
 // This function is useful for combining class names safely
