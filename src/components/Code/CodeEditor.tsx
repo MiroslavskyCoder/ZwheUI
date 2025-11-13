@@ -37,7 +37,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, languag
     const containerClass = createStyle({
         position: 'relative',
         height: '100%',
-        backgroundColor: 'rgba(0,0,0,0.3)',
+        backgroundColor: 'rgba(17, 17, 17, 1)',
         borderRadius: '8px',
     });
 

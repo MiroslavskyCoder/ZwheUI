@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ReactMarkdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -12,8 +12,19 @@ interface MarkdownProps {
 
 export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
     const { theme } = useTheme();
-    const createStyle = useStyles('markdown');
+    const createStyle = useStyles('markdown'); 
 
+    const commonStyles = {
+        margin: 0,
+        padding: '1rem',
+        border: 'none',
+        fontFamily: 'monospace',
+        fontSize: '13px',
+        lineHeight: '1.5',
+        tabSize: 2,
+        MozTabSize: 2,
+    }; 
+ 
     const containerClass = createStyle({
         fontSize: theme.typography.fontSizes.base,
         color: theme.colors.text,
@@ -34,8 +45,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
         '& p': {
             marginBottom: '1em',
         },
-        '& code': {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        '& code': { 
             padding: '0.2em 0.4em',
             borderRadius: '3px',
             fontFamily: 'monospace',
@@ -76,22 +86,44 @@ export const Markdown: React.FC<MarkdownProps> = ({ children }) => {
             paddingLeft: '2em',
             marginBottom: '1em',
         }
-    });
+    }); 
 
     const components: Components = {
         // @ts-ignore
         code({node, inline, className, children, ...props}) {
             const match = /language-(\w+)/.exec(className || '');
-            return !inline && match ? (
+            return !inline && match ? ( 
                 <SyntaxHighlighter
-                // @ts-ignore
+                    // @ts-ignore
                     style={vscDarkPlus}
                     language={match[1]}
-                    PreTag="div"
+                    PreTag="div" 
+                    customStyle={{
+                        ...commonStyles,
+                        margin: 0,
+                        padding: commonStyles.padding,
+                        background: 'transparent',
+                        whiteSpace: 'pre',
+                        wordWrap: 'normal',
+                    }}
+                    lineNumberStyle={{
+                        minWidth: '2.25em',
+                        paddingRight: '1em',
+                        textAlign: 'right',
+                        opacity: 0.5,
+                        userSelect: 'none',
+                    }}
+                    codeTagProps={{
+                        style: {
+                            fontFamily: 'monospace',
+                            fontSize: '13px',
+                            lineHeight: '1.5',
+                        }
+                    }}
                     {...props}
                 >
                     {String(children).replace(/\n$/, '')}
-                </SyntaxHighlighter>
+                </SyntaxHighlighter> 
             ) : (
                 <code className={className} {...props}>
                     {children}

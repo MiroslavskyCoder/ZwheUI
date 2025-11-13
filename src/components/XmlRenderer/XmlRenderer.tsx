@@ -2,6 +2,7 @@ import React from 'react'
 import { Layer } from '../Layer/Layer'
 import { Stack } from '../Stack/Stack' 
 import * as icons from '../../icons';
+import CircularProgress from '../Progress/CircularProgress';
 
 export type ComponentMap = {
     [tag: string]: React.ElementType
@@ -14,7 +15,7 @@ export interface XmlRendererProps {
 
 const defaultMap: ComponentMap = {
     layer: Layer,
-    layout: Stack,
+    layout: Stack, 
     div: 'div',
     span: 'span',
     p: 'p',

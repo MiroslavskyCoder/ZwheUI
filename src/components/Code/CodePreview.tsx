@@ -4,14 +4,8 @@ import { Sofa } from '../Sofa/Sofa';
 import { Center } from '../Center/Center';
 import * as components from '..';
 import * as icons from '../../icons';
-
-const filteredComponents: ComponentMap = {};
-for (const key in components) {
-    if (key[0] >= 'A' && key[0] <= 'Z') {
-        (filteredComponents as any)[key] = (components as any)[key];
-    }
-}
-const componentMap: ComponentMap = { ...filteredComponents, ...icons };
+ 
+const componentMap: ComponentMap = { ...icons };
 
 interface CodePreviewProps {
     code: string;

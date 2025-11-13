@@ -59,7 +59,7 @@ export const SpeedDial: React.FC<SpeedDialProps> = ({ actions, position = { bott
                 label={isOpen ? "Close actions" : "Open actions"}
                 onClick={() => setIsOpen(!isOpen)}
             />
-            <Stack direction="column-reverse" align="end" gap="1.5rem">
+            <Stack direction="column-reverse" align="end" gap="1.5rem" style={{ transform: "translate(-5%, -50%)" }}>
                 {actions.map((action, index) => (
                     <div key={action.label} className={actionClass(index)}>
                         <div className={labelClass}>
@@ -75,7 +75,7 @@ export const SpeedDial: React.FC<SpeedDialProps> = ({ actions, position = { bott
                             }}
                             size="small"
                             // We use relative positioning here because the parent is fixed
-                            position={{}}
+                            position={{ }}
                             style={{ position: 'relative' }}
                         />
                     </div>

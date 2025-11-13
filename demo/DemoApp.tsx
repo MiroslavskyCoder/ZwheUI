@@ -221,8 +221,7 @@ const demos = {
         { id: 'video-player', label: 'Video Player', component: <ExampleVideo /> },
         { id: 'audio-player', label: 'Audio Player', component: <ExampleAudio /> },
         { id: 'photo-editor-example', label: 'Photo Editor', component: <ExamplePhotoEditor /> },
-        { id: 'video-editor-example', label: 'Video Editor', component: <ExampleVideoEditor /> },
-        { id: 'guide-ru', label: 'Учебник', component: <GuideRu /> },
+        { id: 'video-editor-example', label: 'Video Editor', component: <ExampleVideoEditor /> }, 
     ]
 };
 
@@ -306,9 +305,10 @@ const AppContent = () => {
                     </Header.Right>
                 </Header>
                 <div style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
-                    <Grid minItemWidth="600px" gap="2rem">{activeDemo}</Grid>
+                    <Grid minItemWidth="600px" gap="2rem">{activeDemo}</Grid> 
                 </div>
             </main>
+                <ThemeSwitcher/>
         </div>
     );
 };
