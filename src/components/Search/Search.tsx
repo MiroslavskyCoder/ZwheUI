@@ -2,6 +2,7 @@ import React from 'react';
 import { TextInput, TextInputProps } from '../TextInput/TextInput';
 import { useStyles } from '../../core/hooks/useStyles';
 import { useTheme } from '../../core/theme/ThemeProvider';
+import { Icon } from '../Icon/Icon';
 
 const SearchIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -37,7 +38,7 @@ export const Search: React.FC<SearchProps> = ({ className = '', ...props }) => {
     return (
         <div className={`${containerClass} ${className}`}>
             <span className={iconClass}>
-                <SearchIcon />
+                <Icon as={SearchIcon} size="1.25em" />
             </span>
             <TextInput className={inputClass} {...props} />
         </div>
