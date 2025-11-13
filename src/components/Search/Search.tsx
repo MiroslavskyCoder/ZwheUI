@@ -33,7 +33,7 @@ export const Search: React.FC<SearchProps> = ({ className = '', ...props }) => {
     });
     
     const inputClass = createStyle({
-        paddingLeft: '36px',
+        paddingLeft: '36px !important',
     });
 
     return (
