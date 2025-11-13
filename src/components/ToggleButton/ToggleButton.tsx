@@ -1,7 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import { useStyles } from '../../core/hooks/useStyles';
-import { useTheme } from '../../core/theme/ThemeProvider';
-import { Button } from '../Button/Button';
+import { useTheme } from '../../core/theme/ThemeProvider'; 
 
 const ToggleButtonDivider: React.FC = () => {
     const { theme } = useTheme();
@@ -39,41 +38,52 @@ interface ToggleButtonGroupProps {
     type?: 'single' | 'multiple';
     className?: string;
     maxSplit?: number;
+    maxWidth?: string;
 }
 
 interface ToggleButtonGroupFC extends React.FC<ToggleButtonGroupProps> {
     Divider: React.FC;
 }
 
-export const ToggleButtonGroup: ToggleButtonGroupFC = ({ children, value, onChange, type = 'single', className, maxSplit }) => {
+export const ToggleButtonGroup: ToggleButtonGroupFC = ({ children, value, onChange, type = 'single', className, maxSplit, maxWidth }) => {
     const { theme } = useTheme();
     const createStyle = useStyles('toggle-button-group');
 
     const containerClass = createStyle({
         display: 'inline-flex',
+        flexWrap: 'wrap',
         borderRadius: '8px',
         overflow: 'hidden',
         border: `1px solid ${theme.colors.border}`,
+        maxWidth: maxWidth,
     });
 
     const childrenArray = React.Children.toArray(children);
-    const hasCustomDividers = childrenArray.some(child => (child as React.ReactElement).type === ToggleButtonDivider) || (maxSplit && maxSplit > 0);
+    const hasCustomDividers = childrenArray.some(
+        (child) => React.isValidElement(child) && child.type === ToggleButtonDivider
+    );
 
     let content: React.ReactNode = childrenArray;
+
     if (maxSplit && maxSplit > 0) {
         const newChildren: React.ReactNode[] = [];
-        childrenArray.forEach((child, index) => {
+        const buttonsOnly = childrenArray.filter(
+            (c) => React.isValidElement(c) && c.type !== ToggleButtonDivider
+        );
+
+        buttonsOnly.forEach((child, index) => {
             newChildren.push(child);
-            if ((index + 1) % maxSplit === 0 && index < childrenArray.length - 1) {
-                newChildren.push(<ToggleButtonDivider key={`divider-${index}`} />);
+            if ((index + 1) % maxSplit === 0 && index < buttonsOnly.length - 1) {
+                newChildren.push(<div key={`wrap-${index}`} style={{ flexBasis: '100%', height: 0 }} aria-hidden="true" />);
             }
         });
         content = newChildren;
     }
 
+    const contextValue = { value, onChange, type, hasCustomDividers };
+
     return (
-        // @ts-ignore
-        <ToggleButtonGroupContext.Provider value={{ value, onChange, type, hasCustomDividers }}>
+        <ToggleButtonGroupContext.Provider value={contextValue}>
             <div className={`${containerClass} ${className}`} role={type === 'single' ? 'radiogroup' : 'group'}>
                 {content}
             </div>

@@ -14,7 +14,8 @@ A set of components for creating a group of buttons that can be toggled on or of
 *   `value` (string | string[] | null, required): The value of the currently selected button(s). Use a string for `single` type and an array of strings for `multiple`.
 *   `onChange` (function, required): A callback function that is triggered when the selection changes.
 *   `type` (enum: 'single' | 'multiple', optional, default: 'single'): The selection behavior of the group.
-*   `maxSplit` (number, optional): Automatically inserts a divider after every N items.
+*   `maxWidth` (string, optional): Sets a maximum width for the group, causing buttons to wrap to the next line if they overflow.
+*   `maxSplit` (number, optional): Automatically wraps buttons into rows after every N items.
 
 ### ToggleButton
 *   `value` (string, required): A unique value for the button.
@@ -36,22 +37,18 @@ const [alignment, setAlignment] = useState('left');
 </ToggleButtonGroup>
 ```
 
-### Multiple Selection with Dividers
+### Wrapping with `maxWidth`
 ```tsx
-import { ToggleButtonGroup, ToggleButton } from './src/components';
-import { useState } from 'react';
-
-const [formats, setFormats] = useState(['bold']);
-
-// Using manual dividers
-<ToggleButtonGroup value={formats} onChange={setFormats} type="multiple">
+<ToggleButtonGroup value={formats} onChange={setFormats} type="multiple" maxWidth="250px">
   <ToggleButton value="bold">Bold</ToggleButton>
   <ToggleButton value="italic">Italic</ToggleButton>
-  <ToggleButtonGroup.Divider />
   <ToggleButton value="underline">Underline</ToggleButton>
+  <ToggleButton value="strikethrough">Strikethrough</ToggleButton>
 </ToggleButtonGroup>
+```
 
-// Using automatic splitting with maxSplit
+### Wrapping into Rows with `maxSplit`
+```tsx
 <ToggleButtonGroup value={formats} onChange={setFormats} type="multiple" maxSplit={2}>
   <ToggleButton value="bold">Bold</ToggleButton>
   <ToggleButton value="italic">Italic</ToggleButton>
