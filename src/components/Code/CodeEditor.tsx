@@ -71,6 +71,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, languag
 
     return (
         <div className={containerClass}>
+            {/* Textarea for user input */}
             <textarea
                 ref={textAreaRef}
                 value={value}

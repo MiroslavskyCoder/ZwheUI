@@ -1,6 +1,6 @@
 {
   "name": "zwheui",
-  "version": "1.0.7-2.18",
+  "version": "1.0.7-3",
   "author": {
     "name": "Miroslavsky Coder",
     "email": "programmer_js@vk.com",
@@ -19,7 +19,10 @@
     "react",
     "react-components",
     "react-library",
-    "react-ui"
+    "react-ui",
+    "react-component-library",
+    "ui-library",
+    "component-library" 
   ],
   "description": "A showcase of a modern, reusable, and aesthetically pleasing React component library built with TypeScript and Tailwind CSS.",
   "main": "dist/index.cjs.js",

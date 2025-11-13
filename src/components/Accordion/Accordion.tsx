@@ -66,7 +66,7 @@ export const AccordionTrigger: React.FC<{ children: React.ReactNode; value?: str
         }
     });
 
-    return (
+    return ( 
         <button
             className={`${triggerClass} ${className}`}
             onClick={() => setActiveItem(isOpen ? null : value!)}
@@ -95,7 +95,7 @@ export const AccordionContent: React.FC<{ children: React.ReactNode; value?: str
         color: theme.colors.textSecondary,
     });
 
-    return (
+    return ( 
         <div id={`accordion-content-${value}`} className={`${contentClass} ${className}`} aria-hidden={!isOpen}>
             <div className={innerClass}>{children}</div>
         </div>
