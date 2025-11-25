@@ -308,7 +308,7 @@ const AppContent = () => {
                     <Grid minItemWidth="600px" gap="2rem">{activeDemo}</Grid> 
                 </div>
             </main>
-                <ThemeSwitcher/>
+                
         </div>
     );
 };
